@@ -15,14 +15,26 @@ export function detectLanguage(text: string): string {
     lower.includes("quién") ||
     lower.includes("gracias") ||
     lower.includes("favor") ||
-    lower.includes("que me") ||
-    lower.includes("qué me") ||
-    lower.includes("que hace") ||
-    lower.includes("qué hace") ||
-    lower.includes("que puedes") ||
-    lower.includes("qué puedes") ||
-    lower.includes("que es") ||
-    lower.includes("qué es") ||
+    lower.includes("que ") ||
+    lower.includes("qué ") ||
+    lower.includes("cual") ||
+    lower.includes("cuál") ||
+    lower.includes("cuales") ||
+    lower.includes("cuáles") ||
+    lower.includes("donde") ||
+    lower.includes("dónde") ||
+    lower.includes("cuando") ||
+    lower.includes("cuándo") ||
+    lower.includes("por que") ||
+    lower.includes("por qué") ||
+    lower.includes("proposito") ||
+    lower.includes("propósito") ||
+    lower.includes("tiene") ||
+    lower.includes("tienen") ||
+    lower.includes("sirve") ||
+    lower.includes("sirven") ||
+    lower.includes("hace") ||
+    lower.includes("hacen") ||
     lower.includes("permitas") ||
     lower.includes("permites") ||
     lower.includes("permitir") ||
@@ -35,7 +47,10 @@ export function detectLanguage(text: string): string {
     lower.includes("quiero") ||
     lower.includes("tengo") ||
     lower.includes("para") ||
-    lower.includes("por")
+    lower.includes("por") ||
+    lower.includes("explicame") ||
+    lower.includes("explícame") ||
+    lower.includes("dime")
   ) {
     return "es";
   }

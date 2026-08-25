@@ -40,6 +40,8 @@ export interface ParsedIntentResult {
   doubts?: string[];
 }
 
+import { isLocalLlmAvailable, processLocalIntent } from "./localAiClient";
+
 export function getStoredApiKey(rootDir: string = process.cwd()): string {
   const env = loadEnvironment(rootDir);
   return env.geminiApiKey;
@@ -64,8 +66,22 @@ export async function processNaturalLanguageIntent(
   const lang = modeConfig?.detectedLanguage || "en";
   const dict = getI18n(lang);
 
+  // 1. Check if Local SLM (Ollama / Qwen 2.5) is available
+  const localAvailable = await isLocalLlmAvailable(env.localLlmUrl);
+  if (localAvailable) {
+    const localResult = await processLocalIntent(userInput, rootDir);
+    if (localResult) {
+      return localResult;
+    }
+  }
+
+  // 2. Fallback to Cloud LLM (Gemini)
   if (!env.geminiApiKey) {
-    writeOutput(OutputChannelEnum.USER_REPLY, dict.errors.apiKeyMissing);
+    writeOutput(
+      OutputChannelEnum.USER_REPLY,
+      dict.errors?.apiKeyMissing ||
+        "❌ [AI Missing] No local SLM (Ollama) or Gemini API key configured. Run 'npm run setup:local-llm' or 'setup llm <key>'.",
+    );
     return null;
   }
   const isSuccinct = modeConfig?.isSuccinctMode !== false;
@@ -220,9 +236,11 @@ Return ONLY a raw JSON object with NO markdown formatting matching this structur
         }
 
         // Route Debug Details to stderr (Descriptor 2)
-        if (result.debugDetails) {
-          writeOutput(OutputChannelEnum.DEBUG, result.debugDetails, debugLevel);
-        }
+        writeOutput(
+          OutputChannelEnum.DEBUG,
+          `⚙ [Gemini AI Intent Interpretation JSON]:\n${JSON.stringify(result, null, 2)}`,
+          debugLevel,
+        );
 
         return result;
       } catch (err: any) {

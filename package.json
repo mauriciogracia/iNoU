@@ -26,6 +26,7 @@
     "test:models": "node scripts/test-google-models.js",
     "setup": "npm run build && node bin/inuo.js setup",
     "setup:llm": "bash scripts/setup-llm.sh",
+    "setup:local-llm": "bash scripts/setup-local-llm.sh",
     "deploy": "node scripts/deploy.js",
     "deploy:dry": "node scripts/deploy.js dry-run",
     "verify": "npm run build && npm test"

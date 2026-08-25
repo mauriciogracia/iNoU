@@ -31,4 +31,10 @@ export interface Environment {
 
   /** Optional monthly token budget limit (set via GEMINI_TOKEN_BUDGET in .env) */
   tokenBudgetMonthly?: number;
+
+  /** Local SLM / Ollama endpoint URL (e.g. http://localhost:11434) */
+  localLlmUrl?: string;
+
+  /** Local SLM Model name (e.g. qwen2.5:3b) */
+  localLlmModel?: string;
 }

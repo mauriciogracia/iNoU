@@ -23,6 +23,8 @@ export function loadEnvironment(rootDir: string = process.cwd()): Environment {
   let debugLevel = process.env.DEBUG_LEVEL
     ? parseInt(process.env.DEBUG_LEVEL, 10)
     : LogLevelEnum.INFO;
+  let localLlmUrl = process.env.LOCAL_LLM_URL;
+  let localLlmModel = process.env.LOCAL_LLM_MODEL || "qwen2.5:3b";
 
   // Load from .env if present
   if (fs.existsSync(envFilePath)) {
@@ -42,6 +44,14 @@ export function loadEnvironment(rootDir: string = process.cwd()): Environment {
       if (debugMatch && debugMatch[1]) {
         const parsed = parseInt(debugMatch[1].trim(), 10);
         if (!isNaN(parsed)) debugLevel = parsed;
+      }
+      const localLlmUrlMatch = envContent.match(/LOCAL_LLM_URL\s*=\s*(.+)/);
+      if (localLlmUrlMatch && localLlmUrlMatch[1] && localLlmUrlMatch[1].trim()) {
+        localLlmUrl = localLlmUrlMatch[1].trim().replace(/^["']|["']$/g, "");
+      }
+      const localLlmModelMatch = envContent.match(/LOCAL_LLM_MODEL\s*=\s*(.+)/);
+      if (localLlmModelMatch && localLlmModelMatch[1] && localLlmModelMatch[1].trim()) {
+        localLlmModel = localLlmModelMatch[1].trim().replace(/^["']|["']$/g, "");
       }
     } catch {}
   }
@@ -63,12 +73,18 @@ export function loadEnvironment(rootDir: string = process.cwd()): Environment {
   }
 
   // Load from .inuo-key.json if key still empty
-  if (!geminiApiKey && fs.existsSync(configPath)) {
+  if (fs.existsSync(configPath)) {
     try {
       const data = JSON.parse(fs.readFileSync(configPath, "utf8"));
-      if (data.apiKey) geminiApiKey = data.apiKey;
+      if (!geminiApiKey && data.apiKey) geminiApiKey = data.apiKey;
       if (!tokenBudgetMonthly && data.tokenBudgetMonthly) {
         tokenBudgetMonthly = data.tokenBudgetMonthly;
+      }
+      if (!localLlmUrl && data.localLlmUrl) {
+        localLlmUrl = data.localLlmUrl;
+      }
+      if (data.localLlmModel) {
+        localLlmModel = data.localLlmModel;
       }
     } catch {}
   }
@@ -93,6 +109,8 @@ export function loadEnvironment(rootDir: string = process.cwd()): Environment {
     defaultModel,
     debugLevel,
     tokenBudgetMonthly,
+    localLlmUrl,
+    localLlmModel,
   };
 }
 

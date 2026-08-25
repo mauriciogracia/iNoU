@@ -590,6 +590,16 @@ export async function executeShellLine(
       const result = await processNaturalLanguageIntent(trimmed, rootDir);
 
       if (result) {
+        if ((result as any).dialogue_act === "PROVIDE_CONTEXT") {
+          const reply =
+            result.explanation ||
+            (result.commandSequence && result.commandSequence.length > 0
+              ? `💡 Comandos sugeridos para el prompt:\n${result.commandSequence.map((c) => `• ${c}`).join("\n")}`
+              : "✔ [Contexto guardado] Información agregada a la sesión activa.");
+          writeOutput(OutputChannelEnum.USER_REPLY, reply);
+          break;
+        }
+
         if (
           result.type === "COMMAND_SEQUENCE" ||
           (result.commandSequence && result.commandSequence.length > 0)
@@ -597,6 +607,11 @@ export async function executeShellLine(
           const seq = result.commandSequence || [];
           if (result.explanation) {
             writeOutput(OutputChannelEnum.USER_REPLY, result.explanation);
+          } else if (seq.length > 0) {
+            writeOutput(
+              OutputChannelEnum.USER_REPLY,
+              `💡 Comandos sugeridos para el prompt:\n${seq.map((c) => `• ${c}`).join("\n")}`,
+            );
           }
           for (const cmdLine of seq) {
             await executeShellLine(cmdLine, rootDir, llmPrompter);

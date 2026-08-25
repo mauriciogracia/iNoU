@@ -366,7 +366,15 @@ document.addEventListener("DOMContentLoaded", () => {
       entry.style.display = "none";
     }
 
-    entry.textContent = cleanText;
+    if (cleanText.includes("[Contexto guardado]") || cleanText.includes("[Context Saved]")) {
+      const safeText = cleanText
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+      entry.innerHTML = `<span>${safeText}</span> <button class="edit-prompt-btn" style="margin-left: 8px; font-size: 11px; padding: 2px 8px; background: rgba(56, 189, 248, 0.15); border: 1px solid var(--accent-cyan); color: #38bdf8; border-radius: 4px; cursor: pointer;">✏️ Continuar editando</button>`;
+    } else {
+      entry.textContent = cleanText;
+    }
 
     logViewport.appendChild(entry);
     logViewport.scrollTop = logViewport.scrollHeight;
@@ -442,7 +450,6 @@ document.addEventListener("DOMContentLoaded", () => {
       });
       const body = (await res.json().catch(() => ({}))) as CommandResponse;
       if (!res.ok) {
-        hideAnalyzing();
         appendLog(
           "DEBUG",
           `[Command Error] HTTP ${res.status} — ${body.error ?? "Unknown"}`,
@@ -457,12 +464,13 @@ document.addEventListener("DOMContentLoaded", () => {
         openLLMConfigurationDialog(body.uiAction.setup);
       }
     } catch (err) {
-      hideAnalyzing();
       appendLog(
         "DEBUG",
         `[Network Error] Couldn't reach iNoU: ${(err as Error).message}`,
       );
       appendErrorWithRetry(uiStrings.errorNetwork, command);
+    } finally {
+      hideAnalyzing();
     }
   }
 
@@ -515,11 +523,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const btn = (e.target as HTMLElement).closest(
       ".retry-btn",
     ) as HTMLButtonElement | null;
-    if (!btn) return;
-    const command = btn.dataset["command"] ?? "";
-    if (command) {
-      btn.closest(".error-msg")?.remove();
-      void sendCommand(command);
+    if (btn) {
+      const command = btn.dataset["command"] ?? "";
+      if (command) {
+        btn.closest(".error-msg")?.remove();
+        void sendCommand(command);
+      }
+      return;
+    }
+
+    const editBtn = (e.target as HTMLElement).closest(
+      ".edit-prompt-btn",
+    ) as HTMLButtonElement | null;
+    if (editBtn && lastSentCommand) {
+      commandInput.value = lastSentCommand;
+      commandInput.focus();
+      commandInput.setSelectionRange(lastSentCommand.length, lastSentCommand.length);
+    }
+  });
+
+  let lastSentCommand = "";
+
+  // Key navigation: ArrowUp restores last sent command if input is empty
+  commandInput.addEventListener("keydown", (e: KeyboardEvent) => {
+    if (e.key === "ArrowUp" && commandInput.value === "" && lastSentCommand) {
+      e.preventDefault();
+      commandInput.value = lastSentCommand;
+      commandInput.setSelectionRange(lastSentCommand.length, lastSentCommand.length);
     }
   });
 
@@ -528,6 +558,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const command = commandInput.value.trim();
     if (!command) return;
+    lastSentCommand = command;
     commandInput.value = "";
     dismissClarificationWidget();
     await sendCommand(command);
