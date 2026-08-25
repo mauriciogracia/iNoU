@@ -22,6 +22,7 @@ export * from './AuthMethodEnum';
 export * from './QuestionOptionTypeEnum';
 export * from './LogLevelEnum';
 export * from './OutputChannelEnum';
+export * from './LLMTierEnum';
 
 
 

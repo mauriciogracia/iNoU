@@ -1,0 +1,63 @@
+<!-- Right Column: Sidebar with Top Tabs (Chats | Config) -->
+<aside class="chat-sidebar" id="chat-sidebar">
+  <!-- Sidebar Navigation Tabs -->
+  <nav class="sidebar-tabs">
+    <button class="sidebar-tab-btn active" id="tab-btn-chats" data-sidebar-tab="chats">
+      <span>💬 Chats</span>
+    </button>
+    <button class="sidebar-tab-btn" id="tab-btn-config" data-sidebar-tab="config">
+      <span>⚙ Config</span>
+    </button>
+  </nav>
+
+  <!-- Pane 1: Chats Tab Content -->
+  <div class="sidebar-tab-pane active" id="pane-chats">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <span>Sesiones de Chat</span>
+      </div>
+      <button id="btn-new-chat" class="sidebar-action-btn" title="Crear nuevo chat">+ Nuevo</button>
+    </div>
+
+    <div class="sidebar-search">
+      <input type="text" id="chat-search-input" class="search-input" placeholder="🔍 Buscar chats..." />
+    </div>
+
+    <div class="chat-list" id="chat-list">
+      <!-- Dynamically populated by app.ts -->
+    </div>
+
+    <div class="sidebar-merge-bar">
+      <button id="btn-merge-chats" class="merge-action-btn" disabled>
+        🔀 Combinar seleccionados (0)
+      </button>
+    </div>
+  </div>
+
+  <!-- Pane 2: Config Tab Content (40% LLMs on top, Integrations below) -->
+  <div class="sidebar-tab-pane" id="pane-config">
+    <!-- Top Section: LLMs (40%) -->
+    <div class="config-section config-section-llms">
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          <span>⚙ Motores &amp; LLMs</span>
+        </div>
+      </div>
+      <div class="engines-list" id="engines-list">
+        <!-- Dynamically populated by app.ts -->
+      </div>
+    </div>
+
+    <!-- Bottom Section: Integrations (remaining ~60%) -->
+    <div class="config-section config-section-integrations">
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          <span>🌐 Integraciones &amp; Redes Sociales</span>
+        </div>
+      </div>
+      <div class="integrations-list" id="integrations-list">
+        <!-- Dynamically populated by app.ts -->
+      </div>
+    </div>
+  </div>
+</aside>

@@ -24,6 +24,8 @@ import {
 } from "../../cli/llmCommand";
 import { probeAndConfigureModels, maskApiKey } from "../../cli/setupCommand";
 import { executeShellLine } from "../../cli/shell";
+import { loadEnvironment } from "../../cli/environment";
+import { getCostGovernanceConfig } from "../../cli/costGovernanceEngine";
 import { EventBus } from "../events/EventBus";
 import { OutputChannelEnum } from "../../enums/OutputChannelEnum";
 import { TOOL_PROMPT } from "../../cli/brand";
@@ -42,6 +44,9 @@ const MIME_MAP: Record<string, string> = {
   ".txt": "text/plain; charset=utf-8",
 };
 
+import { ChatController } from "../controllers/ChatController";
+import { integrationRegistry } from "../../integrations";
+
 export class Router {
   private healthCtrl: HealthController;
   private projectCtrl: ProjectController;
@@ -51,6 +56,7 @@ export class Router {
   private integrationCtrl: IntegrationController;
   private syncCtrl: SyncController;
   private commandCtrl: CommandController;
+  private chatCtrl: ChatController;
   private rootDir: string;
 
   constructor(rootDir: string = process.cwd()) {
@@ -63,6 +69,7 @@ export class Router {
     this.integrationCtrl = new IntegrationController(rootDir);
     this.syncCtrl = new SyncController(rootDir);
     this.commandCtrl = new CommandController(rootDir);
+    this.chatCtrl = new ChatController(rootDir);
   }
 
   public async handleRequest(
@@ -217,6 +224,105 @@ export class Router {
       return;
     }
 
+    // LLM Engines & Status List
+    if (pathname === "/api/llm/engines" && method === "GET") {
+      const env = loadEnvironment(this.rootDir);
+      const costConfig = getCostGovernanceConfig(this.rootDir);
+      const savedConfigs = getLLMConfigurations(this.rootDir);
+
+      const engines = [
+        {
+          id: "gemini",
+          engineName: "Google Gemini",
+          model: costConfig?.activeModel || "gemini-flash-latest",
+          tier: "Free / Pro",
+          status: env.geminiApiKey ? "configured" : "available",
+          statusColor: "green",
+          isConfigured: Boolean(env.geminiApiKey),
+          defaultConfigurationName: "gemini-default",
+          credentialEnvironmentVariable: "GEMINI_API_KEY",
+          documentationUrl: "https://ai.google.dev/gemini-api/docs/api-key",
+        },
+        {
+          id: "ollama",
+          engineName: "Ollama Local SLM",
+          model: env.localLlmModel || "qwen2.5:3b",
+          tier: "Local (Offline)",
+          status: "active",
+          statusColor: "green",
+          isConfigured: true,
+          defaultConfigurationName: "ollama-local",
+          defaultBaseUrl: env.localLlmUrl || "http://localhost:11434",
+          credentialEnvironmentVariable: "",
+          documentationUrl: "https://ollama.com",
+        },
+        {
+          id: "copilot",
+          engineName: "GitHub Copilot",
+          model: "gpt-4.1",
+          tier: "Paid",
+          status: "available",
+          statusColor: "green",
+          isConfigured: Boolean(process.env.COPILOT_API_KEY),
+          defaultConfigurationName: "copilot-default",
+          credentialEnvironmentVariable: "COPILOT_API_KEY",
+          documentationUrl: "https://github.com/features/copilot",
+        },
+        {
+          id: "openai",
+          engineName: "OpenAI",
+          model: "gpt-4o-mini",
+          tier: "Paid",
+          status: "available",
+          statusColor: "green",
+          isConfigured: Boolean(process.env.OPENAI_API_KEY),
+          defaultConfigurationName: "openai-default",
+          credentialEnvironmentVariable: "OPENAI_API_KEY",
+          documentationUrl: "https://platform.openai.com/api-keys",
+        },
+        {
+          id: "anthropic",
+          engineName: "Anthropic Claude",
+          model: "claude-3-5-sonnet-20241022",
+          tier: "Paid",
+          status: "available",
+          statusColor: "green",
+          isConfigured: Boolean(process.env.ANTHROPIC_API_KEY),
+          defaultConfigurationName: "anthropic-default",
+          credentialEnvironmentVariable: "ANTHROPIC_API_KEY",
+          documentationUrl: "https://console.anthropic.com",
+        },
+        {
+          id: "groq",
+          engineName: "Groq Cloud",
+          model: "llama-3.3-70b-versatile",
+          tier: "Free / Paid",
+          status: "available",
+          statusColor: "green",
+          isConfigured: Boolean(process.env.GROQ_API_KEY),
+          defaultConfigurationName: "groq-default",
+          credentialEnvironmentVariable: "GROQ_API_KEY",
+          documentationUrl: "https://console.groq.com",
+        },
+        {
+          id: "deepseek",
+          engineName: "DeepSeek AI",
+          model: "deepseek-chat",
+          tier: "Paid",
+          status: "available",
+          statusColor: "green",
+          isConfigured: Boolean(process.env.DEEPSEEK_API_KEY),
+          defaultConfigurationName: "deepseek-default",
+          credentialEnvironmentVariable: "DEEPSEEK_API_KEY",
+          documentationUrl: "https://platform.deepseek.com",
+        },
+      ];
+
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify({ engines, savedConfigurations: savedConfigs }));
+      return;
+    }
+
     // LLM Probe & Setup Endpoint
     if (pathname === "/api/setup/llm" && method === "POST") {
       try {
@@ -368,6 +474,27 @@ export class Router {
 
     // Integrations
     if (
+      pathname === "/api/v1/integrations/status" ||
+      pathname === "/api/integrations"
+    ) {
+      if (method === "GET") {
+        const integrations = integrationRegistry.getAll().map((adapter) => ({
+          id: adapter.id,
+          name: adapter.name,
+          category: adapter.category,
+          status: adapter.status,
+          statusColor: adapter.statusColor,
+          isConfigured: adapter.isConfigured(this.rootDir),
+          channel: adapter.targetChannelOrScope,
+          credentialEnvVar: adapter.credentialEnvVar,
+          documentationUrl: adapter.documentationUrl,
+        }));
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ integrations }));
+        return;
+      }
+    }
+    if (
       pathname === "/api/v1/integrations" ||
       pathname === "/api/v1/integration"
     ) {
@@ -384,6 +511,27 @@ export class Router {
       if (method === "GET") return this.syncCtrl.getConfig(res);
       if (method === "POST" || method === "PUT")
         return this.syncCtrl.updateConfig(bodyJson, res);
+    }
+
+    // Chats & Multi-Chat Management
+    if (pathname === "/api/chats" || pathname === "/api/v1/chats") {
+      if (method === "GET") return this.chatCtrl.getAll(res);
+      if (method === "POST") return this.chatCtrl.create(bodyJson, res);
+    }
+    if (pathname === "/api/chats/merge" || pathname === "/api/v1/chats/merge") {
+      if (method === "POST") return this.chatCtrl.merge(bodyJson, res);
+    }
+    const chatActivateMatch = pathname.match(
+      /^\/api\/(?:v1\/)?chats\/([a-zA-Z0-9_\-]+)\/activate$/,
+    );
+    if (chatActivateMatch && method === "POST") {
+      return this.chatCtrl.activate(chatActivateMatch[1], res);
+    }
+    const chatMatch = pathname.match(
+      /^\/api\/(?:v1\/)?chats\/([a-zA-Z0-9_\-]+)$/,
+    );
+    if (chatMatch && method === "DELETE") {
+      return this.chatCtrl.delete(chatMatch[1], res);
     }
 
     // 404 Fallback

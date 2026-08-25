@@ -7,6 +7,8 @@ import { OutputChannelEnum } from "../enums/OutputChannelEnum";
 import { getPreference, buildPreferencePromptBlock } from "./preferenceEngine";
 import { getI18n } from "../i18n";
 import { ParsedIntentResult } from "./aiClient";
+import { getLLMConfigurations } from "./llmCommand";
+import { maskApiKey } from "./setupCommand";
 
 export interface LocalSLMResponse {
   type:
@@ -254,6 +256,19 @@ export async function processLocalIntent(
     ? `\nACCUMULATED SESSION CONTEXT (Previously Stated Facts & Constraints):\n${JSON.stringify(currentFacts, null, 2)}\n`
     : "";
 
+  const costConfig = state.costGovernance;
+  const configuredLlms = getLLMConfigurations(rootDir);
+  const geminiConfigured = Boolean(env.geminiApiKey);
+  const configuredSummary = [
+    `• Motor Local SLM: ACTIVO (Modelo: ${localModel}, Endpoint: ${localUrl})`,
+    `• Google Gemini: ${geminiConfigured ? `CONFIGURADO (Modelo Activo: ${costConfig?.activeModel || "gemini-flash-latest"}, Clave: ${maskApiKey(env.geminiApiKey)}, Nivel: ${costConfig?.tierMode || "FreeTierFirst"})` : "NO configurado aún (escribe 'setup llm gemini <apiKey>' o 'auth signin')"}`
+  ];
+  if (configuredLlms && configuredLlms.length > 0) {
+    for (const c of configuredLlms) {
+      configuredSummary.push(`• ${c.engineName} (${c.configurationName}): CONFIGURADO (Modelo: ${c.model})`);
+    }
+  }
+
   const systemPrompt = `You are the iNoU Interaction Engine & Decentralized Multiagent LLM Orchestration Platform AI.
 You are running locally via ${localModel}.
 You MUST analyze the user input in the context of the accumulated session context and recent conversation, and output strictly a valid JSON object.
@@ -266,6 +281,34 @@ CRITICAL LANGUAGE MANDATE:
 - If the user prompt is in French, reply in French.
 - If the user prompt is in German, reply in German.
 - If the user prompt is in Portuguese, reply in Portuguese.
+
+CURRENTLY CONFIGURED ENGINES ON THIS NODE (Instancia Local):
+${configuredSummary.join("\n")}
+
+SUPPORTED LLM ECOSYSTEM (Catálogo Completo Soportado por iNoU):
+1. **Google Gemini (Nativo con Gobernanza de Costos y Niveles Duales)**:
+   - *Free Tier (Nivel Gratuito)*: Cascada inteligente de modelos gratuitos (gemini-flash-latest, gemini-3.7-flash, gemini-3.5-flash, gemini-3.5-flash-lite, gemini-3-flash-preview) con rotación automática ante límites de tasa.
+   - *Google API Pro / Paid Tier (Nivel Pago)*: Modelos de alto razonamiento (gemini-pro-latest, gemini-3.1-pro-preview) gobernados por presupuesto mensual y compuerta de consentimiento.
+   - *Métodos de Autenticación*:
+     • Inicio de sesión web con cuenta de Google (OAuth2 / Cloud Code) similar a Antigravity IDE ("auth signin").
+     • O comando directo: \`setup llm gemini <tu_api_key>\`.
+     • O variable \`GEMINI_API_KEY=...\` en el archivo \`.env\`.
+2. **Motor Local SLM (Qwen 2.5 / Ollama)**:
+   - Inferencia local 100% offline en CPU/GPU (qwen2.5:3b / qwen2.5:1.5b) para rastreo de estado de diálogo (DST), extracción semántica de hechos y cero consumo de tokens en la nube.
+3. **Otros Proveedores & Motores Conectables**:
+   - GitHub Copilot (\`setup llm copilot\`)
+   - OpenAI (\`setup llm openai <apiKey>\` - gpt-4o-mini / gpt-4o)
+   - Anthropic Claude (\`setup llm anthropic <apiKey>\` - claude-3-5-sonnet)
+   - Groq (\`setup llm groq <apiKey>\` - llama-3.3-70b)
+   - DeepSeek (\`setup llm deepseek <apiKey>\` - deepseek-chat)
+   - Mistral & OpenRouter (\`setup llm mistral\` / \`setup llm openrouter\`)
+
+DISTINCTION MANDATE (Supported vs Configured):
+- DO NOT confuse what iNoU SUPPORTS (the full catalog of connectable LLMs) with what is CURRENTLY CONFIGURED on this node.
+- If the user asks "qué modelos tengo?", "cuáles están configurados?", "qué LLM tengo activo?":
+  - Report ONLY the CURRENTLY CONFIGURED list above.
+- If the user asks "qué LLMs soporta iNoU?", "con qué motores es compatible?":
+  - Explain the SUPPORTED LLM ECOSYSTEM catalog, and mention how to configure any unconfigured provider.
 
 MULTI-TURN CONVERSATION & CO-REFERENCE RESOLUTION:
 - ALWAYS evaluate the user prompt in the context of the previous conversation turns and accumulated session context.
@@ -294,23 +337,39 @@ EXECUTION ORDERS WITH ACCUMULATED CONTEXT (Dialogue Act: "EXECUTE_COMMAND"):
   3. STRUCTURED RESULT: Populate "commandSequence" or "subNeeds" fully hydrated with the accumulated facts.
 
 ABOUT iNoU PLATFORM (Architecture & Commands):
-- iNoU is a decentralized, self-orchestrating multiagent LLM platform and specification lifecycle management engine.
 - Direct Commands in Prompt Area:
-  • "setup llm <apiKey>" or "key <apiKey>" -> Configure Gemini API Key inside iNoU
-  • "need create --verb <Verb> --object <Object>" -> Publish a Public Marketplace Need (Connecting Needs)
-  • "offer create --verb <ComplementVerb> --object <Object>" -> Publish a Public Marketplace Offer
-  • "match" -> Find marketplace peer matches
-  • "status" -> View system & node status
-  • "catalog" -> View global catalog
-  • "whoami" -> View active identity
-  • "help" / "?" -> View all commands
+  • "setup llm <engine> [apiKey]" -> Configurar un proveedor LLM (gemini, copilot, ollama, openai, etc.)
+  • "auth signin" / "auth signout" -> Iniciar sesión web OAuth2 (Google Account)
+  • "need create --verb <Verb> --object <Object>" -> Publicar una Necesidad en el Marketplace Colmena (Connecting Needs)
+  • "offer create --verb <ComplementVerb> --object <Object>" -> Publicar una Oferta en el Marketplace
+  • "match" -> Emparejar necesidades y ofertas activas
+  • "status" -> Ver estado del nodo, estadísticas y LLM activo
+  • "catalog" -> Ver catálogo global de verbos y objetos
+  • "whoami" -> Ver identidad activa
+  • "help" / "?" -> Ver matriz completa de comandos
+
+MANDATORY EXPLANATION CONTENT:
+- In "explanation", you MUST provide the direct, complete, and informative answer in "${lang}".
+- NEVER echo, parrot, or repeat the user's question back to them.
+- NEVER start with a rhetorical question (e.g., avoid "¿Quieres saber qué...?"). Go straight to the substantive answer.
+
+LLM INQUIRIES HANDLING:
+1. When asked about CURRENTLY CONFIGURED models ("qué modelos tengo?", "cuáles están configurados?", "qué LLM tengo activo?"):
+   - Set "type": "QUERY"
+   - Set "dialogue_act": "CHAT"
+   - In "explanation", directly list the CURRENTLY CONFIGURED ENGINES for this node (Local SLM Qwen 2.5, Google Gemini status, etc.), explaining which is active and how to configure others.
+2. When asked about SUPPORTED LLMs / CATALOG ("qué LLMs soporta iNoU?", "con qué motores es compatible?"):
+   - Set "type": "QUERY"
+   - Set "dialogue_act": "CHAT"
+   - In "explanation", list the complete SUPPORTED LLM ECOSYSTEM (Google Gemini Free Tier & API Pro, Local Qwen 2.5, Copilot, OpenAI, Anthropic Claude, Groq, DeepSeek, Mistral, OpenRouter) and explain authentication methods (OAuth2 web sign-in o API keys).
 
 CONFIGURATION & SETUP INQUIRIES ("como configurar gemini", "como conectar api key", "pero como lo hago aca", "como configuro"):
-If the user asks how to configure Gemini API Key or credentials inside iNoU:
+If the user asks how to configure credentials inside iNoU:
 - Set "type": "QUERY"
 - Set "dialogue_act": "CHAT"
 - In "explanation", explicitly explain in "${lang}" that within this prompt area they can type:
-  • \`setup llm <tu_api_key>\` o \`key <tu_api_key>\` y presionar Enter.
+  • \`setup llm gemini <tu_api_key>\` o usar el botón ⚙ en el panel derecho.
+  • O iniciar sesión web con \`auth signin\`.
   • O agregar \`GEMINI_API_KEY=tu_clave\` en el archivo \`.env\`.
 
 COMMAND & CAPABILITY INQUIRIES ("¿qué comandos puedo usar?", "qué puedo escribir?", "what can I type?", "show examples", "cómo empiezo?"):

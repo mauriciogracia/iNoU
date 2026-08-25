@@ -65,7 +65,7 @@ export class ChatRepository extends BaseRepository<ChatEntity> {
       owner_id: entity.owner_id || "user_local",
       created_at: entity.created_at || new Date().toISOString(),
       updated_at: entity.updated_at || new Date().toISOString(),
-      cloud_sync_id: entity.cloud_sync_id,
+      cloud_sync_id: entity.cloud_sync_id || null,
       sync_version: entity.sync_version || 1,
       sync_status: entity.sync_status || "LOCAL_ONLY",
     };
@@ -179,9 +179,9 @@ export class ChatMessageRepository extends BaseRepository<ChatMessageEntity> {
       chat_id: entity.chat_id,
       role: entity.role || "user",
       content: entity.content || "",
-      metadata_json: entity.metadata_json,
+      metadata_json: entity.metadata_json || null,
       created_at: entity.created_at || new Date().toISOString(),
-      cloud_sync_id: entity.cloud_sync_id,
+      cloud_sync_id: entity.cloud_sync_id || null,
       sync_status: entity.sync_status || "LOCAL_ONLY",
     };
   }

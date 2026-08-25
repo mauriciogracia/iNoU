@@ -73,3 +73,7 @@ export * from "./IRepository";
 export * from "./ConflictResolutionResult";
 export * from "./InuoEventEnvelope";
 export * from "./Chat";
+export * from "./LLMCompletionRequest";
+export * from "./LLMCompletionResponse";
+export * from "./ILLMProviderAdapter";
+export * from "./IIntegrationAdapter";

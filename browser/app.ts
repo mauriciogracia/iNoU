@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const llmConfigurationName = document.getElementById(
     "llm-configuration-name",
   ) as HTMLInputElement;
-  const llmModel = document.getElementById("llm-model") as HTMLInputElement;
+  const llmModel = document.getElementById("llm-model") as HTMLSelectElement;
   const llmBaseUrl = document.getElementById(
     "llm-base-url",
   ) as HTMLInputElement;
@@ -400,16 +400,88 @@ document.addEventListener("DOMContentLoaded", () => {
     logViewport.scrollTop = logViewport.scrollHeight;
   }
 
+  const PROVIDER_MODELS_MAP: Record<string, Array<{ id: string; label: string }>> = {
+    gemini: [
+      { id: "gemini-flash-latest", label: "gemini-flash-latest (Free Tier - Default)" },
+      { id: "gemini-3.7-flash", label: "gemini-3.7-flash (Free Tier)" },
+      { id: "gemini-3.5-flash", label: "gemini-3.5-flash (Free Tier)" },
+      { id: "gemini-3.5-flash-lite", label: "gemini-3.5-flash-lite (Free Tier)" },
+      { id: "gemini-pro-latest", label: "gemini-pro-latest (Paid API Pro)" },
+      { id: "gemini-3.1-pro-preview", label: "gemini-3.1-pro-preview (Paid API Pro)" },
+    ],
+    copilot: [
+      { id: "gpt-4.1", label: "gpt-4.1 (Default)" },
+      { id: "claude-3.5-sonnet", label: "claude-3.5-sonnet" },
+      { id: "o3-mini", label: "o3-mini" },
+    ],
+    ollama: [
+      { id: "qwen2.5:3b", label: "qwen2.5:3b (Default)" },
+      { id: "qwen2.5:1.5b", label: "qwen2.5:1.5b" },
+      { id: "qwen2.5:7b", label: "qwen2.5:7b" },
+      { id: "llama3.2:3b", label: "llama3.2:3b" },
+      { id: "mistral:7b", label: "mistral:7b" },
+    ],
+    openai: [
+      { id: "gpt-4o-mini", label: "gpt-4o-mini (Default)" },
+      { id: "gpt-4o", label: "gpt-4o" },
+      { id: "o1", label: "o1" },
+      { id: "o3-mini", label: "o3-mini" },
+    ],
+    anthropic: [
+      { id: "claude-3-5-sonnet-20241022", label: "claude-3-5-sonnet (Default)" },
+      { id: "claude-3-5-haiku-20241022", label: "claude-3-5-haiku" },
+      { id: "claude-3-opus-20240229", label: "claude-3-opus" },
+    ],
+    groq: [
+      { id: "llama-3.3-70b-versatile", label: "llama-3.3-70b-versatile (Default)" },
+      { id: "llama-3.1-8b-instant", label: "llama-3.1-8b-instant" },
+      { id: "deepseek-r1-distill-llama-70b", label: "deepseek-r1-distill-llama-70b" },
+    ],
+    deepseek: [
+      { id: "deepseek-chat", label: "deepseek-chat (Default)" },
+      { id: "deepseek-reasoner", label: "deepseek-reasoner (R1)" },
+    ],
+    mistral: [
+      { id: "mistral-large-latest", label: "mistral-large-latest (Default)" },
+      { id: "mistral-small-latest", label: "mistral-small-latest" },
+      { id: "codestral-latest", label: "codestral-latest" },
+    ],
+    openrouter: [
+      { id: "google/gemini-2.0-flash-001", label: "gemini-2.0-flash-001 (Default)" },
+      { id: "anthropic/claude-3.5-sonnet", label: "claude-3.5-sonnet" },
+      { id: "deepseek/deepseek-r1", label: "deepseek-r1" },
+    ],
+  };
+
   function openLLMConfigurationDialog(setup: LLMProviderSetup): void {
     hideAnalyzing();
     activeLLMSetup = setup;
     llmEngineName.textContent = setup.engineName;
     llmConfigurationName.value = setup.defaultConfigurationName;
-    llmModel.value = setup.defaultModel;
     llmBaseUrl.value = setup.defaultBaseUrl ?? "";
     llmPlanMode.checked = true;
     llmExecuteMode.checked = false;
     llmFormError.textContent = "";
+
+    // Populate model dropdown options
+    const engineKey = (setup.engineName || "gemini").toLowerCase();
+    const modelsList = PROVIDER_MODELS_MAP[engineKey] || [
+      { id: setup.defaultModel, label: `${setup.defaultModel} (Default)` },
+    ];
+
+    llmModel.innerHTML = "";
+    for (const m of modelsList) {
+      const opt = document.createElement("option");
+      opt.value = m.id;
+      opt.textContent = m.label;
+      if (m.id === setup.defaultModel) {
+        opt.selected = true;
+      }
+      llmModel.appendChild(opt);
+    }
+
+    // Auto-select default model
+    llmModel.value = setup.defaultModel;
 
     if (setup.credentialEnvironmentVariable) {
       llmCredentialGuidance.textContent =
@@ -429,8 +501,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     llmDialog.showModal();
-    llmConfigurationName.focus();
-    llmConfigurationName.select();
+    llmModel.focus();
   }
 
   function closeLLMConfigurationDialog(): void {
@@ -511,6 +582,7 @@ document.addEventListener("DOMContentLoaded", () => {
         `LLM configuration "${result.configuration?.configurationName || llmConfigurationName.value}" saved.`,
       );
       closeLLMConfigurationDialog();
+      void loadEngines();
     } catch (error) {
       llmFormError.textContent = (error as Error).message;
     } finally {
@@ -648,4 +720,428 @@ document.addEventListener("DOMContentLoaded", () => {
     const existing = document.getElementById("clarification-widget");
     existing?.remove();
   }
+
+  // 7. Multi-Chat Sidebar & Management
+  const chatListEl = document.getElementById("chat-list") as HTMLDivElement | null;
+  const chatSearchInput = document.getElementById("chat-search-input") as HTMLInputElement | null;
+  const btnNewChat = document.getElementById("btn-new-chat") as HTMLButtonElement | null;
+  const btnMergeChats = document.getElementById("btn-merge-chats") as HTMLButtonElement | null;
+  const btnOpenEngines = document.getElementById("btn-open-engines") as HTMLButtonElement | null;
+
+  interface ChatItem {
+    id: string;
+    title: string;
+    status: string;
+    isActive?: boolean;
+    updated_at: string;
+    messageCount?: number;
+  }
+
+  let allChats: ChatItem[] = [];
+  const selectedChatIds = new Set<string>();
+
+  async function loadChats(): Promise<void> {
+    try {
+      const res = await fetch("/api/chats");
+      if (!res.ok) return;
+      const data = await res.json();
+      allChats = data.chats || [];
+      renderChatList(allChats);
+    } catch {}
+  }
+
+  function renderChatList(chats: ChatItem[]): void {
+    if (!chatListEl) return;
+    const filter = (chatSearchInput?.value || "").toLowerCase().trim();
+    const visible = filter
+      ? chats.filter(
+          (c) =>
+            c.title.toLowerCase().includes(filter) ||
+            c.id.toLowerCase().includes(filter),
+        )
+      : chats;
+
+    chatListEl.innerHTML = "";
+    if (visible.length === 0) {
+      chatListEl.innerHTML = `<div style="padding: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">No hay chats disponibles.</div>`;
+      return;
+    }
+
+    for (const c of visible) {
+      const item = document.createElement("div");
+      item.className = `chat-item ${c.isActive ? "active" : ""}`;
+      item.dataset.id = c.id;
+
+      const checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.className = "chat-checkbox";
+      checkbox.checked = selectedChatIds.has(c.id);
+      checkbox.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (checkbox.checked) {
+          selectedChatIds.add(c.id);
+        } else {
+          selectedChatIds.delete(c.id);
+        }
+        updateMergeButton();
+      });
+
+      const info = document.createElement("div");
+      info.className = "chat-info";
+
+      const title = document.createElement("div");
+      title.className = "chat-title-text";
+      title.textContent = (c.isActive ? "▶ " : "") + c.title;
+
+      const meta = document.createElement("div");
+      meta.className = "chat-meta";
+      const dateStr = new Date(c.updated_at).toLocaleDateString();
+      meta.textContent = `${dateStr} · ${c.messageCount || 0} msgs`;
+
+      info.appendChild(title);
+      info.appendChild(meta);
+
+      item.appendChild(checkbox);
+      item.appendChild(info);
+
+      item.addEventListener("click", () => {
+        if (!c.isActive) {
+          void activateChat(c.id);
+        }
+      });
+
+      chatListEl.appendChild(item);
+    }
+    updateMergeButton();
+  }
+
+  function updateMergeButton(): void {
+    if (!btnMergeChats) return;
+    const count = selectedChatIds.size;
+    btnMergeChats.disabled = count < 2;
+    btnMergeChats.textContent = `🔀 Combinar seleccionados (${count})`;
+  }
+
+  async function activateChat(chatId: string): Promise<void> {
+    try {
+      const res = await fetch(`/api/chats/${chatId}/activate`, {
+        method: "POST",
+      });
+      if (res.ok) {
+        logViewport.innerHTML = `<div class="log-entry system-msg"><span class="log-time">[System]</span><span class="log-text">Chat cambiado. Sesión activa: ${chatId}</span></div>`;
+        await loadChats();
+      }
+    } catch {}
+  }
+
+  async function createNewChat(): Promise<void> {
+    try {
+      const res = await fetch("/api/chats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: `Chat ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`,
+        }),
+      });
+      if (res.ok) {
+        logViewport.innerHTML = `<div class="log-entry system-msg"><span class="log-time">[System]</span><span class="log-text">Nuevo chat creado e iniciado.</span></div>`;
+        await loadChats();
+      }
+    } catch {}
+  }
+
+  async function mergeSelectedChats(): Promise<void> {
+    if (selectedChatIds.size < 2) return;
+    try {
+      const chatIds = Array.from(selectedChatIds);
+      const res = await fetch("/api/chats/merge", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chatIds, deleteSources: false }),
+      });
+      if (res.ok) {
+        selectedChatIds.clear();
+        logViewport.innerHTML = `<div class="log-entry system-msg"><span class="log-time">[System]</span><span class="log-text">Chats combinados exitosamente en una nueva sesión activa.</span></div>`;
+        await loadChats();
+      }
+    } catch {}
+  }
+
+  chatSearchInput?.addEventListener("input", () => renderChatList(allChats));
+  btnNewChat?.addEventListener("click", () => void createNewChat());
+  btnMergeChats?.addEventListener("click", () => void mergeSelectedChats());
+
+  // 8. Sidebar Navigation Tabs Switching (Chats vs Config)
+  const sidebarTabBtns = document.querySelectorAll<HTMLButtonElement>(".sidebar-tab-btn");
+  const paneChats = document.getElementById("pane-chats");
+  const paneConfig = document.getElementById("pane-config");
+
+  sidebarTabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      sidebarTabBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      const tab = btn.dataset.sidebarTab;
+      if (tab === "chats") {
+        paneChats?.classList.add("active");
+        paneConfig?.classList.remove("active");
+      } else {
+        paneChats?.classList.remove("active");
+        paneConfig?.classList.add("active");
+      }
+    });
+  });
+
+  const enginesListEl = document.getElementById("engines-list") as HTMLDivElement | null;
+
+  interface EngineItem {
+    id: string;
+    engineName: string;
+    model: string;
+    tier: string;
+    status: string;
+    statusColor: string;
+    isConfigured: boolean;
+    defaultConfigurationName: string;
+    defaultBaseUrl?: string;
+    credentialEnvironmentVariable?: string;
+    documentationUrl?: string;
+  }
+
+  let allEngines: EngineItem[] = [];
+
+  async function loadEngines(): Promise<void> {
+    try {
+      const res = await fetch("/api/llm/engines");
+      if (!res.ok) return;
+      const data = await res.json();
+      allEngines = data.engines || [];
+      renderEnginesList(allEngines);
+    } catch {}
+  }
+
+  function renderEnginesList(engines: EngineItem[]): void {
+    if (!enginesListEl) return;
+    enginesListEl.innerHTML = "";
+
+    if (engines.length === 0) {
+      enginesListEl.innerHTML = `<div style="padding: 10px; font-size: 11.5px; color: var(--text-muted); text-align: center;">No hay motores registrados.</div>`;
+      return;
+    }
+
+    for (const eng of engines) {
+      const item = document.createElement("div");
+      item.className = "engine-item";
+
+      const dotClass =
+        eng.statusColor === "orange"
+          ? "dot-orange"
+          : eng.statusColor === "red"
+            ? "dot-red"
+            : "dot-green";
+      const dot = document.createElement("span");
+      dot.className = `status-dot ${dotClass}`;
+      dot.title = `Estado: ${eng.status} (${eng.tier})`;
+
+      const info = document.createElement("div");
+      info.className = "engine-info";
+
+      const nameRow = document.createElement("div");
+      nameRow.className = "engine-name-row";
+
+      const title = document.createElement("span");
+      title.className = "engine-title-text";
+      title.textContent = eng.engineName;
+
+      const badge = document.createElement("span");
+      badge.className = "engine-tier-badge";
+      badge.textContent = eng.tier;
+
+      nameRow.appendChild(title);
+      nameRow.appendChild(badge);
+
+      const modelText = document.createElement("div");
+      modelText.className = "engine-model-text";
+      modelText.textContent = eng.model;
+
+      info.appendChild(nameRow);
+      info.appendChild(modelText);
+
+      const gearBtn = document.createElement("button");
+      gearBtn.className = "engine-gear-btn";
+      gearBtn.title = `Configurar ${eng.engineName}`;
+      gearBtn.innerHTML = "⚙";
+      gearBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openLLMConfigurationDialog({
+          engineName: eng.engineName,
+          defaultConfigurationName: eng.defaultConfigurationName,
+          defaultModel: eng.model,
+          defaultBaseUrl: eng.defaultBaseUrl || "",
+          credentialEnvironmentVariable: eng.credentialEnvironmentVariable,
+          documentationUrl: eng.documentationUrl,
+        });
+      });
+
+      item.appendChild(dot);
+      item.appendChild(info);
+      item.appendChild(gearBtn);
+
+      enginesListEl.appendChild(item);
+    }
+  }
+
+  // 9. Integrations List & Dialog
+  const integrationsListEl = document.getElementById("integrations-list") as HTMLDivElement | null;
+
+  // Integration Dialog Elements
+  const integrationDialog = document.getElementById("integration-config-dialog") as HTMLDialogElement | null;
+  const integrationForm = document.getElementById("integration-config-form") as HTMLFormElement | null;
+  const integrationProviderName = document.getElementById("integration-provider-name") as HTMLElement | null;
+  const integrationChannel = document.getElementById("integration-channel") as HTMLInputElement | null;
+  const integrationEnvVar = document.getElementById("integration-env-var") as HTMLInputElement | null;
+  const integrationCredentialGuidance = document.getElementById("integration-credential-guidance") as HTMLElement | null;
+  const integrationProviderDocs = document.getElementById("integration-provider-docs") as HTMLAnchorElement | null;
+  const integrationFormError = document.getElementById("integration-form-error") as HTMLElement | null;
+  const integrationDialogClose = document.getElementById("integration-dialog-close") as HTMLButtonElement | null;
+  const integrationDialogCancel = document.getElementById("integration-dialog-cancel") as HTMLButtonElement | null;
+
+  interface IntegrationItem {
+    id: string;
+    name: string;
+    category: string;
+    status: string;
+    statusColor: string;
+    isConfigured: boolean;
+    channel?: string;
+    credentialEnvVar?: string;
+    documentationUrl?: string;
+  }
+
+  let allIntegrations: IntegrationItem[] = [];
+  let activeIntegrationSetup: IntegrationItem | null = null;
+
+  async function loadIntegrations(): Promise<void> {
+    try {
+      const res = await fetch("/api/v1/integrations/status");
+      if (!res.ok) return;
+      const data = await res.json();
+      allIntegrations = data.integrations || [];
+      renderIntegrationsList(allIntegrations);
+    } catch {}
+  }
+
+  function renderIntegrationsList(integrations: IntegrationItem[]): void {
+    if (!integrationsListEl) return;
+    integrationsListEl.innerHTML = "";
+
+    if (integrations.length === 0) {
+      integrationsListEl.innerHTML = `<div style="padding: 10px; font-size: 11.5px; color: var(--text-muted); text-align: center;">No hay integraciones registradas.</div>`;
+      return;
+    }
+
+    for (const integ of integrations) {
+      const item = document.createElement("div");
+      item.className = "integration-item";
+
+      const dotClass =
+        integ.statusColor === "orange"
+          ? "dot-orange"
+          : integ.statusColor === "red"
+            ? "dot-red"
+            : "dot-green";
+      const dot = document.createElement("span");
+      dot.className = `status-dot ${dotClass}`;
+      dot.title = `Estado: ${integ.status} (${integ.category})`;
+
+      const info = document.createElement("div");
+      info.className = "engine-info";
+
+      const nameRow = document.createElement("div");
+      nameRow.className = "engine-name-row";
+
+      const title = document.createElement("span");
+      title.className = "engine-title-text";
+      title.textContent = integ.name;
+
+      const badge = document.createElement("span");
+      badge.className = "integration-tier-badge";
+      badge.textContent = integ.category;
+
+      nameRow.appendChild(title);
+      nameRow.appendChild(badge);
+
+      const channelText = document.createElement("div");
+      channelText.className = "engine-model-text";
+      channelText.textContent = integ.channel || "Broadcast";
+
+      info.appendChild(nameRow);
+      info.appendChild(channelText);
+
+      const gearBtn = document.createElement("button");
+      gearBtn.className = "engine-gear-btn";
+      gearBtn.title = `Configurar ${integ.name}`;
+      gearBtn.innerHTML = "⚙";
+      gearBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openIntegrationDialog(integ);
+      });
+
+      item.appendChild(dot);
+      item.appendChild(info);
+      item.appendChild(gearBtn);
+
+      integrationsListEl.appendChild(item);
+    }
+  }
+
+  function openIntegrationDialog(item: IntegrationItem): void {
+    activeIntegrationSetup = item;
+    if (integrationProviderName) integrationProviderName.textContent = item.name;
+    if (integrationChannel) integrationChannel.value = item.channel || "";
+    if (integrationEnvVar) integrationEnvVar.value = item.credentialEnvVar || "N/A";
+    if (integrationFormError) integrationFormError.textContent = "";
+
+    if (integrationCredentialGuidance) {
+      integrationCredentialGuidance.textContent = item.credentialEnvVar
+        ? `Configure la variable de entorno ${item.credentialEnvVar} en el servidor para autenticación segura.`
+        : "Esta integración no requiere variable de entorno obligatoria.";
+    }
+
+    if (integrationProviderDocs) {
+      if (item.documentationUrl) {
+        integrationProviderDocs.href = item.documentationUrl;
+        integrationProviderDocs.hidden = false;
+      } else {
+        integrationProviderDocs.hidden = true;
+      }
+    }
+
+    integrationDialog?.showModal();
+    integrationChannel?.focus();
+  }
+
+  function closeIntegrationDialog(): void {
+    activeIntegrationSetup = null;
+    if (integrationFormError) integrationFormError.textContent = "";
+    integrationDialog?.close();
+  }
+
+  integrationDialogClose?.addEventListener("click", closeIntegrationDialog);
+  integrationDialogCancel?.addEventListener("click", closeIntegrationDialog);
+
+  integrationForm?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if (!activeIntegrationSetup) return;
+    appendLog(
+      "USER_REPLY",
+      `Integración "${activeIntegrationSetup.name}" guardada. Canal/Target: ${integrationChannel?.value || "N/A"}`,
+    );
+    closeIntegrationDialog();
+    void loadIntegrations();
+  });
+
+  // Initial load of chats, engines & integrations on boot
+  void loadChats();
+  void loadEngines();
+  void loadIntegrations();
 });

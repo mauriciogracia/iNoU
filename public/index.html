@@ -15,85 +15,136 @@
 
 <body>
   <div class="app-container">
-    <!-- Header Bar -->
-    <header class="top-header">
-      <div class="brand">
-        <div class="logo-badge">iNoU</div>
-        <div class="title-group">
-          <h1>iNoU - a multiagent LLM orchestration platform.</h1>
-          <span class="version-tag" id="system-version">v00.03.70</span>
-        </div>
+    <!-- Main Two-Column Layout -->
+    <div class="main-layout">
+      <!-- Left Column: Chat Conversation & Stream -->
+      <div class="chat-main-area">
+        <!-- Viewport Navigation Tabs & Inline Brand -->
+        <nav class="view-tabs">
+          <div class="brand-inline">
+            <span class="brand-name">iNoU</span>
+            <span class="brand-subtitle">a multiagent LLM orchestration platform</span>
+            <span class="version-tag" id="system-version">v00.03.72</span>
+          </div>
+
+          <div class="tabs-group">
+            <button class="tab-btn active" data-tab="conversation">
+              <span id="tab-main">💬 Conversación</span>
+            </button>
+            <button class="tab-btn" data-tab="thinking">
+              <span id="tab-thinking">🧠 Pensando</span>
+              <span class="tab-badge" id="badge-thinking">0</span>
+            </button>
+            <button class="tab-btn" data-tab="debug">
+              <span id="tab-debug">⚙ Depuración</span>
+              <span class="tab-badge" id="badge-debug">0</span>
+            </button>
+          </div>
+        </nav>
+
+        <!-- Main Live Log Stream Window -->
+        <main class="log-viewport" id="log-viewport">
+          <div class="log-entry system-msg">
+            <span class="log-time">[System]</span>
+            <span id="system-connected-msg" class="log-text">🚀 iNoU conectado. Flujo SSE en tiempo real activo.</span>
+          </div>
+        </main>
+
+        <!-- Intent Clarification Widget (hidden by default, rendered inline by app.ts) -->
+        <template id="clarification-widget-template">
+          <div class="log-entry clarification-widget" id="clarification-widget" role="region" aria-label="Clarification">
+            <p class="clarification-question" id="clarification-question-text"></p>
+            <div class="clarification-options" id="clarification-options" role="radiogroup"></div>
+            <div class="clarification-writein">
+              <input type="text" id="clarification-writein-input" class="clarification-input" autocomplete="off" />
+              <button type="button" class="clarification-submit-btn" id="clarification-submit-btn"></button>
+            </div>
+          </div>
+        </template>
+
+        <!-- Pinned Bottom Input Bar -->
+        <footer class="bottom-input-bar">
+          <form id="command-form" class="input-form">
+            <div class="prompt-prefix">iNoU &gt;</div>
+            <input type="text" id="command-input" class="cmd-input" placeholder="Hola · Hello · Bonjour · Hallo · Olá"
+              autocomplete="off" autofocus />
+            <button type="submit" class="send-btn" id="send-btn">
+              <span id="send-btn-text">Enviar</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+              </svg>
+            </button>
+          </form>
+        </footer>
       </div>
 
-      <div class="status-pills">
-        <div class="pill succinct-pill">
-          <span class="pill-label" id="label-succinct">Conciso:</span>
-          <span class="pill-value badge-on" id="status-succinct">ON</span>
+      <!-- Right Column: Sidebar with Top Tabs (Chats | Config) -->
+      <aside class="chat-sidebar" id="chat-sidebar">
+        <!-- Sidebar Navigation Tabs -->
+        <nav class="sidebar-tabs">
+          <button class="sidebar-tab-btn active" id="tab-btn-chats" data-sidebar-tab="chats">
+            <span>💬 Chats</span>
+          </button>
+          <button class="sidebar-tab-btn" id="tab-btn-config" data-sidebar-tab="config">
+            <span>⚙ Config</span>
+          </button>
+        </nav>
+
+        <!-- Pane 1: Chats Tab Content -->
+        <div class="sidebar-tab-pane active" id="pane-chats">
+          <div class="sidebar-header">
+            <div class="sidebar-title">
+              <span>Sesiones de Chat</span>
+            </div>
+            <button id="btn-new-chat" class="sidebar-action-btn" title="Crear nuevo chat">+ Nuevo</button>
+          </div>
+
+          <div class="sidebar-search">
+            <input type="text" id="chat-search-input" class="search-input" placeholder="🔍 Buscar chats..." />
+          </div>
+
+          <div class="chat-list" id="chat-list">
+            <!-- Dynamically populated by app.ts -->
+          </div>
+
+          <div class="sidebar-merge-bar">
+            <button id="btn-merge-chats" class="merge-action-btn" disabled>
+              🔀 Combinar seleccionados (0)
+            </button>
+          </div>
         </div>
 
-        <div class="pill debug-pill">
-          <span class="pill-label" id="label-debug">Nivel:</span>
-          <span class="pill-value" id="status-debug">Level 3</span>
+        <!-- Pane 2: Config Tab Content (40% LLMs on top, Integrations below) -->
+        <div class="sidebar-tab-pane" id="pane-config">
+          <!-- Top Section: LLMs (40%) -->
+          <div class="config-section config-section-llms">
+            <div class="sidebar-header">
+              <div class="sidebar-title">
+                <span>⚙ Motores &amp; LLMs</span>
+              </div>
+            </div>
+            <div class="engines-list" id="engines-list">
+              <!-- Dynamically populated by app.ts -->
+            </div>
+          </div>
+
+          <!-- Bottom Section: Integrations (remaining ~60%) -->
+          <div class="config-section config-section-integrations">
+            <div class="sidebar-header">
+              <div class="sidebar-title">
+                <span>🌐 Integraciones &amp; Redes Sociales</span>
+              </div>
+            </div>
+            <div class="integrations-list" id="integrations-list">
+              <!-- Dynamically populated by app.ts -->
+            </div>
+          </div>
         </div>
-
-        <div class="pill usage-pill">
-          <span class="pill-label" id="label-ai">AI:</span>
-          <span class="pill-value" id="status-ai">—</span>
-        </div>
-      </div>
-    </header>
-
-    <!-- Viewport Navigation Tabs -->
-    <nav class="view-tabs">
-      <button class="tab-btn active" data-tab="conversation">
-        <span id="tab-main">💬 Conversación</span>
-      </button>
-      <button class="tab-btn" data-tab="thinking">
-        <span id="tab-thinking">🧠 Pensando</span>
-        <span class="tab-badge" id="badge-thinking">0</span>
-      </button>
-      <button class="tab-btn" data-tab="debug">
-        <span id="tab-debug">⚙ Depuración</span>
-        <span class="tab-badge" id="badge-debug">0</span>
-      </button>
-    </nav>
-
-    <!-- Main Live Log Stream Window -->
-    <main class="log-viewport" id="log-viewport">
-      <div class="log-entry system-msg">
-        <span class="log-time">[System]</span>
-        <span id="system-connected-msg" class="log-text">🚀 iNoU conectado. Flujo SSE en tiempo real activo.</span>
-      </div>
-    </main>
-
-    <!-- Intent Clarification Widget (hidden by default, rendered inline by app.ts) -->
-    <template id="clarification-widget-template">
-      <div class="log-entry clarification-widget" id="clarification-widget" role="region" aria-label="Clarification">
-        <p class="clarification-question" id="clarification-question-text"></p>
-        <div class="clarification-options" id="clarification-options" role="radiogroup"></div>
-        <div class="clarification-writein">
-          <input type="text" id="clarification-writein-input" class="clarification-input" autocomplete="off" />
-          <button type="button" class="clarification-submit-btn" id="clarification-submit-btn"></button>
-        </div>
-      </div>
-    </template>
-
-    <!-- Pinned Bottom Input Bar -->
-    <footer class="bottom-input-bar">
-      <form id="command-form" class="input-form">
-        <div class="prompt-prefix">iNoU &gt;</div>
-        <input type="text" id="command-input" class="cmd-input" placeholder="Hola · Hello · Bonjour · Hallo · Olá"
-          autocomplete="off" autofocus />
-        <button type="submit" class="send-btn" id="send-btn">
-          <span id="send-btn-text">Enviar</span>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-          </svg>
-        </button>
-      </form>
-    </footer>
+      </aside>
+    </div>
   </div>
 
+  <!-- LLM Provider Configuration Dialog -->
   <dialog class="llm-dialog" id="llm-config-dialog">
     <form class="llm-config-form" id="llm-config-form">
       <header class="llm-dialog-header">
@@ -108,14 +159,21 @@
 
       <div class="llm-form-body">
         <label class="form-field">
-          <span>Configuration name</span>
-          <input id="llm-configuration-name" name="configurationName" type="text"
-            pattern="[A-Za-z0-9][A-Za-z0-9._\-]{0,63}" maxlength="64" required />
+          <span>Model</span>
+          <select id="llm-model" name="model" class="llm-select" required>
+            <option value="gemini-flash-latest">gemini-flash-latest (Free Tier)</option>
+            <option value="gemini-3.7-flash">gemini-3.7-flash (Free Tier)</option>
+            <option value="gemini-3.5-flash">gemini-3.5-flash (Free Tier)</option>
+            <option value="gemini-3.5-flash-lite">gemini-3.5-flash-lite (Free Tier)</option>
+            <option value="gemini-pro-latest">gemini-pro-latest (Paid API Pro)</option>
+            <option value="gemini-3.1-pro-preview">gemini-3.1-pro-preview (Paid API Pro)</option>
+          </select>
         </label>
 
         <label class="form-field">
-          <span>Model</span>
-          <input id="llm-model" name="model" type="text" required />
+          <span>Configuration name</span>
+          <input id="llm-configuration-name" name="configurationName" type="text"
+            pattern="[A-Za-z0-9][A-Za-z0-9._\-]{0,63}" maxlength="64" required />
         </label>
 
         <label class="form-field">
@@ -147,6 +205,46 @@
         </button>
         <button type="submit" class="primary-btn" id="llm-dialog-save">
           Save configuration
+        </button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Integration Configuration Dialog -->
+  <dialog class="llm-dialog" id="integration-config-dialog">
+    <form class="llm-config-form" id="integration-config-form">
+      <header class="llm-dialog-header">
+        <div>
+          <span class="llm-dialog-eyebrow" id="integration-provider-name"></span>
+          <h2>Configurar Integración Externa</h2>
+        </div>
+        <button type="button" class="icon-btn" id="integration-dialog-close" aria-label="Close" title="Close">
+          &times;
+        </button>
+      </header>
+
+      <div class="llm-form-body">
+        <label class="form-field">
+          <span>Canal / Destino por Defecto</span>
+          <input id="integration-channel" name="channel" type="text" placeholder="@canal, #general, o URL" required />
+        </label>
+
+        <label class="form-field">
+          <span>Variable de Entorno para Credenciales</span>
+          <input id="integration-env-var" name="credentialEnvVar" type="text" readonly />
+        </label>
+
+        <div class="credential-guidance" id="integration-credential-guidance"></div>
+        <a class="provider-docs-link" id="integration-provider-docs" target="_blank" rel="noreferrer">Guía de configuración del servicio</a>
+        <p class="form-error" id="integration-form-error" role="alert"></p>
+      </div>
+
+      <footer class="llm-dialog-actions">
+        <button type="button" class="secondary-btn" id="integration-dialog-cancel">
+          Cancelar
+        </button>
+        <button type="submit" class="primary-btn" id="integration-dialog-save">
+          Guardar Integración
         </button>
       </footer>
     </form>

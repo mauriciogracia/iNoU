@@ -1,0 +1,39 @@
+<!-- Integration Configuration Dialog -->
+<dialog class="llm-dialog" id="integration-config-dialog">
+  <form class="llm-config-form" id="integration-config-form">
+    <header class="llm-dialog-header">
+      <div>
+        <span class="llm-dialog-eyebrow" id="integration-provider-name"></span>
+        <h2>Configurar Integración Externa</h2>
+      </div>
+      <button type="button" class="icon-btn" id="integration-dialog-close" aria-label="Close" title="Close">
+        &times;
+      </button>
+    </header>
+
+    <div class="llm-form-body">
+      <label class="form-field">
+        <span>Canal / Destino por Defecto</span>
+        <input id="integration-channel" name="channel" type="text" placeholder="@canal, #general, o URL" required />
+      </label>
+
+      <label class="form-field">
+        <span>Variable de Entorno para Credenciales</span>
+        <input id="integration-env-var" name="credentialEnvVar" type="text" readonly />
+      </label>
+
+      <div class="credential-guidance" id="integration-credential-guidance"></div>
+      <a class="provider-docs-link" id="integration-provider-docs" target="_blank" rel="noreferrer">Guía de configuración del servicio</a>
+      <p class="form-error" id="integration-form-error" role="alert"></p>
+    </div>
+
+    <footer class="llm-dialog-actions">
+      <button type="button" class="secondary-btn" id="integration-dialog-cancel">
+        Cancelar
+      </button>
+      <button type="submit" class="primary-btn" id="integration-dialog-save">
+        Guardar Integración
+      </button>
+    </footer>
+  </form>
+</dialog>

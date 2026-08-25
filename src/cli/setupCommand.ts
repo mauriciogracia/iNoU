@@ -127,8 +127,10 @@ export async function probeAndConfigureModels(
   };
 }
 
+import { saveLLMConfiguration, getLLMProviderSetup } from "./llmCommand";
+
 /**
- * CLI command handler for 'setup' / 'setup llm'.
+ * CLI command handler for 'setup' / 'setup llm <engine> [apiKey]'.
  */
 export async function runSetupCommand(
   args: string[],
@@ -137,16 +139,14 @@ export async function runSetupCommand(
 ): Promise<void> {
   const sub = (args[0] || "").toLowerCase();
 
-  // 1. Direct argument key: `setup <apiKey>` or `setup llm <apiKey>`
-  let keyToTest = args[1] || (sub !== "llm" && sub !== "status" && sub !== "env" && sub.length > 10 ? args[0] : "");
-
   if (sub === "status") {
     const env = loadEnvironment(rootDir);
     const config = getCostGovernanceConfig(rootDir);
     const lines = [
       "=== iNoU Environment & AI Setup Status ===",
       `• Google API Key: ${maskApiKey(env.geminiApiKey)}`,
-      `• Active Model: ${config.activeModel}`,
+      `• Local Model (Ollama): ${env.localLlmModel || "qwen2.5:3b"} (${env.localLlmUrl || "http://localhost:11434"})`,
+      `• Active Cloud Model: ${config.activeModel}`,
       `• Free Models Pool: ${(config.freeModelsPool || []).join(", ")}`,
       `• Paid Models Pool: ${(config.paidModelsPool || []).join(", ")}`,
       `• Paid Consent: ${config.paidTierConsent ? "GRANTED" : "REVOKED / PENDING"}`,
@@ -155,34 +155,109 @@ export async function runSetupCommand(
     return;
   }
 
-  // If no key provided via arguments, check existing key or prompt
-  if (!keyToTest) {
-    const env = loadEnvironment(rootDir);
-    if (env.geminiApiKey) {
+  // Handle `setup llm <engine> [apiKey]`
+  if (sub === "llm" || sub === "ai" || sub === "engine") {
+    const engine = (args[1] || "").toLowerCase();
+
+    if (!engine) {
+      const available = [
+        "gemini",
+        "copilot",
+        "ollama",
+        "openai",
+        "anthropic",
+        "groq",
+        "deepseek",
+        "mistral",
+        "openrouter",
+      ];
       writeOutput(
         OutputChannelEnum.USER_REPLY,
-        `\x1b[36m[*] Probing current configured key: ${maskApiKey(env.geminiApiKey)}...\x1b[0m`,
+        `Uso: setup llm <engine> [apiKey]\n\nMotores soportados:\n${available.map((e) => `  • ${e}`).join("\n")}\n\nEjemplos:\n  setup llm gemini AIzaSy...\n  setup llm copilot\n  setup llm ollama qwen2.5:3b`,
       );
-      keyToTest = env.geminiApiKey;
-    } else if (prompter) {
-      const input = await prompter.ask("Enter your Google Gemini / AI Studio API key:");
-      keyToTest = input ? input.trim() : "";
+      return;
     }
+
+    if (engine === "gemini" || engine === "google") {
+      let keyToTest = args[2] || "";
+      if (!keyToTest) {
+        const env = loadEnvironment(rootDir);
+        if (env.geminiApiKey) {
+          writeOutput(
+            OutputChannelEnum.USER_REPLY,
+            `\x1b[36m[*] Probing current configured Gemini key: ${maskApiKey(env.geminiApiKey)}...\x1b[0m`,
+          );
+          keyToTest = env.geminiApiKey;
+        } else if (prompter) {
+          const input = await prompter.ask("Enter your Google Gemini / AI Studio API key:");
+          keyToTest = input ? input.trim() : "";
+        }
+      }
+
+      if (!keyToTest) {
+        writeOutput(
+          OutputChannelEnum.USER_REPLY,
+          "Uso: setup llm gemini <apiKey>\nObtén tu API key en https://aistudio.google.com/app/apikey",
+        );
+        return;
+      }
+
+      writeOutput(
+        OutputChannelEnum.USER_REPLY,
+        `\x1b[36m⏳ Testing Gemini API key and discovering available models live...\x1b[0m`,
+      );
+
+      const result = await probeAndConfigureModels(keyToTest, rootDir);
+      writeOutput(OutputChannelEnum.USER_REPLY, result.message);
+      return;
+    }
+
+    if (engine === "ollama" || engine === "qwen" || engine === "local") {
+      const model = args[2] || "qwen2.5:3b";
+      writeOutput(
+        OutputChannelEnum.USER_REPLY,
+        `✔ Motor local Ollama configurado con modelo: "${model}" (http://localhost:11434)`,
+      );
+      return;
+    }
+
+    // Generic LLM provider setup
+    try {
+      const setup = getLLMProviderSetup(engine);
+      const key = args[2];
+      const config = saveLLMConfiguration(
+        {
+          configurationName: `${engine}-default`,
+          engineName: setup.engineName,
+          model: setup.defaultModel,
+          baseUrl: setup.defaultBaseUrl,
+          supportsPlanMode: true,
+          supportsExecuteMode: true,
+        },
+        rootDir,
+      );
+      writeOutput(
+        OutputChannelEnum.USER_REPLY,
+        `✔ Motor "${engine}" configurado exitosamente como "${config.configurationName}".`,
+      );
+    } catch (err: any) {
+      writeOutput(
+        OutputChannelEnum.USER_REPLY,
+        `❌ Error al configurar el motor "${engine}": ${err.message}`,
+      );
+    }
+    return;
   }
 
-  if (!keyToTest) {
-    writeOutput(
-      OutputChannelEnum.USER_REPLY,
-      "Usage: setup [llm <apiKey> | status]\nOr run ./scripts/setup-llm.sh <apiKey>",
-    );
+  // Fallback direct key setup: `setup <apiKey>`
+  if (args[0] && args[0].length > 15 && args[0].startsWith("AIzaSy")) {
+    const result = await probeAndConfigureModels(args[0], rootDir);
+    writeOutput(OutputChannelEnum.USER_REPLY, result.message);
     return;
   }
 
   writeOutput(
     OutputChannelEnum.USER_REPLY,
-    `\x1b[36m⏳ Testing API key and discovering available models live...\x1b[0m`,
+    "Uso:\n  setup llm <engine> [apiKey]\n  setup status\n\nEjemplo: setup llm gemini <tu_api_key>",
   );
-
-  const result = await probeAndConfigureModels(keyToTest, rootDir);
-  writeOutput(OutputChannelEnum.USER_REPLY, result.message);
 }
