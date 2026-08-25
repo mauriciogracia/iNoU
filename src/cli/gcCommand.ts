@@ -69,7 +69,7 @@ export function runGCCommand(port: number = 3000, rootDir: string = process.cwd(
     launchCommand = `open "${targetUrl}"`;
   }
 
-  writeOutput(OutputChannelEnum.USER_REPLY, `🌐 [Google Chrome] Opening INUO Web UI at ${targetUrl}...`);
+  writeOutput(OutputChannelEnum.USER_REPLY, `🌐 [Google Chrome] Opening iNoU Web UI at ${targetUrl}...`);
   writeOutput(
     OutputChannelEnum.DEBUG,
     `[OS Detection] Platform: ${platform} | Chrome Detected: ${chromePath ? chromePath : 'System Default Browser'}`,

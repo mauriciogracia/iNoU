@@ -3,7 +3,7 @@
 - id: 0006
 - status: pending
 - createdAt: 2026-08-16
-- owner: INUO Team
+- owner: iNoU Team
 - source: gap-analysis / Phase 3 / main-specs-goals.md §8
 
 ## Context

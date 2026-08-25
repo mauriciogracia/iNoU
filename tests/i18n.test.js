@@ -6,7 +6,7 @@ test('I18N Localization Engine & Dictionary Unit Tests', async (t) => {
   await t.test('resolves Spanish dictionary by default or fallback', () => {
     const dict = getI18n('es');
     assert.equal(dict.lang, 'es');
-    assert.equal(dict.shellBanner.title, 'Shell Interactivo de INUO');
+    assert.equal(dict.shellBanner.title, 'Shell Interactivo de iNoU');
 
     const fallback = getI18n('unknown_lang');
     assert.equal(fallback.lang, 'es');
@@ -15,27 +15,27 @@ test('I18N Localization Engine & Dictionary Unit Tests', async (t) => {
   await t.test('resolves English dictionary', () => {
     const dict = getI18n('en');
     assert.equal(dict.lang, 'en');
-    assert.equal(dict.shellBanner.title, 'INUO Interactive Shell');
+    assert.equal(dict.shellBanner.title, 'iNoU Interactive Shell');
   });
 
   await t.test('resolves German dictionary', () => {
     const dict = getI18n('de');
     assert.equal(dict.lang, 'de');
-    assert.equal(dict.shellBanner.title, 'Interaktive INUO-Shell');
+    assert.equal(dict.shellBanner.title, 'Interaktive iNoU-Shell');
     assert.match(dict.farewell, /Auf Wiedersehen!/);
   });
 
   await t.test('resolves French dictionary', () => {
     const dict = getI18n('fr');
     assert.equal(dict.lang, 'fr');
-    assert.equal(dict.shellBanner.title, 'Shell Interactif INUO');
+    assert.equal(dict.shellBanner.title, 'Shell Interactif iNoU');
     assert.match(dict.farewell, /Au revoir !/);
   });
 
   await t.test('resolves Portuguese dictionary', () => {
     const dict = getI18n('pt');
     assert.equal(dict.lang, 'pt');
-    assert.equal(dict.shellBanner.title, 'Shell Interativo do INUO');
+    assert.equal(dict.shellBanner.title, 'Shell Interativo do iNoU');
     assert.match(dict.farewell, /Até logo!/);
   });
 

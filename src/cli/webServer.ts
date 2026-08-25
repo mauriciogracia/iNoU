@@ -242,7 +242,7 @@ export function startWebServer(options: WebServerOptions = {}): http.Server {
       typeof address === "object" && address ? address.port : port;
     console.log(
       "\x1b[32m%s\x1b[0m",
-      `\n🚀 [INUO Express Web Server] Light Web UI active at http://localhost:${activePort}`,
+      `\n🚀 [iNoU Express Web Server] Light Web UI active at http://localhost:${activePort}`,
     );
     console.log(
       "\x1b[36m%s\x1b[0m",

@@ -13,7 +13,7 @@ export function runSocialCommand(
   if (sub === "list") {
     console.log(
       "\x1b[36m%s\x1b[0m",
-      "=== INUO Multi-Platform Social Broadcast Engine Integration ===\n",
+      "=== iNoU Multi-Platform Social Broadcast Engine Integration ===\n",
     );
 
     if (socialConfigs.length === 0) {
@@ -63,8 +63,8 @@ export function runSocialCommand(
     const targetPlatforms = platformsInput
       ? platformsInput.split(",").map((p) => p.trim())
       : socialConfigs
-          .filter((item) => item.isEnabled)
-          .map((item) => item.network);
+        .filter((item) => item.isEnabled)
+        .map((item) => item.network);
 
     if (targetPlatforms.length === 0) {
       console.log(

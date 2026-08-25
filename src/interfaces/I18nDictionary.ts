@@ -33,9 +33,9 @@ export interface I18nDictionary {
     parsedCorrection: string;
   };
   style: {
-    /** Shown when INUO detects a style from context and adopts it */
+    /** Shown when iNoU detects a style from context and adopts it */
     styleDetected: string;
-    /** Shown after user confirms or INUO learns a style preference */
+    /** Shown after user confirms or iNoU learns a style preference */
     styleLearned: string;
     /** Question shown above the clarification widget options */
     clarificationQuestion: string;

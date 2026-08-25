@@ -4,13 +4,13 @@
 | :--- | :--- |
 | **Status** | `CANONICAL` |
 | **Target Components** | Mobile (Android/iOS), CLI (`inou.sh`), Web UI, 3rd-Party Integrations, REST API Gateway, Real-Time Event Bus |
-| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/INUO/docs/tech-specs/main-specs-goals.md), [`dev-rules.md`](file:///d:/repos/INUO/docs/tech-specs/dev-rules.md) |
+| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/iNoU/docs/tech-specs/main-specs-goals.md), [`dev-rules.md`](file:///d:/repos/iNoU/docs/tech-specs/dev-rules.md) |
 
 ---
 
 ## 1. System Overview & Unified Connectivity Topology
 
-The INUO platform serves multiple client form factors through a decoupled, event-driven architecture. All clients communicate with the core engine through a **Unified REST/MCP API Gateway** and a **Real-Time Reactive Event Bus**:
+The iNoU platform serves multiple client form factors through a decoupled, event-driven architecture. All clients communicate with the core engine through a **Unified REST/MCP API Gateway** and a **Real-Time Reactive Event Bus**:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -38,7 +38,7 @@ The INUO platform serves multiple client form factors through a decoupled, event
                                             │
                                             ▼
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                                INUO CORE RUNTIME ENGINES                               │
+│                                iNoU CORE RUNTIME ENGINES                               │
 │  • Interaction & DAG AST Engine  • Master Mind Memory   • Dynamic Trust Engine         │
 └────────────────────────────────────────────────────────────────────────────────────────┘
 ```

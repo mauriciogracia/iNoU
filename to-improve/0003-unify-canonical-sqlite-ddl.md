@@ -3,7 +3,7 @@
 - id: 0003
 - status: pending
 - createdAt: 2026-08-16
-- owner: INUO Team
+- owner: iNoU Team
 - source: gap-analysis / tech-specs review
 
 ## Context

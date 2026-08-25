@@ -4,13 +4,13 @@
 | :--- | :--- |
 | **Status** | `CANONICAL DDL & INDEX SPEC` |
 | **Domain** | SQLite WAL Engine, Table Schemas, Composite Performance Indexes, Cloud Sync Journal |
-| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/INUO/docs/tech-specs/main-specs-goals.md) (§6.1), [`storage_and_sync_architecture.specs.md`](file:///d:/repos/INUO/docs/tech-specs/storage_and_sync_architecture.specs.md) |
+| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/iNoU/docs/tech-specs/main-specs-goals.md) (§6.1), [`storage_and_sync_architecture.specs.md`](file:///d:/repos/iNoU/docs/tech-specs/storage_and_sync_architecture.specs.md) |
 
 ---
 
 ## 1. System Overview & Invariants
 
-All local persistence in INUO executes via an embedded SQLite database (`.inuo.db`) configured in **Write-Ahead Logging (WAL)** mode.
+All local persistence in iNoU executes via an embedded SQLite database (`.inuo.db`) configured in **Write-Ahead Logging (WAL)** mode.
 To ensure sub-millisecond ($<1\text{ms}$) delta queries, recursive DAG traversals, and conflict detection, all tables enforce single-definition structures and composite B-tree indexes.
 
 ```

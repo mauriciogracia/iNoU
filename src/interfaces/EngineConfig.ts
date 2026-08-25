@@ -1,7 +1,7 @@
 import { UserRole } from '../types/UserRole';
 
 /**
- * Definition of an Engine in INUO as a cohesive collection of Behaviors.
+ * Definition of an Engine in iNoU as a cohesive collection of Behaviors.
  */
 export interface EngineConfig {
   /** Unique engine ID (e.g. 'engine_trust', 'engine_emergency') */

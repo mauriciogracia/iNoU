@@ -88,7 +88,7 @@ export function runCatalog(args: string[] = [], rootDir: string = process.cwd())
   const isEs = state.operatingMode?.detectedLanguage === 'es';
 
   if (isSuccinct) {
-    console.log(isEs ? '\x1b[36m=== Catálogo INUO de Verbos (Modo Sucinto) ===\x1b[0m\n' : '\x1b[36m=== INUO Global Catalog (Succinct Mode) ===\x1b[0m\n');
+    console.log(isEs ? '\x1b[36m=== Catálogo iNoU de Verbos (Modo Sucinto) ===\x1b[0m\n' : '\x1b[36m=== iNoU Global Catalog (Succinct Mode) ===\x1b[0m\n');
     for (const item of BUILTIN_CATALOG) {
       console.log(`- \x1b[1m${item.verb}\x1b[0m ➔ \x1b[32m${item.complement}\x1b[0m (${item.example})`);
     }
@@ -98,7 +98,7 @@ export function runCatalog(args: string[] = [], rootDir: string = process.cwd())
     return;
   }
 
-  console.log('\x1b[36m%s\x1b[0m', '=== INUO Global Catalog: Canonical & Dynamic Verbs ===\n');
+  console.log('\x1b[36m%s\x1b[0m', '=== iNoU Global Catalog: Canonical & Dynamic Verbs ===\n');
   console.log(`\x1b[1m${'NEED VERB'.padEnd(12)} | ${'COMPLEMENT'.padEnd(14)} | TYPE & EXAMPLE\x1b[0m`);
   console.log(''.padEnd(70, '-'));
 

@@ -118,7 +118,7 @@ export function registerTrainingPair(
 }
 
 /**
- * Saves a learned skill definition into INUO state and skills repository.
+ * Saves a learned skill definition into iNoU state and skills repository.
  */
 export function registerLearnedSkill(
   skill: SkillDefinition,
@@ -127,7 +127,7 @@ export function registerLearnedSkill(
   const paths = getProjectPaths(rootDir);
   const state = loadState(paths.statePath);
   if (!state.skills) state.skills = [];
-  
+
   // Check if skill exists
   const existingIdx = state.skills.findIndex((s: any) => s.name === skill.name || s.id === skill.id);
   if (existingIdx >= 0) {
@@ -245,7 +245,7 @@ export async function learnSkill(
 
   writeOutput(
     OutputChannelEnum.USER_REPLY,
-    `\x1b[36m=== INUO Self-Evolution & Skill Learning Lifecycle ===\x1b[0m\n🎯 Learning Goal: "${effectiveGoal}"${attachmentInfo ? `\n📎 Attached Source: ${attachmentInfo.filename} (${attachmentInfo.isSwagger ? "OpenAPI / Swagger Spec" : "Documentation"})` : ""}`,
+    `\x1b[36m=== iNoU Self-Evolution & Skill Learning Lifecycle ===\x1b[0m\n🎯 Learning Goal: "${effectiveGoal}"${attachmentInfo ? `\n📎 Attached Source: ${attachmentInfo.filename} (${attachmentInfo.isSwagger ? "OpenAPI / Swagger Spec" : "Documentation"})` : ""}`,
   );
 
   // 1. Capture Pre-Evolution Snapshot
@@ -265,8 +265,8 @@ export async function learnSkill(
     ? `\n--- ATTACHED ${attachmentInfo.isSwagger ? "SWAGGER / OPENAPI SPEC" : "DOCUMENTATION FILE"} (${attachmentInfo.filename}) ---\n${attachmentInfo.content.slice(0, 15000)}\n--- END OF ATTACHMENT ---\n`
     : "";
 
-  const architectPrompt = `You are the INUO Autonomous Skill & Integration Architect.
-The user wants INUO to learn the following skill or API integration: "${effectiveGoal}"
+  const architectPrompt = `You are the iNoU Autonomous Skill & Integration Architect.
+The user wants iNoU to learn the following skill or API integration: "${effectiveGoal}"
 ${attachmentSnippet}
 Follow dev-rules.md strictly:
 1. Formulate the canonical Atomic Need formula: NEED = (VERB) + (OBJECT).
@@ -287,7 +287,7 @@ Respond ONLY with a valid JSON object matching this schema:
     "lifecycleState": "PUBLISHED",
     "specificContent": {
       "com.linkedin.ugc.ShareContent": {
-        "shareCommentary": { "text": "Hello world from INUO!" },
+        "shareCommentary": { "text": "Hello world from iNoU!" },
         "shareMediaCategory": "NONE"
       }
     }
@@ -340,7 +340,7 @@ Respond ONLY with a valid JSON object matching this schema:
       }
       writeOutput(
         OutputChannelEnum.USER_REPLY,
-        `✔ Created Interface: [src/interfaces/${iface.filename}](file:///d:/repos/INUO/src/interfaces/${iface.filename})`,
+        `✔ Created Interface: [src/interfaces/${iface.filename}](file:///d:/repos/iNoU/src/interfaces/${iface.filename})`,
       );
     }
   }

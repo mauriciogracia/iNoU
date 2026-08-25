@@ -1,5 +1,5 @@
 /**
- * Represents a single operational capability or skill within INUO.
+ * Represents a single operational capability or skill within iNoU.
  */
 export interface Skill {
   /** Unique skill ID */

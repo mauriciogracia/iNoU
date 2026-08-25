@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Status** | `CANONICAL` |
 | **Domain** | Emergency Delegation, Trusted Members Network, Threshold Consensus Gate, Sub-2ms Defense |
-| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/INUO/docs/tech-specs/main-specs-goals.md), [`escenario_03.md`](file:///d:/repos/INUO/docs/tech-specs/escenario_03.md) |
+| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/iNoU/docs/tech-specs/main-specs-goals.md), [`escenario_03.md`](file:///d:/repos/iNoU/docs/tech-specs/escenario_03.md) |
 
 ---
 
@@ -53,7 +53,7 @@ Upon receiving emergency telemetry from wearable health monitors or a verified f
 * Standard single-user direct console locks down.
 
 ### 3.2 Trusted Members Network Delegation (`TrustedMemberConfig`)
-INUO activates the pre-registered trusted member registry:
+iNoU activates the pre-registered trusted member registry:
 * **Family Members** (`relationshipType: 'Family'`)
 * **Primary Physician / Caregiver** (`relationshipType: 'TrustedFriend'`)
 * Each member authenticates from **their own registered personal device** (iPhone, Android, tablet) using their native local biometrics.

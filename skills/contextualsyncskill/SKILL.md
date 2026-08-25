@@ -7,7 +7,7 @@ description: Automatically detects and reconciles state deltas bi-directionally 
 
 ## 1. Purpose & Autonomous Bi-Directional Design
 
-INUO eliminates manual `up`/`down` directions. Calling **`sync`** automatically analyzes local and remote timestamp vectors, detecting whether local changes need to be pushed, remote updates need to be pulled, or a 3-way reconciliation is required.
+iNoU eliminates manual `up`/`down` directions. Calling **`sync`** automatically analyzes local and remote timestamp vectors, detecting whether local changes need to be pushed, remote updates need to be pulled, or a 3-way reconciliation is required.
 
 ---
 

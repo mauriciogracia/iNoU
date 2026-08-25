@@ -1,7 +1,7 @@
 import { TrustLevel } from '../types/TrustLevel';
 
 /**
- * Report generated when INUO reflects on its own identity, version, principles, and capabilities.
+ * Report generated when iNoU reflects on its own identity, version, principles, and capabilities.
  */
 export interface SelfAwarenessReport {
   /** Caller entity ID */

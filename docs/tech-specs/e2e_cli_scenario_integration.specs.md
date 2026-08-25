@@ -4,13 +4,13 @@
 | :--- | :--- |
 | **Status** | `CANONICAL SPECIFICATION` |
 | **Domain** | E2E CLI Scenario Execution, `./inou.sh` Terminal Harness, Integration TUI Testing |
-| **Architecture Reference** | [`scenario_02.md`](file:///d:/repos/INUO/docs/tech-specs/scenario_02.md), [`scenario_03.md`](file:///d:/repos/INUO/docs/tech-specs/scenario_03.md), [`scenario_04.md`](file:///d:/repos/INUO/docs/tech-specs/scenario_04.md), [`base_00.specs.md`](file:///d:/repos/INUO/docs/tech-specs/base_00.specs.md) |
+| **Architecture Reference** | [`scenario_02.md`](file:///d:/repos/iNoU/docs/tech-specs/scenario_02.md), [`scenario_03.md`](file:///d:/repos/iNoU/docs/tech-specs/scenario_03.md), [`scenario_04.md`](file:///d:/repos/iNoU/docs/tech-specs/scenario_04.md), [`base_00.specs.md`](file:///d:/repos/iNoU/docs/tech-specs/base_00.specs.md) |
 
 ---
 
 ## 1. System Overview & Harness Goals
 
-The **INUO End-to-End (E2E) CLI Scenario Harness** executes complete end-to-end integration workflows by issuing real CLI commands (`./inou.sh <command>` or `node dist/cli/index.js <command>`).
+The **iNoU End-to-End (E2E) CLI Scenario Harness** executes complete end-to-end integration workflows by issuing real CLI commands (`./inou.sh <command>` or `node dist/cli/index.js <command>`).
 
 This validates that:
 1. All canonical user scenarios function seamlessly through the terminal interface.

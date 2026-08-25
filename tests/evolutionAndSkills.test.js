@@ -25,7 +25,7 @@ const { runNeedCommand } = require("../dist/cli/needCommand");
 const { runOfferCommand } = require("../dist/cli/offerCommand");
 const { runMatchCommand } = require("../dist/cli/matchCommand");
 
-test("INUO Evolution, Training Data Persistence, and Skill Reuse Unit Tests", async (t) => {
+test("iNoU Evolution, Training Data Persistence, and Skill Reuse Unit Tests", async (t) => {
   const tmpDir = fs.mkdtempSync(path.join(__dirname, "tmp_evo_skills_"));
 
   // Bootstrap isolated workspace environment
@@ -42,7 +42,7 @@ test("INUO Evolution, Training Data Persistence, and Skill Reuse Unit Tests", as
 
   fs.writeFileSync(manifestPath, JSON.stringify({ SPEC_VERSION: "00.03.72", IMPLEMENTATION_COUNT: 72 }, null, 2), "utf8");
   fs.writeFileSync(pkgPath, JSON.stringify({ name: "inuo-test", version: "00.03.72" }, null, 2), "utf8");
-  fs.writeFileSync(specPath, `# INUO Specification\nSPEC_VERSION: "00.03.72"\n`, "utf8");
+  fs.writeFileSync(specPath, `# iNoU Specification\nSPEC_VERSION: "00.03.72"\n`, "utf8");
   fs.writeFileSync(path.join(interfacesDir, "index.ts"), `export * from "./Need";\n`, "utf8");
   fs.writeFileSync(path.join(interfacesDir, "Need.ts"), `export interface Need { id: string; }\n`, "utf8");
   fs.writeFileSync(path.join(typesDir, "index.ts"), `export * from "./NeedId";\n`, "utf8");

@@ -1,14 +1,14 @@
-# Integrate With Coplito (Copilot) - INUO
+# Integrate With Coplito (Copilot) - iNoU
 
 ## Purpose
 
-Document the current status and next steps for enabling real Copilot interaction inside INUO.
+Document the current status and next steps for enabling real Copilot interaction inside iNoU.
 
 This document is focused on provider integration, not Colmena node dispatch.
 
 ## Current Status
 
-INUO already supports non-secret LLM profile configuration for multiple engines, including copilot.
+iNoU already supports non-secret LLM profile configuration for multiple engines, including copilot.
 
 Implemented now:
 
@@ -23,12 +23,12 @@ Current behavior for copilot:
 
 - A copilot profile can be created and persisted.
 - Setup guidance is shown.
-- No API key is requested or stored in INUO state.
+- No API key is requested or stored in iNoU state.
 - The profile is configuration-only for now.
 
 ## What Is Still Missing for Real Copilot Interaction
 
-To actually use Copilot as an active runtime provider, INUO still needs:
+To actually use Copilot as an active runtime provider, iNoU still needs:
 
 1. Provider dispatch integration
 
@@ -38,7 +38,7 @@ To actually use Copilot as an active runtime provider, INUO still needs:
 2. Copilot runtime adapter
 
 - Implement a `copilot` adapter that executes text generation requests.
-- Normalize response shape to INUO format (`text`, `inputTokens`, `outputTokens`, metadata).
+- Normalize response shape to iNoU format (`text`, `inputTokens`, `outputTokens`, metadata).
 
 3. Capability contract mapping
 
@@ -57,7 +57,7 @@ To actually use Copilot as an active runtime provider, INUO still needs:
 
 ## Security and Data Boundaries
 
-INUO must preserve these constraints:
+iNoU must preserve these constraints:
 
 - Never ask users for API keys in CLI wizard or web modal.
 - Never write tokens/secrets to `.inuo-state.json`.
@@ -124,7 +124,7 @@ Command UI negotiation:
 Copilot integration is considered complete when all are true:
 
 - A configured copilot profile can be selected by runtime dispatch.
-- INUO can execute at least one production intent path using copilot output.
+- iNoU can execute at least one production intent path using copilot output.
 - Plan/execute capability constraints are enforced.
 - No credentials are collected or persisted by profile commands.
 - Full regression suite remains green.

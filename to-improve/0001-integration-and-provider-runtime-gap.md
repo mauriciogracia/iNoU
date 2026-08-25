@@ -3,7 +3,7 @@
 - id: 0001
 - status: pending
 - createdAt: 2026-08-14
-- owner: INUO Team
+- owner: iNoU Team
 - source: multi-provider roadmap
 
 ## Context

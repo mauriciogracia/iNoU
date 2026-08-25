@@ -11,7 +11,7 @@ const keyArg = process.argv[2];
 
 async function main() {
   console.log('====================================================');
-  console.log('      INUO Zero-Exposure AI Setup Assistant        ');
+  console.log('      iNoU Zero-Exposure AI Setup Assistant        ');
   console.log('====================================================');
 
   if (keyArg) {

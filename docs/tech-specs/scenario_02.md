@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Status** | `CANONICAL` |
 | **Domain** | Distributed Fulfillment, Swarm Orchestration, DAG Decomposition |
-| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/INUO/docs/tech-specs/main-specs-goals.md) §3, §4, §5 |
+| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/iNoU/docs/tech-specs/main-specs-goals.md) §3, §4, §5 |
 
 ---
 
@@ -18,7 +18,7 @@ A humanitarian crisis or community infrastructure initiative requires building a
 3. **Intermittent Connectivity**: Workers and survey teams in rural zones operate offline or over low-bandwidth SMS/USSD networks.
 4. **Trust & Governance**: High-value equipment (excavators, fuel) requires multi-party threshold authorization and anti-manipulation defenses.
 
-**Core Question**: How does INUO systematically break down this macro-objective into a deterministic DAG AST of atomic Needs/Offers, dispatch tasks across peer Colmena nodes, and orchestrate fulfillment with zero single-point-of-failure?
+**Core Question**: How does iNoU systematically break down this macro-objective into a deterministic DAG AST of atomic Needs/Offers, dispatch tasks across peer Colmena nodes, and orchestrate fulfillment with zero single-point-of-failure?
 
 ---
 

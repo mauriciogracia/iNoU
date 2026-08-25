@@ -13,7 +13,7 @@ test('Engine-as-Behavior Hierarchy & Composition Registry Unit Tests', async (t)
   const statePath = path.join(scratchDir, '.inuo-state.json');
   if (fs.existsSync(statePath)) fs.unlinkSync(statePath);
 
-  await t.test('initializes baseline INUO engines as behavior groups', () => {
+  await t.test('initializes baseline iNoU engines as behavior groups', () => {
     const engines = listEngines(scratchDir);
     assert.ok(engines.length >= 3);
     assert.ok(engines.some((e) => e.engineId === 'engine_trust'));

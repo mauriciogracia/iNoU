@@ -1,5 +1,5 @@
 /**
- * OutputChannelEnum defines the distinct output stream types for INUO interaction and system responses.
+ * OutputChannelEnum defines the distinct output stream types for iNoU interaction and system responses.
  * Standard Linux streams:
  * - USER_REPLY: User-facing final output / AI response -> stdout (Descriptor 1)
  * - THINKING: Model reasoning & intention decomposition -> stderr (Descriptor 2)

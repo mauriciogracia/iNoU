@@ -64,7 +64,7 @@ I am running as Master Mind [${state.masterMindId || "primary"}].
         "Immutable Master Trainer Principles Governance",
         "Anti-Manipulation & Prompt Injection Defense Engine",
         "Millisecond Circuit Breaker",
-        "Inter-INUO Colmena Federation",
+        "Inter-iNoU Colmena Federation",
         "Multi-Device Client Fleet (Android, iOS, SmartTV, SmartWatch, DesktopCLI)",
       ],
       disclosedPrinciples: principlesList,

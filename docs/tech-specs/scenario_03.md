@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Status** | `CANONICAL` |
 | **Domain** | Cloud State Synchronization, Google Drive Integration, Multi-LLM Context Portability, Cross-Device Entity Retrieval |
-| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/INUO/docs/tech-specs/main-specs-goals.md), [`clients_api_event_bus.specs.md`](file:///d:/repos/INUO/docs/tech-specs/clients_api_event_bus.specs.md) |
+| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/iNoU/docs/tech-specs/main-specs-goals.md), [`clients_api_event_bus.specs.md`](file:///d:/repos/iNoU/docs/tech-specs/clients_api_event_bus.specs.md) |
 
 ---
 
@@ -27,7 +27,7 @@
 │  Entities: project, workspace, task (DAG AST), memory (Skills), preference             │
 └───────────────────────────────────────────┬────────────────────────────────────────────┘
                                             │
-                           [INUO State Serialization & Snapshot]
+                           [iNoU State Serialization & Snapshot]
                                             │
                                             ▼
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
@@ -84,7 +84,7 @@ Before stepping away, the user runs autonomous sync:
 * **Security Guarantee**: Local API keys (`.inuo-key.json`) are **NEVER** uploaded to the cloud (Zero-Exposure Policy).
 
 ### 3.3 Gemini Context Cache Hydration
-INUO automatically uploads the sanitized architectural graph to Google Gemini Context Caching:
+iNoU automatically uploads the sanitized architectural graph to Google Gemini Context Caching:
 * Generates a persistent cache token (`gemini-cache-logistics-v1`).
 * Allows any connected LLM (Gemini 2.5/3 Flash, Gemini Pro, Claude) to immediately recall the entire system design without token re-ingestion costs.
 
@@ -125,4 +125,4 @@ The user asks Gemini / LLM to continue where they left off:
 
 1. **Credential Isolation**: Secrets, API keys, and local biometric vaults are stored strictly on the local hardware keychain and stripped before cloud push.
 2. **End-to-End Payload Encryption**: State snapshots pushed to Google Drive or external object storage are encrypted using the user's Master Mind Key.
-3. **Causal Conflict Resolution**: If changes were made on multiple devices, INUO utilizes deterministic ISO timestamp vectors to perform 3-way conflict merges without data loss.
+3. **Causal Conflict Resolution**: If changes were made on multiple devices, iNoU utilizes deterministic ISO timestamp vectors to perform 3-way conflict merges without data loss.

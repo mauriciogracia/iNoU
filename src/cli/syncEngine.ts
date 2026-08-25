@@ -43,7 +43,7 @@ export function checkAndApplySyncProtocol(rootDir: string = process.cwd()): Sync
 
   console.log(
     '\x1b[36m%s\x1b[0m',
-    `[INUO Sync Engine] Protocol Update Detected! Target Spec: "${targetSpecVersion}" | Current Manifest: "${currentManifestVersion}"`
+    `[iNoU Sync Engine] Protocol Update Detected! Target Spec: "${targetSpecVersion}" | Current Manifest: "${currentManifestVersion}"`
   );
 
   const passesVerification = fs.existsSync(paths.manifestPath) && fs.existsSync(paths.specPath);

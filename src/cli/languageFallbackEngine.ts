@@ -31,7 +31,7 @@ export async function resolveLanguageAndIntent(
     }
   }
 
-  // --- TIER 2: INUO Catalog & Behavior Engine (Local Verb Pairing Matcher) ---
+  // --- TIER 2: iNoU Catalog & Behavior Engine (Local Verb Pairing Matcher) ---
   const lower = text.toLowerCase();
   const catalogVerbs = state.customVerbs || [];
   const baselineVerbs = [
@@ -58,7 +58,7 @@ export async function resolveLanguageAndIntent(
           explanation: `Matched catalog verb "${pairing.verb}"`,
         },
         confidence: 0.8,
-        explanation: `✔ [Tier 2 INUO Catalog Engine] Matched dynamic catalog verb "${pairing.verb}". (${lang.toUpperCase()})`,
+        explanation: `✔ [Tier 2 iNoU Catalog Engine] Matched dynamic catalog verb "${pairing.verb}". (${lang.toUpperCase()})`,
       };
     }
   }
@@ -86,8 +86,8 @@ export async function resolveLanguageAndIntent(
   const id = `doubt_fallback_${Date.now()}`;
   const doubtMessage =
     lang === 'es'
-      ? `INUO no logró interpretar con certeza el propósito de "${text}". ¿Desea crear una Necesidad (Request/Consult) o brindar una Oferta (Donate/Advise)?`
-      : `INUO could not parse intent for "${text}". Would you like to create a Need (Request/Consult) or an Offer (Donate/Advise)?`;
+      ? `iNoU no logró interpretar con certeza el propósito de "${text}". ¿Desea crear una Necesidad (Request/Consult) o brindar una Oferta (Donate/Advise)?`
+      : `iNoU could not parse intent for "${text}". Would you like to create a Need (Request/Consult) or an Offer (Donate/Advise)?`;
 
   const newDoubt: NeedDoubt = {
     id,

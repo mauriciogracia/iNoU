@@ -1,198 +1,158 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>iNoU Platform — Web UI</title>
-    <link rel="stylesheet" href="style.css" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div class="app-container">
-      <!-- Header Bar -->
-      <header class="top-header">
-        <div class="brand">
-          <div class="logo-badge">iNoU</div>
-          <div class="title-group">
-            <h1>iNoU Interaction Engine</h1>
-            <span class="version-tag" id="system-version">v00.03.70</span>
-          </div>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>iNoU Platform — Web UI</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Header Bar -->
+    <header class="top-header">
+      <div class="brand">
+        <div class="logo-badge">iNoU</div>
+        <div class="title-group">
+          <h1>iNoU - a multiagent LLM orchestration platform.</h1>
+          <span class="version-tag" id="system-version">v00.03.70</span>
+        </div>
+      </div>
+
+      <div class="status-pills">
+        <div class="pill succinct-pill">
+          <span class="pill-label" id="label-succinct">Conciso:</span>
+          <span class="pill-value badge-on" id="status-succinct">ON</span>
         </div>
 
-        <div class="status-pills">
-          <div class="pill succinct-pill">
-            <span class="pill-label" id="label-succinct">Conciso:</span>
-            <span class="pill-value badge-on" id="status-succinct">ON</span>
-          </div>
-
-          <div class="pill debug-pill">
-            <span class="pill-label" id="label-debug">Nivel:</span>
-            <span class="pill-value" id="status-debug">Level 3</span>
-          </div>
-
-          <div class="pill usage-pill">
-            <span class="pill-label" id="label-ai">AI:</span>
-            <span class="pill-value" id="status-ai">—</span>
-          </div>
+        <div class="pill debug-pill">
+          <span class="pill-label" id="label-debug">Nivel:</span>
+          <span class="pill-value" id="status-debug">Level 3</span>
         </div>
+
+        <div class="pill usage-pill">
+          <span class="pill-label" id="label-ai">AI:</span>
+          <span class="pill-value" id="status-ai">—</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Viewport Navigation Tabs -->
+    <nav class="view-tabs">
+      <button class="tab-btn active" data-tab="conversation">
+        <span id="tab-main">💬 Conversación</span>
+      </button>
+      <button class="tab-btn" data-tab="thinking">
+        <span id="tab-thinking">🧠 Pensando</span>
+        <span class="tab-badge" id="badge-thinking">0</span>
+      </button>
+      <button class="tab-btn" data-tab="debug">
+        <span id="tab-debug">⚙ Depuración</span>
+        <span class="tab-badge" id="badge-debug">0</span>
+      </button>
+    </nav>
+
+    <!-- Main Live Log Stream Window -->
+    <main class="log-viewport" id="log-viewport">
+      <div class="log-entry system-msg">
+        <span class="log-time">[System]</span>
+        <span id="system-connected-msg" class="log-text">🚀 iNoU conectado. Flujo SSE en tiempo real activo.</span>
+      </div>
+    </main>
+
+    <!-- Intent Clarification Widget (hidden by default, rendered inline by app.ts) -->
+    <template id="clarification-widget-template">
+      <div class="log-entry clarification-widget" id="clarification-widget" role="region" aria-label="Clarification">
+        <p class="clarification-question" id="clarification-question-text"></p>
+        <div class="clarification-options" id="clarification-options" role="radiogroup"></div>
+        <div class="clarification-writein">
+          <input type="text" id="clarification-writein-input" class="clarification-input" autocomplete="off" />
+          <button type="button" class="clarification-submit-btn" id="clarification-submit-btn"></button>
+        </div>
+      </div>
+    </template>
+
+    <!-- Pinned Bottom Input Bar -->
+    <footer class="bottom-input-bar">
+      <form id="command-form" class="input-form">
+        <div class="prompt-prefix">iNoU &gt;</div>
+        <input type="text" id="command-input" class="cmd-input" placeholder="Hola · Hello · Bonjour · Hallo · Olá"
+          autocomplete="off" autofocus />
+        <button type="submit" class="send-btn" id="send-btn">
+          <span id="send-btn-text">Enviar</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+          </svg>
+        </button>
+      </form>
+    </footer>
+  </div>
+
+  <dialog class="llm-dialog" id="llm-config-dialog">
+    <form class="llm-config-form" id="llm-config-form">
+      <header class="llm-dialog-header">
+        <div>
+          <span class="llm-dialog-eyebrow" id="llm-engine-name"></span>
+          <h2>Configure LLM provider</h2>
+        </div>
+        <button type="button" class="icon-btn" id="llm-dialog-close" aria-label="Close" title="Close">
+          &times;
+        </button>
       </header>
 
-      <!-- Viewport Navigation Tabs -->
-      <nav class="view-tabs">
-        <button class="tab-btn active" data-tab="conversation">
-          <span id="tab-main">💬 Conversación</span>
-        </button>
-        <button class="tab-btn" data-tab="thinking">
-          <span id="tab-thinking">🧠 Pensando</span>
-          <span class="tab-badge" id="badge-thinking">0</span>
-        </button>
-        <button class="tab-btn" data-tab="debug">
-          <span id="tab-debug">⚙ Depuración</span>
-          <span class="tab-badge" id="badge-debug">0</span>
-        </button>
-      </nav>
+      <div class="llm-form-body">
+        <label class="form-field">
+          <span>Configuration name</span>
+          <input id="llm-configuration-name" name="configurationName" type="text"
+            pattern="[A-Za-z0-9][A-Za-z0-9._\-]{0,63}" maxlength="64" required />
+        </label>
 
-      <!-- Main Live Log Stream Window -->
-      <main class="log-viewport" id="log-viewport">
-        <div class="log-entry system-msg">
-          <span class="log-time">[System]</span>
-          <span id="system-connected-msg" class="log-text"
-            >🚀 iNoU conectado. Flujo SSE en tiempo real activo.</span
-          >
-        </div>
-      </main>
+        <label class="form-field">
+          <span>Model</span>
+          <input id="llm-model" name="model" type="text" required />
+        </label>
 
-      <!-- Intent Clarification Widget (hidden by default, rendered inline by app.ts) -->
-      <template id="clarification-widget-template">
-        <div class="log-entry clarification-widget" id="clarification-widget" role="region" aria-label="Clarification">
-          <p class="clarification-question" id="clarification-question-text"></p>
-          <div class="clarification-options" id="clarification-options" role="radiogroup"></div>
-          <div class="clarification-writein">
-            <input
-              type="text"
-              id="clarification-writein-input"
-              class="clarification-input"
-              autocomplete="off"
-            />
-            <button type="button" class="clarification-submit-btn" id="clarification-submit-btn"></button>
-          </div>
-        </div>
-      </template>
+        <label class="form-field">
+          <span>Base URL</span>
+          <input id="llm-base-url" name="baseUrl" type="url" placeholder="Provider default" />
+        </label>
 
-      <!-- Pinned Bottom Input Bar -->
-      <footer class="bottom-input-bar">
-        <form id="command-form" class="input-form">
-          <div class="prompt-prefix">iNoU &gt;</div>
-          <input
-            type="text"
-            id="command-input"
-            class="cmd-input"
-            placeholder="Hola · Hello · Bonjour · Hallo · Olá"
-            autocomplete="off"
-            autofocus
-          />
-          <button type="submit" class="send-btn" id="send-btn">
-            <span id="send-btn-text">Enviar</span>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
-            </svg>
-          </button>
-        </form>
+        <fieldset class="capability-fieldset">
+          <legend>Supported modes</legend>
+          <label class="toggle-row">
+            <input id="llm-plan-mode" type="checkbox" checked />
+            <span>Plan</span>
+          </label>
+          <label class="toggle-row">
+            <input id="llm-execute-mode" type="checkbox" />
+            <span>Execute tools</span>
+          </label>
+        </fieldset>
+
+        <div class="credential-guidance" id="llm-credential-guidance"></div>
+        <a class="provider-docs-link" id="llm-provider-docs" target="_blank" rel="noreferrer">Provider setup
+          documentation</a>
+        <p class="form-error" id="llm-form-error" role="alert"></p>
+      </div>
+
+      <footer class="llm-dialog-actions">
+        <button type="button" class="secondary-btn" id="llm-dialog-cancel">
+          Cancel
+        </button>
+        <button type="submit" class="primary-btn" id="llm-dialog-save">
+          Save configuration
+        </button>
       </footer>
-    </div>
+    </form>
+  </dialog>
 
-    <dialog class="llm-dialog" id="llm-config-dialog">
-      <form class="llm-config-form" id="llm-config-form">
-        <header class="llm-dialog-header">
-          <div>
-            <span class="llm-dialog-eyebrow" id="llm-engine-name"></span>
-            <h2>Configure LLM provider</h2>
-          </div>
-          <button
-            type="button"
-            class="icon-btn"
-            id="llm-dialog-close"
-            aria-label="Close"
-            title="Close"
-          >
-            &times;
-          </button>
-        </header>
+  <script type="module" src="app.js"></script>
+</body>
 
-        <div class="llm-form-body">
-          <label class="form-field">
-            <span>Configuration name</span>
-            <input
-              id="llm-configuration-name"
-              name="configurationName"
-              type="text"
-              pattern="[A-Za-z0-9][A-Za-z0-9._\-]{0,63}"
-              maxlength="64"
-              required
-            />
-          </label>
-
-          <label class="form-field">
-            <span>Model</span>
-            <input id="llm-model" name="model" type="text" required />
-          </label>
-
-          <label class="form-field">
-            <span>Base URL</span>
-            <input
-              id="llm-base-url"
-              name="baseUrl"
-              type="url"
-              placeholder="Provider default"
-            />
-          </label>
-
-          <fieldset class="capability-fieldset">
-            <legend>Supported modes</legend>
-            <label class="toggle-row">
-              <input id="llm-plan-mode" type="checkbox" checked />
-              <span>Plan</span>
-            </label>
-            <label class="toggle-row">
-              <input id="llm-execute-mode" type="checkbox" />
-              <span>Execute tools</span>
-            </label>
-          </fieldset>
-
-          <div class="credential-guidance" id="llm-credential-guidance"></div>
-          <a
-            class="provider-docs-link"
-            id="llm-provider-docs"
-            target="_blank"
-            rel="noreferrer"
-            >Provider setup documentation</a
-          >
-          <p class="form-error" id="llm-form-error" role="alert"></p>
-        </div>
-
-        <footer class="llm-dialog-actions">
-          <button type="button" class="secondary-btn" id="llm-dialog-cancel">
-            Cancel
-          </button>
-          <button type="submit" class="primary-btn" id="llm-dialog-save">
-            Save configuration
-          </button>
-        </footer>
-      </form>
-    </dialog>
-
-    <script type="module" src="app.js"></script>
-  </body>
 </html>

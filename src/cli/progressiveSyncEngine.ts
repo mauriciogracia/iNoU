@@ -57,7 +57,7 @@ export function initiateProgressiveMasterMindSync(
     );
   }
 
-  console.log('\x1b[36m%s\x1b[0m', '=== INUO Progressive Master Mind Sync Engine ===\n');
+  console.log('\x1b[36m%s\x1b[0m', '=== iNoU Progressive Master Mind Sync Engine ===\n');
   console.log(`✔ [Tier 0 Essential Skills]: Downloaded immediately for offline basic operations.`);
   console.log(`  Sync ID:                     ${syncId}`);
   console.log(`  Payload Size:                ${(payloadSizeBytes / (1024 * 1024)).toFixed(1)} MB`);

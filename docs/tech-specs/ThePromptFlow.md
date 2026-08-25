@@ -1,6 +1,6 @@
-# ThePromptFlow — INUO Layer Architecture & Failure Map
+# ThePromptFlow — iNoU Layer Architecture & Failure Map
 
-> **Scope**: Traces the complete lifecycle of a user prompt from the Web UI through every layer of the INUO stack down to the Gemini AI and the SQLite/JSON state storage, and back to the user via the SSE stream.
+> **Scope**: Traces the complete lifecycle of a user prompt from the Web UI through every layer of the iNoU stack down to the Gemini AI and the SQLite/JSON state storage, and back to the user via the SSE stream.
 
 ---
 
@@ -369,5 +369,5 @@ User input
 
 ---
 
-*Generated: 2026-08-17 — auto-documented from source traversal of the INUO repository.*
+*Generated: 2026-08-17 — auto-documented from source traversal of the iNoU repository.*
 

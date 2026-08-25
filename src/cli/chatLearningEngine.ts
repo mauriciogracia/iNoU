@@ -95,11 +95,11 @@ export async function extractKnowledgeFromChatHistory(
 
   writeOutput(
     OutputChannelEnum.USER_REPLY,
-    `\x1b[36m=== INUO Chat History & Transcript Learning Engine ===\x1b[0m\n⏳ Analyzing conversation history for user preferences, corrections, and training pairs...`,
+    `\x1b[36m=== iNoU Chat History & Transcript Learning Engine ===\x1b[0m\n⏳ Analyzing conversation history for user preferences, corrections, and training pairs...`,
   );
 
-  const prompt = `You are the INUO Knowledge Distillation & Transcript Learning Architect.
-Analyze the following conversation transcript between the User and INUO / Assistant.
+  const prompt = `You are the iNoU Knowledge Distillation & Transcript Learning Architect.
+Analyze the following conversation transcript between the User and iNoU / Assistant.
 
 Identify:
 1. "corrections": Any rules, preferences, formatting directives, or corrections given by the user (e.g. "don't waste tokens", "use succinct mode", "respond in Spanish", "format as list").
@@ -209,7 +209,7 @@ Respond ONLY with a valid JSON object matching this schema:
     `• Learned User Corrections / Preferences: +${correctionsCount}`,
     `• Ingested Few-Shot Training Pairs: +${pairsCount}`,
     `• Registered New Skills & Formulas: +${skillsCount}`,
-    `• Updated Dataset: [data/training_dataset.json](file:///d:/repos/INUO/data/training_dataset.json)`,
+    `• Updated Dataset: [data/training_dataset.json](file:///d:/repos/iNoU/data/training_dataset.json)`,
   ].join("\n");
 
   writeOutput(OutputChannelEnum.USER_REPLY, `\x1b[32m${successMsg}\x1b[0m`);

@@ -55,11 +55,11 @@ test("Dual Operating Modes & Dynamic Language Determination Unit Tests", async (
       setInteractionLanguage("es", true, scratchDir);
 
       const hostEs = initiateHostGreeting(scratchDir);
-      assert.match(hostEs.greeting, /INUO/i);
+      assert.match(hostEs.greeting, /iNoU/i);
       assert.match(hostEs.promptMessage, /Ingrese|comando|consulta/i);
 
       const greetingFr = getLocalizedHostGreeting("fr", "Sofia");
-      assert.match(greetingFr.greetingText, /INUO/i);
+      assert.match(greetingFr.greetingText, /iNoU/i);
       assert.match(greetingFr.greetingText, /Comment puis-je|Sofia/i);
     },
   );

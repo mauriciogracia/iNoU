@@ -31,7 +31,7 @@ test("E2E CLI Scenario Integration Test Suite (Scenarios 01 to 04)", async (t) =
   await t.test("Bootstrap: inou bootstrap initializes clean manifest and spec", () => {
     const res = runCli("bootstrap", tmpDir);
     assert.equal(res.exitCode, 0);
-    assert.ok(res.stdout.includes("INUO Seed Agent Bootstrap Protocol"));
+    assert.ok(res.stdout.includes("iNoU Seed Agent Bootstrap Protocol"));
     assert.ok(fs.existsSync(manifestPath), "inuo-manifest.json must be created");
   });
 
@@ -111,11 +111,11 @@ test("E2E CLI Scenario Integration Test Suite (Scenarios 01 to 04)", async (t) =
     // 2. Normal command still succeeds
     const statusRes = runCli("status", tmpDir);
     assert.equal(statusRes.exitCode, 0);
-    assert.ok(statusRes.stdout.includes("INUO") || statusRes.stdout.includes("Status"));
+    assert.ok(statusRes.stdout.includes("iNoU") || statusRes.stdout.includes("Status"));
   });
 
   // Cleanup
   try {
     fs.rmSync(tmpDir, { recursive: true, force: true });
-  } catch {}
+  } catch { }
 });

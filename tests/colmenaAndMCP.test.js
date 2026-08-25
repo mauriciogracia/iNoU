@@ -25,7 +25,7 @@ test('MCP Integration, REST/SOAP API Bridge & Colmena Federation Unit Tests', as
     assert.strictEqual(mcp.command, 'npx');
   });
 
-  await t.test('connects and synchronizes peer INUO nodes in Colmena hivemind network', () => {
+  await t.test('connects and synchronizes peer iNoU nodes in Colmena hivemind network', () => {
     runColmenaCommand(['connect', '--name', 'CityB_Node', '--url', 'https://city-b.inuo.net/api'], scratchDir);
 
     let state = loadState(statePath);

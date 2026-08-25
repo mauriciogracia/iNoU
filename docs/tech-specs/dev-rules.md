@@ -1,6 +1,6 @@
-# INUO Development Rules & Architectural Directives (`dev-rules.md`)
+# iNoU Development Rules & Architectural Directives (`dev-rules.md`)
 
-This document outlines the mandatory architectural principles, coding standards, and governance rules for all contributors and autonomous agents (Seed Agents) developing on the **INUO Platform**.
+This document outlines the mandatory architectural principles, coding standards, and governance rules for all contributors and autonomous agents (Seed Agents) developing on the **iNoU Platform**.
 
 ---
 
@@ -72,7 +72,7 @@ This document outlines the mandatory architectural principles, coding standards,
 
 ---
 
-## 5. INUO-on-INUO (Self-Orchestrating Dev Lifecycle)
+## 5. iNoU-on-iNoU (Self-Orchestrating Dev Lifecycle)
 
 ### 5.1 Codebase as Global Catalog
 
@@ -158,7 +158,7 @@ This document outlines the mandatory architectural principles, coding standards,
 ### 7.1 Semantic Command Spec Parity — `inouCommandsSemantics.md`
 
 Every new feature that introduces or modifies user-facing behavior **MUST** be reflected in
-[`docs/to-improve/inouCommandsSemantics.md`](file:///d:/repos/INUO/docs/to-improve/inouCommandsSemantics.md)
+[`docs/to-improve/inouCommandsSemantics.md`](file:///d:/repos/iNoU/docs/to-improve/inouCommandsSemantics.md)
 (or its canonical successor if the file is promoted to `docs/tech-specs/`).
 
 **Mandatory steps for any feature that adds, renames, or removes a CLI command or semantic action:**

@@ -46,7 +46,7 @@ export function displayNeedTreeAndDetails(targetNeed: Need, state: StateData): v
   console.log(`\x1b[1mCanonical Formula:\x1b[0m NEED = (${targetNeed.verb}) + (${targetNeed.object})`);
   console.log(`\x1b[1mComplement Offer Verb:\x1b[0m ${targetNeed.complementVerb}`);
   console.log(`\x1b[1mStatus:\x1b[0m ${targetNeed.status} | \x1b[1mModel:\x1b[0m ${targetNeed.modelType} | \x1b[1mType:\x1b[0m ${targetNeed.isAtomic ? 'Atomic' : 'Macro'}`);
-  
+
   if (targetNeed.details) {
     console.log(`\x1b[1mDetailed Spec:\x1b[0m\n  ${targetNeed.details}`);
   }
@@ -62,7 +62,7 @@ export function displayNeedTreeAndDetails(targetNeed: Need, state: StateData): v
   // Show Pending Doubts
   const doubts = (state.doubts || []).filter((d) => d.needId === targetNeed.id && !d.answer);
   if (doubts.length > 0 || (targetNeed.doubts && targetNeed.doubts.length > 0)) {
-    console.log('\n\x1b[33m%s\x1b[0m', '=== Pending Clarification Doubts (INUO asks user) ===');
+    console.log('\n\x1b[33m%s\x1b[0m', '=== Pending Clarification Doubts (iNoU asks user) ===');
     doubts.forEach((d) => {
       console.log(`  [Doubt ID: ${d.id}] ${d.question}`);
     });
@@ -94,7 +94,7 @@ export async function decomposeNeedWithAI(
 ): Promise<void> {
   const env = loadEnvironment(rootDir);
   if (!env.geminiApiKey) {
-    console.log('\x1b[33m%s\x1b[0m', '[INUO Detailing] Google Gemini API Key required for recursive breakdown.');
+    console.log('\x1b[33m%s\x1b[0m', '[iNoU Detailing] Google Gemini API Key required for recursive breakdown.');
     console.log('Connect your key by typing: key <YOUR_GEMINI_API_KEY>');
     return;
   }
@@ -103,14 +103,14 @@ export async function decomposeNeedWithAI(
 
   try {
     const ai = new GoogleGenAI({ apiKey: env.geminiApiKey });
-    const prompt = `You are the INUO Recursive Detailing & Planning Engine.
+    const prompt = `You are the iNoU Recursive Detailing & Planning Engine.
 Parent Need: NEED = (${parentNeed.verb}) + (${parentNeed.object})
 Parent Details/Context: ${parentNeed.details || 'None'}
 Additional User Guidance: "${guidance}"
 
 Your task:
 1. Break down this Need into 2 to 4 concrete sub-needs. Each sub-need MUST be formulated as NEED = (VERB) + (OBJECT).
-2. Identify 1 to 2 doubts or missing details where INUO needs user clarification to execute the project accurately.
+2. Identify 1 to 2 doubts or missing details where iNoU needs user clarification to execute the project accurately.
 
 Return ONLY a raw JSON object with NO markdown formatting matching this structure:
 {

@@ -6,7 +6,7 @@ import { CustomVerbPairing } from "../cli/context";
 import { UserPreferenceProfile } from "./UserPreferenceProfile";
 
 /**
- * Exportable and mergeable training dataset container for INUO knowledge.
+ * Exportable and mergeable training dataset container for iNoU knowledge.
  */
 export interface TrainingDataset {
   /** Dataset specification version */

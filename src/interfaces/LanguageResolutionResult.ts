@@ -1,5 +1,5 @@
 /**
- * Result produced by INUO's 4-tier language and intent resolution pipeline.
+ * Result produced by iNoU's 4-tier language and intent resolution pipeline.
  */
 export interface LanguageResolutionResult {
   /** Resolved interaction language code (e.g. 'en', 'es', 'fr', 'de', 'pt') */

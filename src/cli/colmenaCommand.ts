@@ -11,11 +11,11 @@ export function runColmenaCommand(args: string[], rootDir: string = process.cwd(
   const state = loadState(paths.statePath);
 
   if (sub === 'list') {
-    console.log('\x1b[36m%s\x1b[0m', '=== Inter-INUO Federation: "Colmena" Hivemind Network ===\n');
+    console.log('\x1b[36m%s\x1b[0m', '=== Inter-iNoU Federation: "Colmena" Hivemind Network ===\n');
     const nodes = state.colmenaNodes || [];
 
     if (nodes.length === 0) {
-      console.log('No peer INUO nodes connected. Connect to a peer using "colmena connect --name <NodeName> --url <NodeUrl>"');
+      console.log('No peer iNoU nodes connected. Connect to a peer using "colmena connect --name <NodeName> --url <NodeUrl>"');
       return;
     }
 
@@ -58,7 +58,7 @@ export function runColmenaCommand(args: string[], rootDir: string = process.cwd(
     state.colmenaNodes.push(colmenaNode);
     saveState(paths.statePath, state);
 
-    console.log('\x1b[32m%s\x1b[0m', `✔ Connected Peer INUO Node: "${colmenaNode.nodeName}" [ID: ${colmenaNode.nodeId}] (${colmenaNode.endpointUrl})`);
+    console.log('\x1b[32m%s\x1b[0m', `✔ Connected Peer iNoU Node: "${colmenaNode.nodeName}" [ID: ${colmenaNode.nodeId}] (${colmenaNode.endpointUrl})`);
     return;
   }
 
@@ -67,7 +67,7 @@ export function runColmenaCommand(args: string[], rootDir: string = process.cwd(
     const nodes = state.colmenaNodes || [];
 
     if (nodes.length === 0) {
-      console.log('\x1b[33m%s\x1b[0m', 'No peer INUO nodes connected. Connect one first using "colmena connect".');
+      console.log('\x1b[33m%s\x1b[0m', 'No peer iNoU nodes connected. Connect one first using "colmena connect".');
       return;
     }
 

@@ -13,7 +13,7 @@
 
 ### 1.1 Concept
 
-`chat` is a first-class INUO entity — equivalent to `project`, `task`,
+`chat` is a first-class iNoU entity — equivalent to `project`, `task`,
 `preference`. It follows all entity lifecycle rules:
 
 - Stored in local SQLite (`.inuo.db`) by default
@@ -25,7 +25,7 @@ Only **one chat is active at a time** (analogous to `activeProject`).
 The active chat is where all prompts are executed. Each chat maintains its
 own independent LLM context window.
 
-If no chat is active when the user sends a message, INUO auto-creates a new
+If no chat is active when the user sends a message, iNoU auto-creates a new
 chat with an AI-generated title and sets it as active.
 
 ---
@@ -167,8 +167,8 @@ Attachments are **per-chat and persistent** — once a file is attached to a
 chat, it stays in the chat's context for all future messages until the user
 explicitly removes it.
 
-Any file type is accepted. INUO passes the file to the LLM for content
-understanding and extraction. INUO also detects if an incoming file is a
+Any file type is accepted. iNoU passes the file to the LLM for content
+understanding and extraction. iNoU also detects if an incoming file is a
 **new version** of a previously attached file (by filename similarity and
 content embedding comparison).
 
@@ -197,7 +197,7 @@ CREATE INDEX IF NOT EXISTS idx_chat_attachments_chat_id ON chat_attachments(chat
 
 ### 3.3 Version Detection
 
-When a file is attached INUO checks:
+When a file is attached iNoU checks:
 1. Name similarity to existing attachments in the same chat
 2. If similar name found → LLM compares content summaries
 3. If likely a new version → `previous_version` FK is set and user is notified:

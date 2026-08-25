@@ -3,7 +3,7 @@
 - id: 0005
 - status: pending
 - createdAt: 2026-08-16
-- owner: INUO Team
+- owner: iNoU Team
 - source: gap-analysis / Phase 1 blocker / main-specs-goals.md §8
 
 ## Context

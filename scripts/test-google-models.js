@@ -74,7 +74,7 @@ async function listRemoteModels() {
 
 async function main() {
   console.log('====================================================');
-  console.log('         INUO Google AI Model Test Suite            ');
+  console.log('         iNoU Google AI Model Test Suite            ');
   console.log('====================================================');
   console.log(`API Key Prefix: ${env.geminiApiKey.slice(0, 10)}... (Length: ${env.geminiApiKey.length})`);
   console.log(`Default in .env: ${env.defaultModel}\n`);

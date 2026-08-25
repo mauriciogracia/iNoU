@@ -1,17 +1,17 @@
-# INUO Platform & Self-Orchestrating CLI (`v00.03.70`)
+# iNoU Platform & Self-Orchestrating CLI (`v00.03.70`)
 
-> **INUO (iNoU — I Need U Offer)** is a universal interaction matching protocol, cognitive architecture, and self-orchestrating platform built around canonical Need and Offer formulations, multi-modal device fleets, sub-2ms dynamic trust circuit breakers, and cognitive behavior hierarchies.
+> **iNoU (iNoU — I Need U Offer)** is a universal interaction matching protocol, cognitive architecture, and self-orchestrating platform built around canonical Need and Offer formulations, multi-modal device fleets, sub-2ms dynamic trust circuit breakers, and cognitive behavior hierarchies.
 
 ---
 
 ## 📐 Canonical Versioning Scheme
 
-INUO uses a structured, 3-component canonical versioning format:
+iNoU uses a structured, 3-component canonical versioning format:
 
 $$\mathbf{Version} = \mathbf{Deployed.SpecRevision.Implementation}$$
 
 - **Deployed Percentage (`00`–`100`)**: Percentage of functionality deployed to cloud/production infrastructure (`00` for local runtime).
-- **Specification Revision (`00`, `01`, `02`, `03`, ...)**: Incremental lifecycle index of the persistent canonical specification ([`INUO_SPEC.md`](file:///d:/repos/INUO/INUO_SPEC.md)).
+- **Specification Revision (`00`, `01`, `02`, `03`, ...)**: Incremental lifecycle index of the persistent canonical specification ([`INUO_SPEC.md`](file:///d:/repos/iNoU/INUO_SPEC.md)).
 - **Implementation Percentage (`00`–`100`)**: Percentage of specified platform functions implemented and verified with automated test suites.
 
 **Current Version:** `00.03.70` (Spec Revision 03, 70% implementation verified, 194/194 unit tests passing).
@@ -33,17 +33,17 @@ $$\text{OFFER} = (\text{COMP\_VERB}) + (\text{OBJECT})$$
 
 ---
 
-### 2. Paradigm Shift: INUO vs. Asimov's 3 Laws of Robotics
+### 2. Paradigm Shift: iNoU vs. Asimov's 3 Laws of Robotics
 
-Isaac Asimov's classical Laws of Robotics (1942) suffer from fatal real-world vulnerabilities including blind obedience, prompt injection susceptibility, static rigidity, and blind assumptions under ambiguity. INUO replaces them with modern architectural defenses:
+Isaac Asimov's classical Laws of Robotics (1942) suffer from fatal real-world vulnerabilities including blind obedience, prompt injection susceptibility, static rigidity, and blind assumptions under ambiguity. iNoU replaces them with modern architectural defenses:
 
-| Classical Asimov Law | Vulnerability | INUO Architectural Solution |
+| Classical Asimov Law | Vulnerability | iNoU Architectural Solution |
 | :--- | :--- | :--- |
 | **1st Law**: *Do not harm a human or allow harm.* | Ambiguous mathematical definition of "harm" without context. | **Unalterable Principles & Emergency Engine**: Zero-tolerance safety principles; owner incapacitation activates emergency human defense. |
 | **2nd Law**: *Obey human orders.* | Blind obedience and prompt injection (treats all humans identically). | **Identity Verification & Stranger Defense**: `TrustScore` verification. Strangers are blocked during emergencies while family retains operational access. |
 | **3rd Law**: *Protect own existence.* | Passive self-protection; vulnerable to prompt manipulation and poisoning. | **Sub-2ms Reactive Circuit Breaker**: Instant trust penalization (-100 pts) and immediate disconnection upon prompt injection / manipulation. |
 | **No Learning Concept** | Static rigidity; cannot adapt or discard outdated directives. | **Adaptive Learning, Unlearning (`forget`), & Hive Fleet**: Scoped memory, interactive correction learning, and unlearning without principle degradation. |
-| **Blind Assumptions** | Forced assumptions produce catastrophic errors under ambiguity. | **Interactive Questions & Doubts Engine**: INUO explicitly queries the human Knowledge Provider instead of guessing. |
+| **Blind Assumptions** | Forced assumptions produce catastrophic errors under ambiguity. | **Interactive Questions & Doubts Engine**: iNoU explicitly queries the human Knowledge Provider instead of guessing. |
 
 ---
 
@@ -81,7 +81,7 @@ $$\text{Skills} \longrightarrow \text{Behaviors} \longrightarrow \text{Engines} 
 
 ### 5. Multi-Interface Runtime (TUI, Web Client, & CLI)
 
-INUO provides three native interaction interfaces:
+iNoU provides three native interaction interfaces:
 
 1. **Split-Pane Terminal UI (`npm run cli` / `./inou.sh`)**: High-performance Blessed-based terminal interface with real-time logging, command history, and split-pane layout.
 2. **ASCII Web Client & Express Server (`./iwc.sh` / `npm run web`)**: Lightweight Express HTTP server serving a modern responsive web client with real-time Server-Sent Events (SSE `/api/stream`) and REST endpoints.
@@ -119,14 +119,14 @@ Manage social broadcast targets directly from the shell or web client:
   inuo sn add linkedin my-company --account @inuo-corp --enabled yes
   inuo sn add instagram dev-daily --account @inuo_dev --enabled yes
   inuo sn list
-  inuo social broadcast "INUO v00.03.70 released with 194 passing unit tests!"
+  inuo social broadcast "iNoU v00.03.70 released with 194 passing unit tests!"
   ```
 
 ---
 
-### 8. INUO-on-INUO Recursive Self-Evolution Engine
+### 8. iNoU-on-iNoU Recursive Self-Evolution Engine
 
-Evolve the platform using the platform! The `evolve` command accepts a Product Owner goal, semantically decomposes it using Gemini AI, generates single-definition TypeScript files (`src/interfaces/`, `src/types/`, `src/enums/`), runs automated verification tests, and automatically updates [`INUO_SPEC.md`](file:///d:/repos/INUO/INUO_SPEC.md) and bumps `SPEC_VERSION` when verified.
+Evolve the platform using the platform! The `evolve` command accepts a Product Owner goal, semantically decomposes it using Gemini AI, generates single-definition TypeScript files (`src/interfaces/`, `src/types/`, `src/enums/`), runs automated verification tests, and automatically updates [`INUO_SPEC.md`](file:///d:/repos/iNoU/INUO_SPEC.md) and bumps `SPEC_VERSION` when verified.
 
 ```text
 inuo (v00.03.70) > evolve "Add JWT Auth Provider to Ecosystem Adapter"
@@ -145,8 +145,8 @@ inuo (v00.03.70) > evolve "Add JWT Auth Provider to Ecosystem Adapter"
 
 ```bash
 # 1. Clone repository
-git clone https://github.com/mauriciogracia/INUO.git
-cd INUO
+git clone https://github.com/mauriciogracia/iNoU.git
+cd iNoU
 
 # 2. Install dependencies
 npm install
@@ -155,7 +155,7 @@ npm install
 npm run build
 ```
 
-### Launching INUO
+### Launching iNoU
 
 ```bash
 # Launch interactive Terminal UI / Shell
@@ -219,7 +219,7 @@ npm test
 | | `skill list` / `skill add` | Manage atomic operational execution skills |
 | | `mcp list` / `mcp register <name>` | Manage Model Context Protocol (MCP) server integrations |
 | | `colmena list` / `colmena connect` | Manage decentralized federated Colmena hive nodes |
-| **Memory & Learning**| `learn <topic> <directive>` | Teach INUO a new scoped behavioral correction or rule |
+| **Memory & Learning**| `learn <topic> <directive>` | Teach iNoU a new scoped behavioral correction or rule |
 | | `correct <topic> <correction>` | Record user correction for contextual prompt conditioning |
 | | `forget <topic>` | Deactivate learned directive/correction (unlearning protocol) |
 | | `export-training` | Export scoped training datasets excluding private secrets |
@@ -246,7 +246,7 @@ npm test
 
 ## 🌐 Web Server & REST API
 
-INUO includes a built-in Express server providing real-time Server-Sent Events (SSE) and RESTful API endpoints:
+iNoU includes a built-in Express server providing real-time Server-Sent Events (SSE) and RESTful API endpoints:
 
 ```text
 GET    /api/status                     # Returns system status, version, and metrics JSON
@@ -268,12 +268,12 @@ npm run web
 
 ## 📐 Architecture & Development Directives
 
-All development in this repository strictly adheres to [`docs/tech-specs/dev-rules.md`](file:///d:/repos/INUO/docs/tech-specs/dev-rules.md), the **single source of truth** for architectural standards:
+All development in this repository strictly adheres to [`docs/tech-specs/dev-rules.md`](file:///d:/repos/iNoU/docs/tech-specs/dev-rules.md), the **single source of truth** for architectural standards:
 
 1. **Single Definition per File**: Every `enum`, `type` alias, and `interface` **MUST** reside in its own dedicated file:
-   - `src/enums/`: Enums (e.g., [`NeedStatusEnum.ts`](file:///d:/repos/INUO/src/enums/NeedStatusEnum.ts))
-   - `src/types/`: Type Aliases (e.g., [`NeedStatus.ts`](file:///d:/repos/INUO/src/types/NeedStatus.ts))
-   - `src/interfaces/`: Interfaces (e.g., [`Need.ts`](file:///d:/repos/INUO/src/interfaces/Need.ts))
+   - `src/enums/`: Enums (e.g., [`NeedStatusEnum.ts`](file:///d:/repos/iNoU/src/enums/NeedStatusEnum.ts))
+   - `src/types/`: Type Aliases (e.g., [`NeedStatus.ts`](file:///d:/repos/iNoU/src/types/NeedStatus.ts))
+   - `src/interfaces/`: Interfaces (e.g., [`Need.ts`](file:///d:/repos/iNoU/src/interfaces/Need.ts))
    - All directories maintain clean barrel exports via `index.ts`.
 2. **DRY & SOLID Principles**: Zero duplication of schemas or constants. Granular interfaces and decoupled engine behaviors.
 3. **Build Artifact Isolation**: Compiled JavaScript output is emitted to `dist/` and excluded via `.gitignore`. Source code in `src/` contains **only pure TypeScript (`.ts`)**.
@@ -284,7 +284,7 @@ All development in this repository strictly adheres to [`docs/tech-specs/dev-rul
 ## 📁 Repository Structure
 
 ```text
-INUO/
+iNoU/
 ├── bin/
 │   └── inuo.js              # Executable CLI entrypoint
 ├── browser/                 # Browser client assets and scripts
@@ -377,4 +377,4 @@ curl https://your-domain/health
 
 ## 📜 License
 
-MIT License — Copyright (c) INUO Development Team.
+MIT License — Copyright (c) iNoU Development Team.

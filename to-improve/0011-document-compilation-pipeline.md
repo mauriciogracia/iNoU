@@ -3,7 +3,7 @@
 - id: 0011
 - status: pending
 - createdAt: 2026-08-16
-- owner: INUO Team
+- owner: iNoU Team
 - source: gap-analysis / Phase 2 / main-specs-goals.md §8
 
 ## Context
@@ -21,7 +21,7 @@ lists this as a Phase 2 pending item.
 
 ### Spec (create first)
 Create `docs/tech-specs/document_pipeline.specs.md` covering:
-- Tool discovery (how INUO locates `pandoc`, `typst`, headless Chrome, `exceljs`)
+- Tool discovery (how iNoU locates `pandoc`, `typst`, headless Chrome, `exceljs`)
 - DOCX template schema and variable substitution
 - PDF engine selection and fallback order
 - XLSX column/sheet mapping from tabular artifact JSON

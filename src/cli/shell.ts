@@ -381,7 +381,7 @@ export async function executeShellLine(
       const { ApiServer } = require("../api");
       const apiServer = new ApiServer(port, host, rootDir);
       console.log(
-        `Starting INUO Cloud Relay Hub & API Gateway on http://${host === "0.0.0.0" ? "127.0.0.1" : host}:${port}...`,
+        `Starting iNoU Cloud Relay Hub & API Gateway on http://${host === "0.0.0.0" ? "127.0.0.1" : host}:${port}...`,
       );
       await apiServer.start();
       console.log(
@@ -469,6 +469,10 @@ export async function executeShellLine(
       break;
 
     case "help":
+    case "?":
+    case "ayuda":
+    case "commands":
+    case "comandos":
       writeOutput(OutputChannelEnum.USER_REPLY, renderCommandHelp());
       break;
 
@@ -529,6 +533,25 @@ export async function executeShellLine(
       if (handleFormatSignal(trimmed, userId, lang, rootDir)) break;
 
       const lowerTrimmed = trimmed.toLowerCase();
+      if (
+        lowerTrimmed === "?" ||
+        lowerTrimmed === "¿?" ||
+        lowerTrimmed === "help" ||
+        lowerTrimmed === "ayuda" ||
+        lowerTrimmed === "commands" ||
+        lowerTrimmed === "comandos" ||
+        lowerTrimmed.includes("show commands") ||
+        lowerTrimmed.includes("list commands") ||
+        lowerTrimmed.includes("available commands") ||
+        lowerTrimmed.includes("comandos disponibles") ||
+        lowerTrimmed.includes("que comandos") ||
+        lowerTrimmed.includes("qué comandos") ||
+        lowerTrimmed.includes("cuales son los comandos") ||
+        lowerTrimmed.includes("cuáles son los comandos")
+      ) {
+        writeOutput(OutputChannelEnum.USER_REPLY, renderCommandHelp());
+        break;
+      }
       if (
         lowerTrimmed.includes("who are you") ||
         lowerTrimmed.includes("tell me about yourself") ||

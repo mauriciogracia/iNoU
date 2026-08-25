@@ -28,7 +28,7 @@ export function askInteractiveQuestion(
   saveState(paths.statePath, state);
 
   console.log(
-    `\x1b[36m✔ [INUO Divide & Conquer Question Engine]\x1b[0m Refusing to guess vague prompt! Created ${questionType} question [${questionId}].`
+    `\x1b[36m✔ [iNoU Divide & Conquer Question Engine]\x1b[0m Refusing to guess vague prompt! Created ${questionType} question [${questionId}].`
   );
   return spec;
 }

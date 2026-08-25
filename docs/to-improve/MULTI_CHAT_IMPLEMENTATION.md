@@ -2,7 +2,7 @@
 
 ## Summary
 
-Successfully implemented the **multi-chat feature** for INUO following the entity-action semantic command pattern established in the codebase. All 295 tests pass, including new chat CRUD tests.
+Successfully implemented the **multi-chat feature** for iNoU following the entity-action semantic command pattern established in the codebase. All 295 tests pass, including new chat CRUD tests.
 
 ---
 
@@ -221,7 +221,7 @@ The multi-chat feature is production-ready and fully compatible with:
 - Local SQLite storage (.inuo.db)
 - REST API gateway
 - Multilingual CLI interface
-- Existing INUO architecture
+- Existing iNoU architecture
 
 Next steps:
 

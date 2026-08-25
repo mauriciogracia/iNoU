@@ -1,16 +1,16 @@
-# INUO Platform Strategic Technical Roadmap (`tech-specs/road-map.md`)
+# iNoU Platform Strategic Technical Roadmap (`tech-specs/road-map.md`)
 
 | Property | Value |
 | :--- | :--- |
 | **Status** | `CANONICAL ROADMAP` |
-| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/INUO/docs/tech-specs/main-specs-goals.md), [`dev-rules.md`](file:///d:/repos/INUO/docs/tech-specs/dev-rules.md) |
+| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/iNoU/docs/tech-specs/main-specs-goals.md), [`dev-rules.md`](file:///d:/repos/iNoU/docs/tech-specs/dev-rules.md) |
 | **Target Platforms** | CLI (`inou.sh`), Web UI / PWA, Android, iOS, REST/MCP Gateway, Colmena Mesh |
 
 ---
 
 ## 1. Executive Vision & Architecture Overview
 
-The **INUO** ecosystem is a decentralized, offline-first interaction protocol that translates human intent into canonical Needs and Offers ($\text{NEED} = \text{VERB} + \text{OBJECT}$), orchestrates complex objectives via recursive DAG ASTs, and provides seamless multi-device continuity across mobile, desktop, cloud, and peer-to-peer networks.
+The **iNoU** ecosystem is a decentralized, offline-first interaction protocol that translates human intent into canonical Needs and Offers ($\text{NEED} = \text{VERB} + \text{OBJECT}$), orchestrates complex objectives via recursive DAG ASTs, and provides seamless multi-device continuity across mobile, desktop, cloud, and peer-to-peer networks.
 
 ---
 
@@ -80,7 +80,7 @@ The **INUO** ecosystem is a decentralized, offline-first interaction protocol th
   - Server-Sent Events (SSE) `/api/stream` and WebSockets `/api/events`.
   - Reconnection event replay using `Last-Event-ID`.
 * [ ] **Model Context Protocol (MCP) Server**:
-  - Native MCP Server exposing INUO DAG workflows and Master Mind memory tools to VSCode, Antigravity, and AI agents.
+  - Native MCP Server exposing iNoU DAG workflows and Master Mind memory tools to VSCode, Antigravity, and AI agents.
 
 ---
 
@@ -100,11 +100,11 @@ The **INUO** ecosystem is a decentralized, offline-first interaction protocol th
 
 ### Phase 6: Cloud Master Mind & Long-Context LLM Continuity
 * [ ] **Google Drive & Encrypted Cloud Storage Adapters**:
-  - Encrypted snapshot sync for interrupted planning resumption ([`scenario_03.md`](file:///d:/repos/INUO/docs/tech-specs/scenario_03.md)).
+  - Encrypted snapshot sync for interrupted planning resumption ([`scenario_03.md`](file:///d:/repos/iNoU/docs/tech-specs/scenario_03.md)).
 * [ ] **Google Gemini Context Caching Integration**:
   - Generates persistent cache tokens (`gemini-cache-...`) to eliminate token re-ingestion costs when resuming cross-device planning.
 * [ ] **Delegated Incapacitation Trust Network**:
-  - Trusted Members Network and emergency delegation protocols ([`scenario_04.md`](file:///d:/repos/INUO/docs/tech-specs/scenario_04.md)).
+  - Trusted Members Network and emergency delegation protocols ([`scenario_04.md`](file:///d:/repos/iNoU/docs/tech-specs/scenario_04.md)).
 
 ---
 

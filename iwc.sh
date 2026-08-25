@@ -6,7 +6,7 @@ INUO_PORT="${INUO_PORT:-3000}"
 INUO_URL="${INUO_URL:-http://localhost:${INUO_PORT}}"
 
 echo "========================================"
-echo " INUO Web Client Launcher"
+echo " iNoU Web Client Launcher"
 echo " Target URL: $INUO_URL"
 echo "========================================"
 

@@ -13,7 +13,7 @@
 
 ### 1.1 Concept
 
-`chat` is a first-class INUO entity — equivalent to `project`, `task`,
+`chat` is a first-class iNoU entity — equivalent to `project`, `task`,
 `preference`. It follows all entity lifecycle rules:
 
 - Stored in local SQLite (`.inuo.db`) by default
@@ -23,7 +23,7 @@
   Only **one chat is active at a time** (analogous to `activeProject`).
   The active chat is where all prompts are executed. Each chat maintains its
   own independent LLM context window.
-  If no chat is active when the user sends a message, INUO auto-creates a new
+  If no chat is active when the user sends a message, iNoU auto-creates a new
   chat with an AI-generated title and sets it as active.
 
 ---

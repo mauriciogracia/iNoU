@@ -2,7 +2,7 @@ import { createContext } from './context';
 
 export function runTest(targetVersion?: string, rootDir: string = process.cwd()): void {
   const ctx = createContext(rootDir);
-  console.log('\x1b[36m%s\x1b[0m', '=== Running INUO Spec & Codebase Verification ===');
+  console.log('\x1b[36m%s\x1b[0m', '=== Running iNoU Spec & Codebase Verification ===');
 
   if (!ctx.manifest) {
     console.log('\x1b[31m%s\x1b[0m', 'FAIL: inuo-manifest.json not found! Run "init" to bootstrap.');

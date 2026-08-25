@@ -1,7 +1,7 @@
 /**
  * Chat Entity Interface
  *
- * Represents a conversation thread in INUO.
+ * Represents a conversation thread in iNoU.
  * - Stored in local SQLite (.inuo.db) by default
  * - Syncable via Colmena like any other entity
  * - CRUD through `semanticDispatcher` + `shell.ts`

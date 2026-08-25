@@ -34,7 +34,7 @@ async function runDiagnostics() {
     try {
       const response = await ai.models.generateContent({
         model,
-        contents: 'Reply with "INUO AI Connection Verified!" in one line.',
+        contents: 'Reply with "iNoU AI Connection Verified!" in one line.',
       });
       console.log(`\x1b[32m✔ SUCCESS with model "${model}"!\x1b[0m AI Response:`);
       console.log(response.text?.trim());

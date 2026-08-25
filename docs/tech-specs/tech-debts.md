@@ -1,4 +1,4 @@
-# INUO Tech Debts
+# iNoU Tech Debts
 
 > Items extracted from [`ThePromptFlow.md`](ThePromptFlow.md) — failure points with **no current mitigation or only a partial/silent guard** that require active engineering work.
 
@@ -95,7 +95,7 @@
 | **Priority** | 🟡 Medium |
 | **Layer** | Layer 8 — Storage |
 | **File** | `src/cli/sqliteStorageEngine.ts` |
-| **Problem** | SQLite in WAL mode with `synchronous = NORMAL` reduces lock contention but does not eliminate it. If two INUO processes run against the same `.inuo.db` simultaneously (e.g. CLI + API server both writing), a `SQLITE_BUSY` error can occur. This is currently unhandled and would surface as an uncaught exception. |
+| **Problem** | SQLite in WAL mode with `synchronous = NORMAL` reduces lock contention but does not eliminate it. If two iNoU processes run against the same `.inuo.db` simultaneously (e.g. CLI + API server both writing), a `SQLITE_BUSY` error can occur. This is currently unhandled and would surface as an uncaught exception. |
 | **Suggested Fix** | Set `PRAGMA busy_timeout = 3000;` on database open so SQLite waits up to 3 s before failing. Wrap all write operations in a `try/catch` and retry once on `SQLITE_BUSY`. Add a startup check that warns if another process holds a write lock. |
 
 ---
@@ -147,7 +147,7 @@
 |-------|-------|
 | **Source** | [`to-improve/0002`](../../to-improve/0002-broken-spec-links-after-mv.md) · [`docs/current-status.md`](../current-status.md) |
 | **Priority** | ~~🔴 P0~~ → ✅ Resolved |
-| **Resolution** | Updated all 15 occurrences of `file:///d:/repos/INUO/tech-specs/` → `file:///d:/repos/INUO/docs/tech-specs/` across 11 files: all `docs/tech-specs/*.specs.md` headers, `road-map.md`, `README.md`, `AGENTS.md`, and `skills/google-workspace-skill/SKILL.md`. |
+| **Resolution** | Updated all 15 occurrences of `file:///d:/repos/iNoU/tech-specs/` → `file:///d:/repos/iNoU/docs/tech-specs/` across 11 files: all `docs/tech-specs/*.specs.md` headers, `road-map.md`, `README.md`, `AGENTS.md`, and `skills/google-workspace-skill/SKILL.md`. |
 
 ---
 
@@ -237,7 +237,7 @@
 |-------|-------|
 | **Source** | [`to-improve/0010`](../../to-improve/0010-mcp-server.md) · [`road-map.md` Phase 4](road-map.md) · [`main-specs-goals.md` §8.4](main-specs-goals.md) |
 | **Priority** | 🟡 P3 |
-| **Description** | Implement `InouMcpServer.ts` exposing INUO DAG workflows and Master Mind memory tools to VSCode, Antigravity, GitHub Copilot, and Cursor via the Model Context Protocol (MCP) over STDIO and SSE transports. |
+| **Description** | Implement `InouMcpServer.ts` exposing iNoU DAG workflows and Master Mind memory tools to VSCode, Antigravity, GitHub Copilot, and Cursor via the Model Context Protocol (MCP) over STDIO and SSE transports. |
 
 ---
 

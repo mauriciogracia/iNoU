@@ -44,7 +44,7 @@ export class ApiServer {
       this.server.listen(this.port, this.host, () => {
         const url = `http://${this.host === "0.0.0.0" ? "127.0.0.1" : this.host}:${this.port}`;
         EventBus.getInstance().publish("system.started", "preference", "update", {
-          service: "INUO Cloud Relay Hub & API Gateway",
+          service: "iNoU Cloud Relay Hub & API Gateway",
           url,
           port: this.port,
           host: this.host,

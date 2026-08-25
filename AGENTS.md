@@ -1,10 +1,10 @@
 # Agent Directives & Repository Guidelines (`AGENTS.md`)
 
-All AI agents (Antigravity, Gemini, Seed Agents) working on the **INUO** codebase **MUST** follow the architectural rules and standards defined in [`docs/tech-specs/dev-rules.md`](file:///d:/repos/INUO/docs/tech-specs/dev-rules.md).
+All AI agents (Antigravity, Gemini, Seed Agents) working on the **iNoU** codebase **MUST** follow the architectural rules and standards defined in [`docs/tech-specs/dev-rules.md`](file:///d:/repos/iNoU/docs/tech-specs/dev-rules.md).
 
 ## Core Rules Reference
 
-All project guidelines, single-definition file constraints (`src/enums/`, `src/types/`, `src/interfaces/`), DRY & SOLID design principles, model isolation, governance, and versioning rules are centrally maintained in [`docs/tech-specs/dev-rules.md`](file:///d:/repos/INUO/docs/tech-specs/dev-rules.md).
+All project guidelines, single-definition file constraints (`src/enums/`, `src/types/`, `src/interfaces/`), DRY & SOLID design principles, model isolation, governance, and versioning rules are centrally maintained in [`docs/tech-specs/dev-rules.md`](file:///d:/repos/iNoU/docs/tech-specs/dev-rules.md).
 
 ## Graphify Workflow
 

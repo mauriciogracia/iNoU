@@ -249,16 +249,29 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
+  // Flag to control console logging (defaults to false)
+  // Can be toggled at runtime via window.debugToConsole = true in browser DevTools
+  let debugToConsole = false;
+  (window as any).debugToConsole = debugToConsole;
+
+  function isDebugToConsole(): boolean {
+    return (window as any).debugToConsole ?? debugToConsole;
+  }
+
   eventSource.onmessage = handleSseMessage;
 
   eventSource.onerror = (err) => {
-    console.warn("[iNoU SSE Stream] Connection error or reconnecting:", err);
+    if (isDebugToConsole()) {
+      console.warn("[iNoU SSE Stream] Connection error or reconnecting:", err);
+    }
     appendLog("DEBUG", "⚠️ [SSE Stream] Connection lost or reconnecting...");
   };
 
-  // Global window error and rejection traps to surface tech errors in Depuración tab and console
+  // Global window error and rejection traps to surface tech errors in Depuración tab
   window.addEventListener("error", (event: ErrorEvent) => {
-    console.error("[iNoU Runtime Error]", event.error || event.message);
+    if (isDebugToConsole()) {
+      console.error("[iNoU Runtime Error]", event.error || event.message);
+    }
     appendLog(
       "DEBUG",
       `❌ [Browser Runtime Error] ${event.message} (${event.filename}:${event.lineno})`,
@@ -266,7 +279,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   window.addEventListener("unhandledrejection", (event: PromiseRejectionEvent) => {
-    console.error("[iNoU Unhandled Rejection]", event.reason);
+    if (isDebugToConsole()) {
+      console.error("[iNoU Unhandled Rejection]", event.reason);
+    }
     const reasonMsg =
       event.reason instanceof Error
         ? event.reason.stack || event.reason.message
@@ -290,7 +305,9 @@ document.addEventListener("DOMContentLoaded", () => {
       entryType = "thinking";
       thinkingCount++;
       badgeThinking.textContent = String(thinkingCount);
-      console.log(`[iNoU Thinking]`, cleanText);
+      if (isDebugToConsole()) {
+        console.log(`[iNoU Thinking]`, cleanText);
+      }
       if (!thinkingIndicator) {
         thinkingIndicator = document.createElement("div");
         thinkingIndicator.className =
@@ -303,26 +320,37 @@ document.addEventListener("DOMContentLoaded", () => {
         logViewport.appendChild(thinkingIndicator);
         logViewport.scrollTop = logViewport.scrollHeight;
       }
-    } else if (channel === "DEBUG" || content.includes("⚙") || content.includes("❌") || content.includes("[Error]")) {
+    } else if (
+      channel === "DEBUG" ||
+      content.includes("⚙") ||
+      content.includes("❌") ||
+      content.includes("[Error]")
+    ) {
       entry.classList.add("debug-msg");
       entryType = "debug";
       debugCount++;
       badgeDebug.textContent = String(debugCount);
-      if (cleanText.includes("❌") || cleanText.toLowerCase().includes("error")) {
-        console.error(`[iNoU Tech Error / Debug]`, cleanText);
-      } else {
-        console.debug(`[iNoU Debug]`, cleanText);
+      if (isDebugToConsole()) {
+        if (cleanText.includes("❌") || cleanText.toLowerCase().includes("error")) {
+          console.error(`[iNoU Tech Error / Debug]`, cleanText);
+        } else {
+          console.debug(`[iNoU Debug]`, cleanText);
+        }
       }
     } else if (content.startsWith(TOOL_PROMPT)) {
       entry.classList.add("user-cmd");
-      console.log(`[iNoU User Command]`, cleanText);
+      if (isDebugToConsole()) {
+        console.log(`[iNoU User Command]`, cleanText);
+      }
       if (thinkingIndicator) {
         thinkingIndicator.remove();
         thinkingIndicator = null;
       }
     } else {
       entry.classList.add("reply-msg");
-      console.log(`[iNoU Reply]`, cleanText);
+      if (isDebugToConsole()) {
+        console.log(`[iNoU Reply]`, cleanText);
+      }
       hideAnalyzing();
       if (thinkingIndicator) {
         thinkingIndicator.remove();

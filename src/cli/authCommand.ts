@@ -32,7 +32,7 @@ export function runAuthCommand(args: string[], rootDir: string = process.cwd()):
     const state = loadState(paths.statePath);
     const active = state.activeUser;
 
-    console.log('\x1b[36m%s\x1b[0m', '=== INUO Active Authentication Session Status ===\n');
+    console.log('\x1b[36m%s\x1b[0m', '=== iNoU Active Authentication Session Status ===\n');
     console.log(`User Name:      \x1b[1m${active?.userName || 'Default User'}\x1b[0m`);
     console.log(`User ID:        ${active?.userId || 'user_local'}`);
     console.log(`Role:           \x1b[33m${active?.role || 'RegularUser'}\x1b[0m`);

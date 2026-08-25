@@ -1,7 +1,7 @@
 /**
  * autocomplete.ts
  *
- * Tab-completion for the INUO interactive shell.
+ * Tab-completion for the iNoU interactive shell.
  *
  * Design:
  *   - LEVEL 0: entity (project, workspace, task, memory, preference, ...)
@@ -56,6 +56,7 @@ const STANDALONE_COMMANDS = [
   "forget",
   "gc",
   "help",
+  "?",
   "init",
   "key",
   "learn",
@@ -343,20 +344,20 @@ export function renderCommandHelp(): string {
   const lines: string[] = [];
 
   lines.push("\x1b[36m╔══════════════════════════════════════════════════════╗\x1b[0m");
-  lines.push("\x1b[36m║        INUO Semantic Command Reference               ║\x1b[0m");
+  lines.push("\x1b[36m║        iNoU Semantic Command Reference               ║\x1b[0m");
   lines.push("\x1b[36m╚══════════════════════════════════════════════════════╝\x1b[0m");
   lines.push("");
   lines.push("\x1b[33mSyntax:\x1b[0m  <entity> <action> [--flag value …]");
-  lines.push("\x1b[90mTip:     Press TAB to autocomplete entities, actions, and flags.\x1b[0m");
+  lines.push("\x1b[90mTip:     Type '?' or 'help' for command reference. Press TAB to autocomplete.\x1b[0m");
   lines.push("");
 
   lines.push("\x1b[1m── Semantic Entities & Actions ──────────────────────────\x1b[0m");
 
   const entityDefs: Record<string, string> = {
-    project:    "Top-level organizational container",
-    workspace:  "Local filesystem workspace",
-    task:       "DAG workflow node / need / offer",
-    memory:     "Adaptive memory, skill, principle, behavior",
+    project: "Top-level organizational container",
+    workspace: "Local filesystem workspace",
+    task: "DAG workflow node / need / offer",
+    memory: "Adaptive memory, skill, principle, behavior",
     preference: "Scoped user setting, mode, alias, API key",
   };
 

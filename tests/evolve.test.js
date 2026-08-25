@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { runEvolveCommand } = require('../dist/cli/evolveCommand');
 
-test('INUO-on-INUO Self-Orchestrating Evolution Unit Tests', async (t) => {
+test('iNoU-on-iNoU Self-Orchestrating Evolution Unit Tests', async (t) => {
   const tmpDir = fs.mkdtempSync(path.join(__dirname, 'tmp_evolve_'));
 
   await t.test('gracefully handles missing API key in offline environment', async () => {

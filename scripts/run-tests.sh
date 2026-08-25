@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # scripts/run-tests.sh
-# Builds TypeScript and executes the full INUO unit test suite.
+# Builds TypeScript and executes the full iNoU unit test suite.
 
 set -e
 

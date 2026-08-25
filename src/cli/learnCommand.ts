@@ -20,7 +20,7 @@ export async function runLearnCommand(
     const skills = state.skills || [];
 
     const lines = [
-      "=== INUO Learned Skills & Training Knowledge Status ===",
+      "=== iNoU Learned Skills & Training Knowledge Status ===",
       `• Total Learned Skills: ${skills.length}`,
       ...skills.map((s: any) => `  - [${s.name}] Category: ${s.category} | Formula: ${s.atomicFormula || s.id}`),
       `• Curated Training Pairs in Dataset: ${dataset.length}`,

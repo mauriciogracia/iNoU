@@ -2,7 +2,7 @@ import { InteractionStyle } from '../types/InteractionStyle';
 
 /**
  * A single natural-language signal captured from user input that informed
- * INUO's learned interaction style. Stored as a rolling window in UserPreferenceProfile.
+ * iNoU's learned interaction style. Stored as a rolling window in UserPreferenceProfile.
  */
 export interface StyleSignal {
   /** The interaction style detected from this signal */

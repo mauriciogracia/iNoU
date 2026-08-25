@@ -1,9 +1,9 @@
-# INUO Deployment Readiness — Gap Analysis
+# iNoU Deployment Readiness — Gap Analysis
 
 > **Last Updated:** 2026-08-16  
 > **Scope:** Docker / Docker Compose / GitHub Actions / Caddy / Runtime configuration
 
-This document captures all identified gaps that must be resolved before INUO can be reliably deployed to a production server. Gaps are organized in **phases** from critical blockers to polish items.
+This document captures all identified gaps that must be resolved before iNoU can be reliably deployed to a production server. Gaps are organized in **phases** from critical blockers to polish items.
 
 ---
 

@@ -62,7 +62,7 @@ export function calculateInuoVersion(
 }
 
 /**
- * Recalculates INUO (Deployed.SpecRevision.Implementation) version and automatically synchronizes
+ * Recalculates iNoU (Deployed.SpecRevision.Implementation) version and automatically synchronizes
  * package.json, inuo-manifest.json, and INUO_SPEC.md from a single source of truth.
  */
 export function recalculateAndSyncVersion(

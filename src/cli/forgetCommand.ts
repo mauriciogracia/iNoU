@@ -29,7 +29,7 @@ export function runForgetCommand(args: string[], rootDir: string = process.cwd()
 
     const removed = state.behaviors.splice(idx, 1)[0];
     saveState(paths.statePath, state);
-    console.log('\x1b[32m%s\x1b[0m', `✔ INUO Forgot Behavior: "${removed.name}" [ID: ${removed.id}]`);
+    console.log('\x1b[32m%s\x1b[0m', `✔ iNoU Forgot Behavior: "${removed.name}" [ID: ${removed.id}]`);
     return;
   }
 
@@ -54,7 +54,7 @@ export function runForgetCommand(args: string[], rootDir: string = process.cwd()
     }
 
     saveState(paths.statePath, state);
-    console.log('\x1b[32m%s\x1b[0m', `✔ INUO Forgot Skill: "${removed.name}" [ID: ${removed.id}]`);
+    console.log('\x1b[32m%s\x1b[0m', `✔ iNoU Forgot Skill: "${removed.name}" [ID: ${removed.id}]`);
     return;
   }
 
@@ -71,7 +71,7 @@ export function runForgetCommand(args: string[], rootDir: string = process.cwd()
 
     const removed = state.learnedCorrections.splice(idx, 1)[0];
     saveState(paths.statePath, state);
-    console.log('\x1b[32m%s\x1b[0m', `✔ INUO Forgot Learned Correction: "${removed.topic}" [ID: ${removed.id}]`);
+    console.log('\x1b[32m%s\x1b[0m', `✔ iNoU Forgot Learned Correction: "${removed.topic}" [ID: ${removed.id}]`);
     return;
   }
 

@@ -21,7 +21,7 @@ NODE_BIN="$(find_node || true)"
 
 if [ -z "$NODE_BIN" ]; then
   echo "Error: Node.js runtime not found in PATH or standard installation directories." >&2
-  echo "Please install Node.js (v18+) to run INUO." >&2
+  echo "Please install Node.js (v18+) to run iNoU." >&2
   exit 1
 fi
 

@@ -3,7 +3,7 @@ import { TrustLevel } from '../types/TrustLevel';
 import { AuthMethod } from '../types/AuthMethod';
 
 /**
- * Represents an active user session/identity interacting with INUO.
+ * Represents an active user session/identity interacting with iNoU.
  */
 export interface UserIdentity {
   /** Unique user identifier */

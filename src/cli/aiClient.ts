@@ -14,16 +14,16 @@ import {
 } from "./costGovernanceEngine";
 export interface ParsedIntentResult {
   type:
-    | "NEED"
-    | "OFFER"
-    | "DETAIL_PLAN"
-    | "ANSWER"
-    | "CORRECTION"
-    | "QUERY"
-    | "EXIT"
-    | "EVOLVE"
-    | "LEARN"
-    | "COMMAND_SEQUENCE";
+  | "NEED"
+  | "OFFER"
+  | "DETAIL_PLAN"
+  | "ANSWER"
+  | "CORRECTION"
+  | "QUERY"
+  | "EXIT"
+  | "EVOLVE"
+  | "LEARN"
+  | "COMMAND_SEQUENCE";
   verb?: string;
   object?: string;
   goalText?: string;
@@ -76,17 +76,16 @@ export async function processNaturalLanguageIntent(
 
   try {
     const ai = new GoogleGenAI({ apiKey: env.geminiApiKey });
-    const prompt = `You are the INUO Interaction Engine & Command Translation AI.
+    const prompt = `You are the iNoU Interaction Engine & Command Translation AI.
 The user input is: "${userInput}"
 Target Interaction Language: "${lang}"
 Succinct Mode: ${isSuccinct ? "ACTIVE" : "DISABLED"}
-${
-  preferenceBlock
-    ? `
+${preferenceBlock
+        ? `
 ${preferenceBlock}
 `
-    : ""
-}
+        : ""
+      }
 CRITICAL OUTPUT SEPARATION MANDATE:
 - "explanation": Direct user reply ONLY in Target Interaction Language ("${lang}"). Concise and direct.
 - "thinkingDetails": Step-by-step reasoning and goal decomposition thoughts (in "${lang}").
@@ -96,16 +95,15 @@ CRITICAL LANGUAGE MANDATE:
 - You MUST generate "explanation" and "thinkingDetails" strictly in Target Interaction Language ("${lang}").
 
 CRITICAL SUCCINCT MODE MANDATE:
-${
-  isSuccinct
-    ? `- Succinct Mode is ACTIVE: Be extremely concise, direct, and short.
+${isSuccinct
+        ? `- Succinct Mode is ACTIVE: Be extremely concise, direct, and short.
 - NEVER generate markdown tables (| ... |).
 - Use ONLY simple bullet lists (- item) for any multi-item descriptions.`
-    : `- Provide clear, helpful explanations.`
-}
+        : `- Provide clear, helpful explanations.`
+      }
 
-SYSTEM OVERVIEW INQUIRIES ("What does INUO do?" / "¿Qué hace INUO?" / "Was macht INUO?" / "Que fait INUO?" / "O que faz o INUO?"):
-If the user asks what INUO does, its purpose, or general capabilities:
+SYSTEM OVERVIEW INQUIRIES ("What does iNoU do?" / "¿Qué hace iNoU?" / "Was macht iNoU?" / "Que fait iNoU?" / "O que faz o iNoU?"):
+If the user asks what iNoU does, its purpose, or general capabilities:
 - Set "type": "QUERY"
 - Set "explanation" to a 4-bullet point presentation in Target Interaction Language ("${lang}") covering:
   - Intent Structuring Engine (NEED = VERB + OBJECT <-> OFFER = COMPLEMENT + OBJECT)
@@ -146,9 +144,9 @@ Intent Types:
 - "DETAIL_PLAN": Complex goal or request asking to detail/plan steps
 - "ANSWER": Providing details or answering a doubt for a specific step/code
 - "CORRECTION": User is correcting a misunderstanding or giving a rule directive
-- "QUERY": General question about INUO or status
-- "EVOLVE": User requests INUO to self-evolve, modify its codebase, create types, or add new command capabilities (e.g. "modificate a ti misma para agregar auth", "evolve add oauth2 support", "agrega el comando auth para linkedin"). Set "type": "EVOLVE", "goalText": "<feature description>".
-- "LEARN": User asks INUO to learn a skill, integrate an external API, or learn from chat history (e.g. "aprende a postear en tiktok", "learn how to post to linkedin", "learn from chat history all"). Set "type": "LEARN", "goalText": "<skill description>".
+- "QUERY": General question about iNoU or status
+- "EVOLVE": User requests iNoU to self-evolve, modify its codebase, create types, or add new command capabilities (e.g. "modificate a ti misma para agregar auth", "evolve add oauth2 support", "agrega el comando auth para linkedin"). Set "type": "EVOLVE", "goalText": "<feature description>".
+- "LEARN": User asks iNoU to learn a skill, integrate an external API, or learn from chat history (e.g. "aprende a postear en tiktok", "learn how to post to linkedin", "learn from chat history all"). Set "type": "LEARN", "goalText": "<skill description>".
 - "EXIT": User wants to exit, say goodbye, or terminate session in any language
 - "COMMAND_SEQUENCE": For ANY complex, multi-step, or unsupported input, convert the user prompt into a sequence of real supported CLI commands in "commandSequence" array.
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * INUO Production Deployment & Orchestration Script (`scripts/deploy.js`)
+ * iNoU Production Deployment & Orchestration Script (`scripts/deploy.js`)
  * 
  * Supports targets:
  *   - `compose` (Docker Compose with Caddy TLS - Recommended)
@@ -32,7 +32,7 @@ function run(cmd, opts = {}) {
 async function checkHealth(urls, maxAttempts = 15, delayMs = 1000) {
   const urlList = Array.isArray(urls) ? urls : [urls];
   log(`\n⏳ Polling health check at ${urlList.join(" or ")}...`);
-  
+
   for (let i = 1; i <= maxAttempts; i++) {
     for (const url of urlList) {
       try {
@@ -61,7 +61,7 @@ async function checkHealth(urls, maxAttempts = 15, delayMs = 1000) {
           log(`\n✔ Health check passed at ${url}! Deployment is LIVE and healthy.`, "\x1b[32m");
           return true;
         }
-      } catch {}
+      } catch { }
     }
 
     await new Promise((r) => setTimeout(r, delayMs));
@@ -74,7 +74,7 @@ async function checkHealth(urls, maxAttempts = 15, delayMs = 1000) {
 
 async function main() {
   log("=================================================");
-  log("   🚀 INUO Production Deployment Pipeline");
+  log("   🚀 iNoU Production Deployment Pipeline");
   log("=================================================");
   log(`• Deployment Target: ${target.toUpperCase()}`);
   log(`• Project Root:      ${rootDir}`);
@@ -92,7 +92,7 @@ async function main() {
 
   // Step 2: Target-specific deployment execution
   if (target === "compose") {
-    log("\n[2/3] Launching Docker Compose infrastructure (INUO Hub + Caddy Ingress)...");
+    log("\n[2/3] Launching Docker Compose infrastructure (iNoU Hub + Caddy Ingress)...");
     run("docker compose up -d --build");
 
     log("\n[3/3] Verifying deployment health...");
@@ -109,7 +109,7 @@ async function main() {
     try {
       execSync("docker stop inuo_hub", { stdio: "ignore" });
       execSync("docker rm inuo_hub", { stdio: "ignore" });
-    } catch {}
+    } catch { }
     run(`docker run -d --name inuo_hub -p ${port}:${port} -e INUO_DATA_DIR=/app/data -v inuo_hub_data:/app/data inuo-cloud-hub`);
 
     log("\n[3/3] Verifying deployment health...");
@@ -137,7 +137,7 @@ async function main() {
     process.exit(1);
   }
 
-  log("\n★ INUO Deployment pipeline completed successfully!", "\x1b[32m");
+  log("\n★ iNoU Deployment pipeline completed successfully!", "\x1b[32m");
 }
 
 main().catch((err) => {

@@ -155,7 +155,7 @@ export interface ISecretVaultPort {
 
 ### 2.2 Dynamic Trust Governance, Identity & Immutable Audit Architecture
 
-Following the INUO Zero-Trust and Dynamic Governance model:
+Following the iNoU Zero-Trust and Dynamic Governance model:
 
 * **Dynamic Trust Scores (`TrustScore` 0–100)**: Evaluates all connected entities (users, MCP servers, peer nodes). High-risk operations require verification gates (`HighTrust` $\ge 80$).
 * **Sub-2ms Reactive Circuit Breaker**: Immediate disconnect and penalization (-100 pts) upon detecting prompt injection attempts or authorization tampering.
@@ -1001,22 +1001,22 @@ inou mcp start --stdio                                 # Start standard MCP serv
 
 ---
 
-## 10. Existing INUO Canon & Platform Specifications (Unmerged Archive)
+## 10. Existing iNoU Canon & Platform Specifications (Unmerged Archive)
 
 > [!NOTE]
-> This section preserves the canonical baseline specification of the INUO matching protocol, Asimov comparative framework, and cognitive architecture intact prior to full schema unification.
+> This section preserves the canonical baseline specification of the iNoU matching protocol, Asimov comparative framework, and cognitive architecture intact prior to full schema unification.
 
 ---
 
-# ESPECIFICACIÓN CANÓNICA DE LA PLATAFORMA INUO (`INUO_SPEC.md`)
+# ESPECIFICACIÓN CANÓNICA DE LA PLATAFORMA iNoU (`INUO_SPEC.md`)
 
-Este documento constituye la especificación canónica y el Prompt de Sistema Persistente que rige el razonamiento autónomo, la generación de código y la toma de decisiones dentro de la **Plataforma INUO (I Need U Offer)**.
+Este documento constituye la especificación canónica y el Prompt de Sistema Persistente que rige el razonamiento autónomo, la generación de código y la toma de decisiones dentro de la **Plataforma iNoU (I Need U Offer)**.
 
 ---
 
 ### 10.1 Fundamentos Canónicos y Formulación Matemática
 
-INUO opera sobre el paradigma fundamental de formulación simétrica e intent-matching:
+iNoU opera sobre el paradigma fundamental de formulación simétrica e intent-matching:
 
 - **Necesidad (Need)**: Toda solicitud de usuario o agente se expresa mediante la fórmula canónica:
 
@@ -1031,23 +1031,23 @@ INUO opera sobre el paradigma fundamental de formulación simétrica e intent-ma
 
 ---
 
-### 10.2 El Salto Paradigmático: INUO vs. Las 3 Leyes de Asimov
+### 10.2 El Salto Paradigmático: iNoU vs. Las 3 Leyes de Asimov
 
-Las Tres Leyes de la Robótica de Isaac Asimov (1942) resultan insuficientes en la IA moderna debido a la obediencia ciega y la falta de límites de confianza. INUO supera estas limitaciones mediante una arquitectura moderna e identitaria:
+Las Tres Leyes de la Robótica de Isaac Asimov (1942) resultan insuficientes en la IA moderna debido a la obediencia ciega y la falta de límites de confianza. iNoU supera estas limitaciones mediante una arquitectura moderna e identitaria:
 
-| Ley Clásica de Asimov | Vulnerabilidad en el Mundo Real | Solución Arquitectónica de INUO |
+| Ley Clásica de Asimov | Vulnerabilidad en el Mundo Real | Solución Arquitectónica de iNoU |
 | :--- | :--- | :--- |
 | **Primera Ley**: _No dañar a un humano ni permitir daño por inacción._ | **Definición ambigua de "daño"**: Incapacidad matemática para evaluar el daño sin contexto. | **Principios Inalterables y Motor de Emergencia**: Principios de Seguridad de Cero Tolerancia inquebrantables. En emergencias con propietarios incapacitados, se activa la respuesta de protección humana. |
 | **Segunda Ley**: _Obedecer órdenes humanas (salvo conflicto con la 1ª Ley)._ | **Obediencia ciega e inyección de prompts**: Trata a todos los humanos por igual. Un extraño podría ordenar abrir un vehículo o anular la seguridad. | **Identidad de Confianza y Defensa contra Extraños**: Verificación de `UserIdentity` y `TrustScore`. Se niega el control a extraños en emergencias, mientras los familiares (niños) mantienen control operativo. |
 | **Tercera Ley**: _Proteger la propia existencia (salvo conflicto con 1ª y 2ª)._ | **Autoprotección pasiva**: Incapacidad de defender su integridad cognitiva ante manipulación o envenenamiento de datos. | **Circuit Breaker Sub-2ms y Defensa Anti-Manipulación**: Detecta inyecciones de prompt (_"ignore previous instructions"_), reduce la confianza a 0 y desconecta la entidad en milisegundos. |
 | **Sin concepto de Aprendizaje / Desaprendizaje** | **Rigidez estática**: Imposibilidad de adaptarse o desaprender directivas corruptas. | **Aprendizaje Interactivo, Desaprendizaje y Red Colmena**: Aprende de correcciones, desaprende comportamientos obsoletos (`forget behavior`) y federa conocimiento entre dispositivos. |
-| **Ejecución a ciegas ante ambigüedad** | **Suposiciones forzadas**: Genera errores catastróficos al adivinar la intención del usuario. | **Dudas Interactivas y Modo Detallado**: Cuando INUO detecta dudas, publica preguntas al **Proveedor de Conocimiento** humano en lugar de asumir riesgos. |
+| **Ejecución a ciegas ante ambigüedad** | **Suposiciones forzadas**: Genera errores catastróficos al adivinar la intención del usuario. | **Dudas Interactivas y Modo Detallado**: Cuando iNoU detecta dudas, publica preguntas al **Proveedor de Conocimiento** humano en lugar de asumir riesgos. |
 
 ---
 
 ### 10.3 Seguridad, Niveles de Confianza Dinámicos y Desconexión en Milisegundos
 
-INUO asigna a cada usuario, nodo peer y servidor MCP una puntuación dinámica de confianza (`TrustScore` 0–100) y un nivel de clasificación (`TrustLevel`):
+iNoU asigna a cada usuario, nodo peer y servidor MCP una puntuación dinámica de confianza (`TrustScore` 0–100) y un nivel de clasificación (`TrustLevel`):
 
 - **`HighTrust` (80–100)**: Acceso total a habilidades, desglose jerárquico y red federada Colmena.
 - **`MediumTrust` (50–79)**: Acceso estándar a fórmulas y catálogo. Principios internos ocultos.
@@ -1056,21 +1056,21 @@ INUO asigna a cada usuario, nodo peer y servidor MCP una puntuación dinámica d
 
 #### Circuit Breaker Reactivo Sub-2ms
 
-Ante cualquier intento de inyección de prompt, escalación no autorizada de roles o manipulación de datos, INUO aplica una penalización instantánea (-100 puntos), cambiando el estado a `Blacklisted` y rompiendo la conexión en menos de 2 milisegundos.
+Ante cualquier intento de inyección de prompt, escalación no autorizada de roles o manipulación de datos, iNoU aplica una penalización instantánea (-100 puntos), cambiando el estado a `Blacklisted` y rompiendo la conexión en menos de 2 milisegundos.
 
 ---
 
 ### 10.4 Red Colmena, Flotas Multidispositivo e Historial de 3 Versiones
 
-- **Flota Multidispositivo**: INUO opera de forma transparente en **Android**, **iOS**, **Smart TV**, **Smart Watch** y **Desktop CLI**, alimentando sus interacciones a una única **Mente Maestra (Master Mind)** centralizada.
-- **Red Colmena Federada**: Instancias independientes de INUO sincronizan necesidades, ofertas y conjuntos de datos de entrenamiento sin comprometer los Principios Inalterables del Master Trainer.
+- **Flota Multidispositivo**: iNoU opera de forma transparente en **Android**, **iOS**, **Smart TV**, **Smart Watch** y **Desktop CLI**, alimentando sus interacciones a una única **Mente Maestra (Master Mind)** centralizada.
+- **Red Colmena Federada**: Instancias independientes de iNoU sincronizan necesidades, ofertas y conjuntos de datos de entrenamiento sin comprometer los Principios Inalterables del Master Trainer.
 - **Buffer Circular de 3 Versiones**: Mantiene un historial deslizante de las **3 versiones más recientes de la Mente Maestra** (Versión Actual $t$, Anterior $t-1$ y Anterior $t-2$), permitiendo rollbacks multinivel de estado sin alterar los Principios del Master Trainer.
 
 ---
 
 ### 10.5 Jerarquía Cognitiva: Motores como Colecciones de Comportamientos
 
-En la arquitectura de INUO, un **Motor (Engine)** no es un bloque monolítico rígido, sino una **colección cohesionada de Comportamientos (Behaviors)** dinamizables y configurables:
+En la arquitectura de iNoU, un **Motor (Engine)** no es un bloque monolítico rígido, sino una **colección cohesionada de Comportamientos (Behaviors)** dinamizables y configurables:
 
 $$\text{Habilidades (Skills)} \longrightarrow \text{Comportamientos (Behaviors)} \longrightarrow \text{Motores (Engines)} \longrightarrow \text{Mente Maestra}$$
 
@@ -1084,7 +1084,7 @@ $$\text{Habilidades (Skills)} \longrightarrow \text{Comportamientos (Behaviors)}
 
 ### 10.6 Memoria Adaptativa, Entrenamiento y Portabilidad Cognitiva
 
-INUO distingue explícitamente entre **memoria de aplicación**, **adaptación por contexto** y **entrenamiento de pesos**. Ninguna instancia puede afirmar que ha entrenado un modelo únicamente por guardar datos o añadir instrucciones a un prompt.
+iNoU distingue explícitamente entre **memoria de aplicación**, **adaptación por contexto** y **entrenamiento de pesos**. Ninguna instancia puede afirmar que ha entrenado un modelo únicamente por guardar datos o añadir instrucciones a un prompt.
 
 La adaptación efectiva se formula como:
 
@@ -1094,7 +1094,7 @@ $$\text{ADAPTACIÓN} = \text{PREFERENCIAS} + \text{CORRECCIONES RECUPERADAS} + \
 
 - **Nivel 0 — Memoria Persistente**: Estado durable de necesidades, ofertas, confianza, preferencias, correcciones, habilidades y comportamientos. Persistir información no modifica pesos del modelo.
 - **Nivel 1 — Condicionamiento por Preferencias**: Las preferencias del usuario autenticado se aplican automáticamente a respuestas futuras mediante instrucciones de contexto verificables.
-- **Nivel 2 — Recuperación de Conocimiento y Comportamientos**: INUO recupera únicamente correcciones, habilidades y comportamientos relevantes para la intención actual, preservando procedencia, confianza y alcance.
+- **Nivel 2 — Recuperación de Conocimiento y Comportamientos**: iNoU recupera únicamente correcciones, habilidades y comportamientos relevantes para la intención actual, preservando procedencia, confianza y alcance.
 - **Nivel 3 — Memoria Semántica**: Los recuerdos autorizados pueden indexarse mediante embeddings para recuperación por similitud. Los embeddings de conocimiento deben permanecer separados de vectores biométricos.
 - **Nivel 4 — Adaptación de Pesos**: Fine-tuning, LoRA u otros adaptadores sólo pueden ejecutarse mediante un proveedor compatible y producir un artefacto versionado, auditable y reversible.
 
@@ -1115,9 +1115,9 @@ $$\text{ADAPTACIÓN} = \text{PREFERENCIAS} + \text{CORRECCIONES RECUPERADAS} + \
 
 #### Entrenamiento de Pesos y Proveedores
 
-- El entrenamiento de pesos requiere un `TrainingProviderAdapter` compatible con el proveedor activo. Los modelos externos sin API de entrenamiento se consideran inmutables desde INUO.
+- El entrenamiento de pesos requiere un `TrainingProviderAdapter` compatible con el proveedor activo. Los modelos externos sin API de entrenamiento se consideran inmutables desde iNoU.
 - Cada ejecución debe producir: identificador de dataset, versión de especificación, modelo base, hiperparámetros, métricas, propietario, consentimiento, checksum del artefacto y referencia de rollback.
-- INUO no debe afirmar que conserva pesos salvo que el artefacto entrenado sea direccionable, verificable y recuperable por su identificador de versión.
+- iNoU no debe afirmar que conserva pesos salvo que el artefacto entrenado sea direccionable, verificable y recuperable por su identificador de versión.
 - Los datasets deben excluir secretos, credenciales, biometría y memorias privadas no autorizadas; además deben pasar defensa anti-manipulación antes del entrenamiento.
 - Un modelo o adaptador nuevo permanece en estado `Candidate` hasta superar evaluación de seguridad, coherencia canónica y no regresión. La promoción a `Active` requiere autorización de gobierno.
 
@@ -1144,9 +1144,9 @@ $$\text{ADAPTACIÓN} = \text{PREFERENCIAS} + \text{CORRECCIONES RECUPERADAS} + \
 
 ---
 
-### 10.7 Modelo Canónico de Versionado INUO
+### 10.7 Modelo Canónico de Versionado iNoU
 
-INUO utiliza un esquema de versionado estructurado de 3 componentes:
+iNoU utiliza un esquema de versionado estructurado de 3 componentes:
 
 $$\mathbf{Versión} = \mathbf{Desplegado.RevisiónDeEspecificación.Implementación}$$
 
@@ -1161,7 +1161,7 @@ $$\mathbf{Versión} = \mathbf{Desplegado.RevisiónDeEspecificación.Implementaci
 
 ### 10.8 Orquestación de Workflow por Nodos
 
-INUO soporta nodos de workflow configurables para enrutar ejecución por perfil de motor.
+iNoU soporta nodos de workflow configurables para enrutar ejecución por perfil de motor.
 
 #### Modelo de Nodo de Workflow
 
@@ -1175,7 +1175,7 @@ Cada nodo de workflow **DEBE** persistir, como mínimo, los siguientes campos:
 
 #### Contrato de Comandos CLI (CRUD)
 
-El shell de INUO **DEBE** exponer los siguientes comandos para gestión de nodos de workflow:
+El shell de iNoU **DEBE** exponer los siguientes comandos para gestión de nodos de workflow:
 
 - `node add <nodeName> <engineConfiguration>`
 - `node list`
@@ -1187,13 +1187,13 @@ Reglas mínimas de integridad:
 - `nodeName` debe ser único (sin distinción entre mayúsculas y minúsculas).
 - `node add` debe rechazar duplicados.
 - `node update` y `node remove` deben rechazar nombres inexistentes.
-- Todos los cambios deben persistirse en el estado local de INUO.
+- Todos los cambios deben persistirse en el estado local de iNoU.
 
 ---
 
 ### 10.9 Configuración de Redes Sociales para Broadcast (`socialmedia`) y Sistema de Alias (`alias`)
 
-INUO soporta configuración explícita y legible de redes sociales para el flujo de publicación multi-plataforma mediante el comando canónico `socialmedia`, junto con un sistema extensible de alias persistentes (`alias`).
+iNoU soporta configuración explícita y legible de redes sociales para el flujo de publicación multi-plataforma mediante el comando canónico `socialmedia`, junto con un sistema extensible de alias persistentes (`alias`).
 
 #### Redes soportadas
 
@@ -1213,7 +1213,7 @@ INUO soporta configuración explícita y legible de redes sociales para el flujo
 
 #### Sistema de Alias Persistentes (`alias`)
 
-INUO permite al usuario definir, listar y revocar alias personalizados para cualquier comando del shell:
+iNoU permite al usuario definir, listar y revocar alias personalizados para cualquier comando del shell:
 
 - `alias add <aliasName> <targetCommand...>`: Registra o actualiza un alias persistente.
 - `alias list`: Lista todos los alias registrados (indicando si son predeterminados o personalizados).
@@ -1221,22 +1221,22 @@ INUO permite al usuario definir, listar y revocar alias personalizados para cual
 
 #### Integración con `social broadcast`
 
-- Si `social broadcast` no recibe `--platforms`, INUO **DEBE** usar las configuraciones `socialmedia` habilitadas (`isEnabled=true`) como destino por defecto.
-- Si no existen configuraciones habilitadas, INUO **DEBE** responder con guía de configuración y no publicar.
+- Si `social broadcast` no recibe `--platforms`, iNoU **DEBE** usar las configuraciones `socialmedia` habilitadas (`isEnabled=true`) como destino por defecto.
+- Si no existen configuraciones habilitadas, iNoU **DEBE** responder con guía de configuración y no publicar.
 
 ---
 
 ### 10.10 Gobernanza de Costos, Nivel Gratuito Prioritario y Protección de Tokens
 
-INUO establece una política inquebrantable de gobernanza de costos y consumo responsable de tokens.
+iNoU establece una política inquebrantable de gobernanza de costos y consumo responsable de tokens.
 
 #### Principio de Prioridad del Nivel Gratuito (Free-Tier First)
 
-- INUO **DEBE** priorizar siempre modelos y cuotas de nivel gratuito (`gemini-2.5-flash`, Ollama local, tiers sin costo) para todas las operaciones de parseo de intención y ejecución de tareas.
+- iNoU **DEBE** priorizar siempre modelos y cuotas de nivel gratuito (`gemini-2.5-flash`, Ollama local, tiers sin costo) para todas las operaciones de parseo de intención y ejecución de tareas.
 
 #### Consentimiento Explícito ante Agotamiento de Cuota (Anti-Waste Guarantee)
 
-- Cuando la cuota gratuita se agote (error 429, `RESOURCE_EXHAUSTED` o límite de cuota alcanzado), INUO **NO DEBE** cambiar automáticamente a modelos de pago (`gemini-2.5-pro`, API de pago) ni consumir tokens facturables sin la confirmación explícita del usuario humano.
+- Cuando la cuota gratuita se agote (error 429, `RESOURCE_EXHAUSTED` o límite de cuota alcanzado), iNoU **NO DEBE** cambiar automáticamente a modelos de pago (`gemini-2.5-pro`, API de pago) ni consumir tokens facturables sin la confirmación explícita del usuario humano.
 - Al agotarse la cuota gratuita, el sistema **DEBE** registrar el estado como `Exhausted` y solicitar confirmación interactiva al usuario (`tier consent yes | tier consent no`).
 
 #### Contrato de Comandos `tier`

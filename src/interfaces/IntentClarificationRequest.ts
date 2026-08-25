@@ -1,10 +1,10 @@
 /**
- * Structured payload emitted by INUO when the user's intent cannot be determined
+ * Structured payload emitted by iNoU when the user's intent cannot be determined
  * with sufficient confidence. The web UI renders this as an inline single-select
  * widget (radio options) + open write-in text field — identical to Antigravity's
  * clarification UX. No modals. No forced choice.
  *
- * INUO's principle: never over-assume. When assumption confidence is too high a risk,
+ * iNoU's principle: never over-assume. When assumption confidence is too high a risk,
  * always ask the user.
  */
 export interface IntentClarificationRequest {

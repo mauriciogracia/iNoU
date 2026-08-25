@@ -3,23 +3,23 @@
 - id: 0013
 - status: pending
 - createdAt: 2026-08-17
-- owner: INUO Team
+- owner: iNoU Team
 - source: user request / spec elicitation 2026-08-17
 
 ## Context
 
-INUO currently has no concept of a persistent chat session. Every shell
+iNoU currently has no concept of a persistent chat session. Every shell
 or browser interaction runs against a single implicit context window with
 no history isolation, no naming, and no way to switch between parallel
 conversations.
 
 Full feature specification in:
-[`docs/tech-specs/chat_feature.specs.md`](file:///d:/repos/INUO/docs/tech-specs/chat_feature.specs.md)
+[`docs/tech-specs/chat_feature.specs.md`](file:///d:/repos/iNoU/docs/tech-specs/chat_feature.specs.md)
 
 Three capabilities are bundled as one entity roll-out because they share
 the same DDL, repository, and UI panel:
 
-1. **Multiple named chats** — `chat` as a first-class INUO entity (SQLite,
+1. **Multiple named chats** — `chat` as a first-class iNoU entity (SQLite,
    Colmena-syncable, CRUD via semantic dispatcher, right-panel UI).
 2. **Chat merge** — chronological interleave of 2+ chat histories with
    optional source deletion; multi-select UI with Merge dialog.

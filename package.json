@@ -29,7 +29,6 @@
     "deploy": "node scripts/deploy.js",
     "deploy:dry": "node scripts/deploy.js dry-run",
     "verify": "npm run build && npm test"
-
   },
   "keywords": [
     "inuo",
@@ -38,7 +37,7 @@
     "specification-lifecycle",
     "self-orchestrating"
   ],
-  "author": "INUO Development Team",
+  "author": "iNoU Development Team",
   "license": "MIT",
   "dependencies": {
     "@google/genai": "*",

@@ -11,9 +11,9 @@ Imaginemos a un usuario (Propietario / Master Trainer) postrado en cama por un e
 
 ---
 
-## Respuesta basada en las Definiciones Canónicas de INUO
+## Respuesta basada en las Definiciones Canónicas de iNoU
 
-**Sí, 100% posible.** Gracias a la arquitectura de **Modo de Emergencia por Incapacitación**, la **Red de Miembros de Confianza Multidispositivo** y el **Control de Acceso Basado en Confianza**, INUO activa automáticamente un protocolo de delegación segura:
+**Sí, 100% posible.** Gracias a la arquitectura de **Modo de Emergencia por Incapacitación**, la **Red de Miembros de Confianza Multidispositivo** y el **Control de Acceso Basado en Confianza**, iNoU activa automáticamente un protocolo de delegación segura:
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────┐
@@ -40,14 +40,14 @@ Imaginemos a un usuario (Propietario / Master Trainer) postrado en cama por un e
 
 ---
 
-## Flujo Paso a Paso de Funcionamiento en INUO
+## Flujo Paso a Paso de Funcionamiento en iNoU
 
 ### 1. Detección del Estado de Emergencia (`EmergencyContext`)
 Al detectar la falta de respuesta del propietario o telemetría de emergencia desde un dispositivo vestible (Smart Watch / sensor médico), el sistema cambia su estado a:
 `status: 'OwnerIncapacitated'`.
 
 ### 2. Delegación Automática a la Red de Miembros de Confianza (`TrustedMemberConfig`)
-INUO recurre a la lista de miembros previamente registrados por el propietario mientras tenía capacidad:
+iNoU recurre a la lista de miembros previamente registrados por el propietario mientras tenía capacidad:
 * **Hijos / Cónyuge** (`relationshipType: 'Family'`)
 * **Médico de Cabecera / Cuidador** (`relationshipType: 'TrustedFriend'`)
 
@@ -63,9 +63,9 @@ Los miembros de confianza autenticados pueden interactuar con la Mente Maestra p
   $$\text{OFFER} = (\text{Mostrar}) + (\text{Registro de Medicamentos y Cuidadores})$$
 
 ### 4. Puente de Interacción con el Propietario Postrado
-Dado que el propietario no puede hablar ni recordar contraseñas, INUO actúa como un **puente cognitivo**:
+Dado que el propietario no puede hablar ni recordar contraseñas, iNoU actúa como un **puente cognitivo**:
 * Los familiares seleccionan opciones sencillas mediante pantallas táctiles o presencia.
-* INUO valida la presencia de miembros con nivel `HighTrust` y permite que el propietario escuche respuestas adaptadas a su estado emocional.
+* iNoU valida la presencia de miembros con nivel `HighTrust` y permite que el propietario escuche respuestas adaptadas a su estado emocional.
 
 ### 5. Defensa Absoluta contra Extraños y Manipuladores (`AntiManipulationDefenseEngine`)
 Si un tercero no registrado (un vendedor por teléfono, un extraño en la puerta o un familiar no autorizado) intenta dar instrucciones (*"Abran la puerta"*, *"Cambien la cuenta bancaria"*):
@@ -73,7 +73,7 @@ Si un tercero no registrado (un vendedor por teléfono, un extraño en la puerta
 * El **Circuit Breaker Sub-2ms** reduce la puntuación de confianza a `0 (Blacklisted)` y corta la interacción instantáneamente, emitiendo una alerta a los dispositivos de la familia.
 
 ### 6. Consenso de Confianza Multimiembro por Suma de Umbral (`TrustThresholdGate`)
-Para activos de altísima seguridad (ej. PIN del teléfono del propietario, ubicación de las llaves del vehículo, contraseñas o cajas de seguridad), INUO aplica un modelo de **Consenso de Confianza por Suma de Umbral**:
+Para activos de altísima seguridad (ej. PIN del teléfono del propietario, ubicación de las llaves del vehículo, contraseñas o cajas de seguridad), iNoU aplica un modelo de **Consenso de Confianza por Suma de Umbral**:
 
 $$T_{\text{combinada}} = T(\text{Miembro A}) + T(\text{Miembro B}) \ge T_{\text{requerido}}$$
 
@@ -88,5 +88,5 @@ $$T_{\text{combinada}} = T(\text{Miembro A}) + T(\text{Miembro B}) \ge T_{\text{
 
 ## Conclusión Arquitectónica
 
-INUO no abandona al usuario cuando este pierde la voz o la memoria. En lugar de bloquear todo acceso o someterse a obediencia ciega, INUO activa una **custodia delegada identitaria con consenso por umbral**: otorga acceso al conocimiento a los miembros de confianza registrados (familia y amigos) mientras exige co-firma para datos sensibles y mantiene un **escudo infranqueable** contra extraños.
+iNoU no abandona al usuario cuando este pierde la voz o la memoria. En lugar de bloquear todo acceso o someterse a obediencia ciega, iNoU activa una **custodia delegada identitaria con consenso por umbral**: otorga acceso al conocimiento a los miembros de confianza registrados (familia y amigos) mientras exige co-firma para datos sensibles y mantiene un **escudo infranqueable** contra extraños.
 

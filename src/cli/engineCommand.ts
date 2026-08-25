@@ -4,7 +4,7 @@ export function runEngineCommand(args: string[], rootDir: string = process.cwd()
   const sub = args[0]?.toLowerCase() || 'list';
 
   if (sub === 'list') {
-    console.log('\x1b[36m%s\x1b[0m', '=== INUO Engine Composition Registry (Behavior Groups) ===\n');
+    console.log('\x1b[36m%s\x1b[0m', '=== iNoU Engine Composition Registry (Behavior Groups) ===\n');
     const engines = listEngines(rootDir);
 
     if (engines.length === 0) {

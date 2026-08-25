@@ -22,7 +22,7 @@ const { runLearnCommand } = require("../dist/cli/learnCommand");
 const { executeShellLine } = require("../dist/cli/shell");
 const { loadState } = require("../dist/cli/context");
 
-test("INUO Self-Evolution & Skill Learning Engine Comprehensive Tests", async (t) => {
+test("iNoU Self-Evolution & Skill Learning Engine Comprehensive Tests", async (t) => {
   const tmpDir = fs.mkdtempSync(path.join(__dirname, "tmp_learn_comp_"));
 
   // Bootstrap minimal directory structure for test isolation

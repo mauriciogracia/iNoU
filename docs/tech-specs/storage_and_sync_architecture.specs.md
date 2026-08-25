@@ -4,14 +4,14 @@
 | :--- | :--- |
 | **Status** | `CANONICAL` |
 | **Architecture Domain** | L1 RAM Cache, L2 SQLite Storage Engine, Causal Delta Sync, Git-Like 3-Way Conflict Resolution |
-| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/INUO/docs/tech-specs/main-specs-goals.md), [`clients_api_event_bus.specs.md`](file:///d:/repos/INUO/docs/tech-specs/clients_api_event_bus.specs.md) |
+| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/iNoU/docs/tech-specs/main-specs-goals.md), [`clients_api_event_bus.specs.md`](file:///d:/repos/iNoU/docs/tech-specs/clients_api_event_bus.specs.md) |
 
 ---
 
 ## 1. Architectural Blueprint: Hybrid L1 RAM + L2 SQLite Engine
 
 ### 1.1 Structural Taxonomy Equivalence
-Throughout INUO specifications and implementation runtimes, relational and document terminology map interchangeably:
+Throughout iNoU specifications and implementation runtimes, relational and document terminology map interchangeably:
 * **`Table` $\equiv$ `Collection`**: The logical container/table of records (e.g. `projects`, `workspaces`, `tasks`, `memories`, `preferences`, `integrations`).
 * **`Row` $\equiv$ `Entity` / `Record`**: A single discrete instance within a collection/table (e.g. a specific Project entity, an individual Need/Offer task entity, a scoped preference entity).
 
@@ -19,7 +19,7 @@ Throughout INUO specifications and implementation runtimes, relational and docum
 
 ### 1.2 Multi-Tier Engine Overview
 
-INUO utilizes a **Tiered Storage Architecture** to deliver microsecond UI responsiveness while maintaining 100% ACID disk durability and offline resiliency:
+iNoU utilizes a **Tiered Storage Architecture** to deliver microsecond UI responsiveness while maintaining 100% ACID disk durability and offline resiliency:
 
 
 ```
@@ -182,7 +182,7 @@ When synchronizing state between local client and remote storage (Google Drive /
 
 ### 4.2 Tier 2: Field-Level 3-Way Merge
 * If concurrent edits modified non-overlapping properties (e.g., Device A changed task `status: "InProgress"`, while Device B added task `details: "Updated specs"`):
-  - **Action**: INUO merges the disjoint properties into a unified record automatically.
+  - **Action**: iNoU merges the disjoint properties into a unified record automatically.
 
 ### 4.3 Tier 3: Interactive Conflict Prompt (Git Merge Style)
 * If the same property was mutated concurrently with conflicting values (e.g., Device A set title *"Refactor Auth"* at 10:00:00, while Device B set title *"Delete Auth"* at 10:00:01):

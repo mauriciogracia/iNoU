@@ -1,5 +1,5 @@
 /**
- * Structured breakdown of INUO's canonical versioning model (Deployed.SpecRevision.Implementation).
+ * Structured breakdown of iNoU's canonical versioning model (Deployed.SpecRevision.Implementation).
  */
 export interface InuoVersionSpec {
   /** Percentage of deployed production functionality (0 to 100) */

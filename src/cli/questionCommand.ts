@@ -6,7 +6,7 @@ export function runQuestionCommand(args: string[], rootDir: string = process.cwd
   const sub = args[0]?.toLowerCase() || 'list';
 
   if (sub === 'list') {
-    console.log('\x1b[36m%s\x1b[0m', '=== INUO Divide & Conquer Interactive Questions Registry ===\n');
+    console.log('\x1b[36m%s\x1b[0m', '=== iNoU Divide & Conquer Interactive Questions Registry ===\n');
     const paths = getProjectPaths(rootDir);
     const state = loadState(paths.statePath);
     const questions = state.interactiveQuestions || [];

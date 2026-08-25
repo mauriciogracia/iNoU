@@ -7,13 +7,13 @@ export function runBootstrap(rootDir: string = process.cwd()): void {
 
   console.log(
     "\x1b[36m%s\x1b[0m",
-    "=== INUO Seed Agent Bootstrap Protocol ===",
+    "=== iNoU Seed Agent Bootstrap Protocol ===",
   );
 
   if (!fs.existsSync(paths.specPath)) {
-    const defaultSpec = `# INUO Core Persistent System Prompt (\`INUO_SPEC.md\`)
+    const defaultSpec = `# iNoU Core Persistent System Prompt (\`INUO_SPEC.md\`)
 
-This specification prompt governs all autonomous reasoning, code generation, and interactive operations within the **INUO Platform**.
+This specification prompt governs all autonomous reasoning, code generation, and interactive operations within the **iNoU Platform**.
 
 ## Operational Baseline
 * NEED = (VERB) + (OBJECT)

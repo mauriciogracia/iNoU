@@ -16,7 +16,7 @@ test("Multi-Platform Social Broadcast Engine Unit Tests", async (t) => {
     "dispatches multi-platform social media posts simultaneously",
     () => {
       const res = broadcastMultiPlatform(
-        "Excited to launch INUO v0.2.0 platform specification!",
+        "Excited to launch iNoU v0.2.0 platform specification!",
         ["instagram", "tiktok", "facebook", "linkedin"],
         scratchDir,
       );

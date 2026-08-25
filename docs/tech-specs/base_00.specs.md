@@ -4,7 +4,7 @@
 **Email:** mgg.isCO@gmail.com  
 **Date:** 09.21.2015  
 
-*A Global Protocol for INUO (iNeed-Uoffer, or the PLATFORM) Matching*
+*A Global Protocol for iNoU (iNeed-Uoffer, or the PLATFORM) Matching*
 
 ---
 
@@ -115,9 +115,9 @@ By fragmenting complex objectives into specific, matchable micro-tasks, the plat
 
 Needs can be systematically chained to represent complex workflows. In this hierarchy, a Parent Need (e.g., 'Construct Road') can be set to a `Blocked` state, remaining inactive until its Prerequisite Needs (e.g., 'Open Tender', 'Geotechnical Survey') are successfully resolved. This architecture enables the creation of a **Dependency Graph** of atomic tasks, allowing the system to automatically 'unlock' and trigger future needs only when their specific operational requirements have been fulfilled.
 
-## 11. The Self-Orchestrating Dev Lifecycle (INUO-on-INUO)
+## 11. The Self-Orchestrating Dev Lifecycle (iNoU-on-iNoU)
 
-The PLATFORM leverages its own architectural logic to manage its development, maintenance, and evolution. By treating the software development lifecycle as an INUO marketplace, the PLATFORM becomes self-improving.
+The PLATFORM leverages its own architectural logic to manage its development, maintenance, and evolution. By treating the software development lifecycle as an iNoU marketplace, the PLATFORM becomes self-improving.
 
 ### 11.1 The Recursive Loop
 
@@ -162,7 +162,7 @@ The LLM serves as the integration intelligence, dynamically mapping a structured
 
 #### Self-Orchestration Logic Summary
 
-The PLATFORM utilizes an **INUO-on-INUO** process where the software development lifecycle is treated as an internal marketplace:
+The PLATFORM utilizes an **iNoU-on-iNoU** process where the software development lifecycle is treated as an internal marketplace:
 
 * **Seed Agent Architecture:** A CLI-based agent parses Product Owner intent into atomic technical needs, proposes code implementations (Offers), and applies validated changes.
 * **System Prompt Specification:** Defines the operational logic for the Seed Agent, mandating decomposition, verb/object categorization, and dependency tracking.

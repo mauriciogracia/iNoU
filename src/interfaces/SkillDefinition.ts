@@ -1,5 +1,5 @@
 /**
- * Definition of a learned skill or integration in INUO.
+ * Definition of a learned skill or integration in iNoU.
  */
 export interface SkillDefinition {
   id: string;

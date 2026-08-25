@@ -14,7 +14,7 @@ if (["serve", "api", "hub", "server", "web", "ui"].includes(args[0]?.toLowerCase
   apiServer.start().then(({ port: activePort, host: activeHost, url }) => {
     console.log(
       "\x1b[32m%s\x1b[0m",
-      `\n🚀 [INUO Cloud Relay Hub & API Gateway] Live at ${url} (binding ${activeHost}:${activePort})`
+      `\n🚀 [iNoU Cloud Relay Hub & API Gateway] Live at ${url} (binding ${activeHost}:${activePort})`
     );
     console.log(
       "\x1b[36m%s\x1b[0m",
@@ -27,7 +27,7 @@ if (["serve", "api", "hub", "server", "web", "ui"].includes(args[0]?.toLowerCase
     process.on("SIGINT", shutdown);
     process.on("SIGTERM", shutdown);
   }).catch((err) => {
-    console.error("\x1b[31m[INUO Server Error]\x1b[0m", err.message);
+    console.error("\x1b[31m[iNoU Server Error]\x1b[0m", err.message);
     process.exit(1);
   });
 } else if (args.length === 0) {

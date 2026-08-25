@@ -3,7 +3,7 @@
 - id: 0009
 - status: pending
 - createdAt: 2026-08-16
-- owner: INUO Team
+- owner: iNoU Team
 - source: docs/toImprove.md
 
 ## Context

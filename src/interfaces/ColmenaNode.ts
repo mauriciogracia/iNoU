@@ -1,7 +1,7 @@
 import { TrustLevel } from '../types/TrustLevel';
 
 /**
- * Peer INUO node registration in the federated "Colmena" Hivemind network.
+ * Peer iNoU node registration in the federated "Colmena" Hivemind network.
  */
 export interface ColmenaNode {
   /** Unique peer node ID */

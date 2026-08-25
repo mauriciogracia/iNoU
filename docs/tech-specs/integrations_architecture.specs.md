@@ -4,17 +4,17 @@
 | :--- | :--- |
 | **Status** | `CANONICAL` |
 | **Domain** | External APIs, Social Networks, Cloud Storage, LLM Providers, Decoupled Vault Security |
-| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/INUO/docs/tech-specs/main-specs-goals.md), [`storage_and_sync_architecture.specs.md`](file:///d:/repos/INUO/docs/tech-specs/storage_and_sync_architecture.specs.md) |
+| **Architecture Reference** | [`main-specs-goals.md`](file:///d:/repos/iNoU/docs/tech-specs/main-specs-goals.md), [`storage_and_sync_architecture.specs.md`](file:///d:/repos/iNoU/docs/tech-specs/storage_and_sync_architecture.specs.md) |
 
 ---
 
 ## 1. System Architecture: Decoupled Vault & Adapter Model
 
-INUO enforces strict decoupling between **public connection metadata** (endpoints, rate limits, scopes, model names) and **private credentials** (API keys, OAuth tokens, GCP service accounts) to ensure 100% zero-exposure security during cloud sync:
+iNoU enforces strict decoupling between **public connection metadata** (endpoints, rate limits, scopes, model names) and **private credentials** (API keys, OAuth tokens, GCP service accounts) to ensure 100% zero-exposure security during cloud sync:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                              INUO CORE RUNTIME & ADAPTER LAYER                         │
+│                              iNoU CORE RUNTIME & ADAPTER LAYER                         │
 ├───────────────────────────────────┬────────────────────────────────────────────────────┤
 │   PUBLIC METADATA (SQLite .inuo.db)│      PRIVATE SECRETS (Local Biometric Vault)       │
 │                                   │                                                    │

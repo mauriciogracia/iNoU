@@ -3,7 +3,7 @@
 - id: 0003
 - status: done
 - completedAt: 2026-08-14
-- owner: INUO Team
+- owner: iNoU Team
 - source: user request
 
 ## What Changed

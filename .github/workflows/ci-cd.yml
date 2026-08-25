@@ -1,4 +1,4 @@
-name: INUO CI/CD Pipeline
+name: iNoU CI/CD Pipeline
 
 on:
   push:

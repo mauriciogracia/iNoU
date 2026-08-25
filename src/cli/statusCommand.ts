@@ -5,7 +5,7 @@ export function runStatus(rootDir: string = process.cwd()): void {
   recalculateAndSyncVersion(rootDir);
   const ctx = createContext(rootDir);
 
-  console.log('\x1b[36m%s\x1b[0m', '=== INUO Platform Status ===');
+  console.log('\x1b[36m%s\x1b[0m', '=== iNoU Platform Status ===');
 
   if (ctx.manifest) {
     console.log(`\x1b[1mSPEC_VERSION:\x1b[0m ${ctx.manifest.SPEC_VERSION}`);

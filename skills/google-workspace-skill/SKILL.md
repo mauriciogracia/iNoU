@@ -7,9 +7,9 @@ description: Out-of-the-box integration skill for Google OAuth 2.0 authenticatio
 
 ## 1. Overview & Capability
 
-This skill equips INUO agents and CLI runtimes with native out-of-the-box connectivity to Google Cloud & Workspace services:
+This skill equips iNoU agents and CLI runtimes with native out-of-the-box connectivity to Google Cloud & Workspace services:
 1. **Google Auth**: OAuth 2.0 PKCE user authorization & GCP Service Account JWT credentials.
-2. **Google Drive Sync**: Autonomous bi-directional snapshot serialization for cross-device planning ([`scenario_03.md`](file:///d:/repos/INUO/docs/tech-specs/scenario_03.md)).
+2. **Google Drive Sync**: Autonomous bi-directional snapshot serialization for cross-device planning ([`scenario_03.md`](file:///d:/repos/iNoU/docs/tech-specs/scenario_03.md)).
 3. **Gemini Context Caching**: Automatic long-context caching for instant session resumption without token overhead.
 
 ---
@@ -35,7 +35,7 @@ This skill equips INUO agents and CLI runtimes with native out-of-the-box connec
 
 ## 3. Data Mapping & Zero-Exposure Governance
 
-| INUO Entity | Google Drive Storage Target | Security Rule |
+| iNoU Entity | Google Drive Storage Target | Security Rule |
 | :--- | :--- | :--- |
 | **`project`** | `INUO_Backups/<project_id>/manifest.json` | Public metadata & jurisdiction |
 | **`task` (DAG)** | `INUO_Backups/<project_id>/task_dag.json` | Node dependencies & prerequisite graph |

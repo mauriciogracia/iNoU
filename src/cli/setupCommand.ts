@@ -144,7 +144,7 @@ export async function runSetupCommand(
     const env = loadEnvironment(rootDir);
     const config = getCostGovernanceConfig(rootDir);
     const lines = [
-      "=== INUO Environment & AI Setup Status ===",
+      "=== iNoU Environment & AI Setup Status ===",
       `• Google API Key: ${maskApiKey(env.geminiApiKey)}`,
       `• Active Model: ${config.activeModel}`,
       `• Free Models Pool: ${(config.freeModelsPool || []).join(", ")}`,

@@ -9,7 +9,7 @@ const {
   recalculateAndSyncVersion,
 } = require("../dist/cli/versionEngine");
 
-test("INUO Canonical Versioning (Deployed.SpecRevision.Implementation) Unit Tests", async (t) => {
+test("iNoU Canonical Versioning (Deployed.SpecRevision.Implementation) Unit Tests", async (t) => {
   const scratchDir = path.join(__dirname, "scratch_version_test");
   if (!fs.existsSync(scratchDir)) fs.mkdirSync(scratchDir, { recursive: true });
 

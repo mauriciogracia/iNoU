@@ -1,5 +1,5 @@
 /**
- * A Behavior is a grouped collection of Skills defining an operational workflow persona in INUO.
+ * A Behavior is a grouped collection of Skills defining an operational workflow persona in iNoU.
  */
 export interface Behavior {
   /** Unique behavior ID */

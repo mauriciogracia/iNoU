@@ -3,20 +3,20 @@ import { I18nDictionary } from '../interfaces/I18nDictionary';
 export const enDictionary: I18nDictionary = {
   lang: 'en',
   shellBanner: {
-    title: 'INUO Interactive Shell',
+    title: 'iNoU Interactive Shell',
     protocolSync: 'Protocol Sync Status: Synced',
-    greeting: 'INUO active. Enter your command or goal.',
+    greeting: 'iNoU active. Enter your command or goal.',
   },
-  farewell: 'Exiting INUO shell. Goodbye!',
+  farewell: 'Exiting iNoU shell. Goodbye!',
   systemOverview: {
-    title: 'INUO Capabilities Overview',
+    title: 'iNoU Capabilities Overview',
     intentStructuring: 'Intent Structuring Engine: Formulates NEED = (VERB) + (OBJECT) paired with OFFER = (COMPLEMENT) + (OBJECT).',
     peerMatching: 'Direct Peer Matching: Connects open needs directly with matching offers (Request ➔ Donate, Buy ➔ Sell) without intermediaries.',
     goalDecomposition: 'Recursive Goal Decomposition: Automatically breaks down complex multi-step goals into executable sub-needs.',
     decentralizedGovernance: 'Decentralized Governance & Trust: Enforces millisecond circuit breakers and multi-party threshold consensus.',
   },
   hostGreeting: {
-    greeting: 'Welcome to INUO. How can I help you today?',
+    greeting: 'Welcome to iNoU. How can I help you today?',
   },
   intentParser: {
     analyzing: '[Gemini AI Intent Parser] Analyzing natural language intent...',

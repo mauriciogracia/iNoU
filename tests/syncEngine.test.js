@@ -23,7 +23,7 @@ test("Sync Engine Automated Detection & Verification Unit Tests", async (t) => {
     'detects spec version upgrade (e.g. SPEC_VERSION: "00.03.00") and applies verification update',
     () => {
       // Simulate updating SPEC_VERSION in INUO_SPEC.md to 00.03.00
-      const newSpecContent = `# INUO Core Persistent System Prompt (\`INUO_SPEC.md\`)
+      const newSpecContent = `# iNoU Core Persistent System Prompt (\`INUO_SPEC.md\`)
 SPEC_VERSION: "00.03.00"
 `;
       fs.writeFileSync(specPath, newSpecContent, "utf8");

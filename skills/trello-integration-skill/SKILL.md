@@ -1,16 +1,16 @@
 ---
 name: trello-integration-skill
-description: Out-of-the-box integration skill for Trello, mapping INUO Projects to Trello Boards and DAG Task nodes to Trello Cards with bi-directional status synchronization.
+description: Out-of-the-box integration skill for Trello, mapping iNoU Projects to Trello Boards and DAG Task nodes to Trello Cards with bi-directional status synchronization.
 ---
 
 # Trello Integration Skill (`trello-integration-skill`)
 
 ## 1. Overview & Capability
 
-This skill provides native out-of-the-box synchronization between INUO's AST DAG task engine and **Trello Kanban Boards**:
-1. **Board Provisioning**: Automatically provisions or binds a Trello Board to an INUO `project`.
-2. **DAG Task $\longleftrightarrow$ Card Mapping**: Converts INUO workflow nodes, Needs, and Offers into Trello cards with labels, checklists, and assignees.
-3. **Bi-Directional Status Sync**: Synchronizes card movements across lists with INUO task states (`Open` $\longleftrightarrow$ *To Do*, `InProgress` $\longleftrightarrow$ *In Progress*, `Blocked` $\longleftrightarrow$ *Blocked*, `Fulfilled` $\longleftrightarrow$ *Done*).
+This skill provides native out-of-the-box synchronization between iNoU's AST DAG task engine and **Trello Kanban Boards**:
+1. **Board Provisioning**: Automatically provisions or binds a Trello Board to an iNoU `project`.
+2. **DAG Task $\longleftrightarrow$ Card Mapping**: Converts iNoU workflow nodes, Needs, and Offers into Trello cards with labels, checklists, and assignees.
+3. **Bi-Directional Status Sync**: Synchronizes card movements across lists with iNoU task states (`Open` $\longleftrightarrow$ *To Do*, `InProgress` $\longleftrightarrow$ *In Progress*, `Blocked` $\longleftrightarrow$ *Blocked*, `Fulfilled` $\longleftrightarrow$ *Done*).
 
 ---
 
@@ -18,7 +18,7 @@ This skill provides native out-of-the-box synchronization between INUO's AST DAG
 
 ```
 ┌─────────────────────────────┐                    ┌─────────────────────────────┐
-│       INUO TASK ENGINE      │                    │     TRELLO KANBAN BOARD     │
+│       iNoU TASK ENGINE      │                    │     TRELLO KANBAN BOARD     │
 ├─────────────────────────────┤                    ├─────────────────────────────┤
 │  Project: "EmergencyRoad"   │ ◄────────────────► │  Board: "EmergencyRoad"     │
 │                             │                    │                             │
@@ -35,7 +35,7 @@ This skill provides native out-of-the-box synchronization between INUO's AST DAG
 
 ### 3.1 Register Trello Connection
 ```bash
-# 1. Register Trello Integration in INUO (scoped to project or global)
+# 1. Register Trello Integration in iNoU (scoped to project or global)
 ./inou.sh preference add --key integration --category webhook --provider trello --name "ProjectTrelloBoard" --project "EmergencyRoad"
 
 # 2. Store Trello API Key & Token in local vault
@@ -52,5 +52,5 @@ This skill provides native out-of-the-box synchronization between INUO's AST DAG
 ### 3.3 Status Reconciler Workflow
 When a card is moved to **Done** in Trello:
 * Webhook notifies `/api/v1/webhook/trello`.
-* INUO validates prerequisite completion.
+* iNoU validates prerequisite completion.
 * Unblocks downstream dependent tasks in the DAG AST automatically.

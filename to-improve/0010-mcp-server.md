@@ -3,12 +3,12 @@
 - id: 0010
 - status: pending
 - createdAt: 2026-08-16
-- owner: INUO Team
+- owner: iNoU Team
 - source: gap-analysis / Phase 4 / main-specs-goals.md §8
 
 ## Context
 
-`main-specs-goals.md` §8 Phase 4 requires `InouMcpServer.ts` exposing INUO
+`main-specs-goals.md` §8 Phase 4 requires `InouMcpServer.ts` exposing iNoU
 planning and execution tools to VSCode, Antigravity, Cursor, and AI agents.
 `clients_api_event_bus.specs.md` §2.5 mentions MCP in one sentence.
 No dedicated spec file or implementation file exists.

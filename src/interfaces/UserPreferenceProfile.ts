@@ -6,11 +6,11 @@ import { StyleSignal } from "./StyleSignal";
 /**
  * Learned response-style preferences for a single user, persisted across sessions.
  *
- * INUO ("I Know U") learns from every interaction, prompt, and frequent operation.
- * This profile is the primary memory of what the user prefers — INUO uses it to
+ * iNoU ("I Know U") learns from every interaction, prompt, and frequent operation.
+ * This profile is the primary memory of what the user prefers — iNoU uses it to
  * automatically "add salt" to prompts without requiring the user to repeat themselves.
  *
- * When styleConfidence < clarificationThreshold, INUO emits an IntentClarificationRequest
+ * When styleConfidence < clarificationThreshold, iNoU emits an IntentClarificationRequest
  * to the UI (inline widget: single-select options + open write-in) instead of assuming.
  */
 export interface UserPreferenceProfile {
@@ -20,7 +20,7 @@ export interface UserPreferenceProfile {
 
   /**
    * The detected/learned interaction style.
-   * Derived from accumulated styleSignals. INUO never hard-codes this —
+   * Derived from accumulated styleSignals. iNoU never hard-codes this —
    * it is always inferred or explicitly confirmed by the user.
    */
   interactionStyle?: InteractionStyle;
@@ -34,13 +34,13 @@ export interface UserPreferenceProfile {
   /**
    * Confidence score 0–1 for the current interactionStyle.
    * Computed as a weighted average of recent signal confidences.
-   * When below clarificationThreshold, INUO shows the clarification widget.
+   * When below clarificationThreshold, iNoU shows the clarification widget.
    */
   styleConfidence?: number;
 
   /**
-   * Minimum confidence required before INUO applies the learned style without
-   * asking. Below this threshold, INUO emits an IntentClarificationRequest.
+   * Minimum confidence required before iNoU applies the learned style without
+   * asking. Below this threshold, iNoU emits an IntentClarificationRequest.
    * Default: 0.6
    */
   clarificationThreshold?: number;

@@ -24,7 +24,7 @@ export async function runEvolveCommand(
 
   writeOutput(
     OutputChannelEnum.USER_REPLY,
-    `\x1b[36m=== INUO-on-INUO Self-Orchestrating Dev Lifecycle ===\x1b[0m\n\x1b[1mPO Intent (The Need):\x1b[0m "${cleanGoal}"\n`,
+    `\x1b[36m=== iNoU-on-iNoU Self-Orchestrating Dev Lifecycle ===\x1b[0m\n\x1b[1mPO Intent (The Need):\x1b[0m "${cleanGoal}"\n`,
   );
 
   const manifestPath = path.join(rootDir, "inuo-manifest.json");
@@ -36,10 +36,10 @@ export async function runEvolveCommand(
   const snapshot = createSnapshot(rootDir);
 
   try {
-    const prompt = `You are the INUO-on-INUO Self-Orchestration Architect.
+    const prompt = `You are the iNoU-on-iNoU Self-Orchestration Architect.
 The Product Owner has given the following feature goal: "${cleanGoal}"
 
-Your task is to evolve the INUO codebase AND specification following dev-rules.md:
+Your task is to evolve the iNoU codebase AND specification following dev-rules.md:
 1. Decompose the goal into Atomic Needs: NEED = (VERB) + (OBJECT).
 2. Every type, enum, and interface MUST be in its own single-definition file under src/interfaces/, src/types/, or src/enums/.
 3. Write a markdown specification snippet describing this new feature to be appended to main-specs-goals.md.
@@ -109,7 +109,7 @@ Return ONLY a raw JSON object with NO markdown formatting matching this structur
         }
         writeOutput(
           OutputChannelEnum.USER_REPLY,
-          `✔ Generated Interface: [src/interfaces/${item.filename}](file:///d:/repos/INUO/src/interfaces/${item.filename})`,
+          `✔ Generated Interface: [src/interfaces/${item.filename}](file:///d:/repos/iNoU/src/interfaces/${item.filename})`,
         );
       }
     }
@@ -132,7 +132,7 @@ Return ONLY a raw JSON object with NO markdown formatting matching this structur
         }
         writeOutput(
           OutputChannelEnum.USER_REPLY,
-          `✔ Generated Type Alias: [src/types/${item.filename}](file:///d:/repos/INUO/src/types/${item.filename})`,
+          `✔ Generated Type Alias: [src/types/${item.filename}](file:///d:/repos/iNoU/src/types/${item.filename})`,
         );
       }
     }
@@ -173,7 +173,7 @@ Return ONLY a raw JSON object with NO markdown formatting matching this structur
     );
     writeOutput(
       OutputChannelEnum.USER_REPLY,
-      `\x1b[33m★ INUO-on-INUO Self-Evolution Complete! Specification & Codebase synchronized.\x1b[0m`,
+      `\x1b[33m★ iNoU-on-iNoU Self-Evolution Complete! Specification & Codebase synchronized.\x1b[0m`,
     );
   } catch (err: any) {
     writeOutput(

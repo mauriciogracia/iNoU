@@ -1,7 +1,7 @@
 import { TrustLevel } from '../types/TrustLevel';
 
 /**
- * Dynamic trust state tracking for any entity interacting with INUO.
+ * Dynamic trust state tracking for any entity interacting with iNoU.
  */
 export interface TrustRecord {
   /** Unique entity ID */

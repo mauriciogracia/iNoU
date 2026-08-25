@@ -4,7 +4,7 @@
 | :--- | :--- |
 | **Status** | `CANONICAL DEPLOYMENT SPECIFICATION` |
 | **Domain** | Containerization, Docker/Compose, Cloud Relay Hub, Edge Nodes, TLS Ingress, Colmena Mesh |
-| **Architecture Reference** | [`clients_api_event_bus.specs.md`](file:///d:/repos/INUO/docs/tech-specs/clients_api_event_bus.specs.md), [`storage_and_sync_architecture.specs.md`](file:///d:/repos/INUO/docs/tech-specs/storage_and_sync_architecture.specs.md) |
+| **Architecture Reference** | [`clients_api_event_bus.specs.md`](file:///d:/repos/iNoU/docs/tech-specs/clients_api_event_bus.specs.md), [`storage_and_sync_architecture.specs.md`](file:///d:/repos/iNoU/docs/tech-specs/storage_and_sync_architecture.specs.md) |
 
 ---
 
