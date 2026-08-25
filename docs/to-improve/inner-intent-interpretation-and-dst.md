@@ -10,7 +10,28 @@
 
 ---
 
-## 1. Problem Statement
+## 1. Problem Statement & Core Architectural Goals
+
+### 1.1 The Core Purpose of iNoU Conversational DST
+The fundamental goal of iNoU's dialogue state tracking (DST) and intent engine is **Context Engineering and Detailed Prompt Synthesis from Human-Like Interaction**:
+1. **Rich Context Accumulation**: Transform natural, fragmented, human conversational turns into a robust, structured state of facts, constraints, and configuration parameters.
+2. **Contradiction Detection & Proactive Clarification**: Continuously compare incoming facts against accumulated state. If a user introduces conflicting instructions (e.g., *Turn 1: "servidor en el puerto 3000 con PostgreSQL"* vs *Turn 4: "corre en el puerto 8080 con SQLite"*), iNoU detects the clash immediately, pauses execution, and prompts the user for clarification before executing.
+3. **High-Fidelity Prompt Synthesis**: When an execution order is given, synthesize a fully hydrated, unambiguous, and detailed execution plan from all previously gathered context.
+
+---
+
+### 1.2 Domain Boundary: "Connecting Needs" vs. "Conversational Context DST"
+
+> [!IMPORTANT]
+> **Clear Architectural Separation**:
+> * **"Connecting Needs" ($\text{NEED} = \text{VERB} + \text{OBJECT} \leftrightarrow \text{OFFER} = \text{COMP\_VERB} + \text{OBJECT}$)**:
+>   This is the **P2P Marketplace & Matching Engine** of specifications for publishing and discovering public supply/demand items across the decentralized Colmena network (e.g. `need create --verb Request --object "Comida"`).
+> * **"Conversational Assistant & Context DST"**:
+>   When a user converses naturally with iNoU (e.g., *"ayúdame a configurar la base de datos"*, *"el servidor corre en el puerto 3000"*, *"hazlo ahora"*), this is **NOT** a marketplace listing. It represents conversational context accumulation, state tracking, and local workflow orchestration. iNoU must **never** mistakenly convert general conversational dialogue into public `need create` / `offer create` marketplace items unless explicitly instructed by the user.
+
+---
+
+### 1.3 Key Flaws in Traditional Cloud AI Approaches
 
 1. **Greedy Cloud Execution**: Standard cloud LLM integrations (like Gemini via `@google/genai`) treat every conversational turn as an immediate, actionable command.
 2. **Context Fragmentation**: When users share context incrementally across separate prompts (e.g., environment variables, constraints, or background facts), cloud models often hallucinate prematurely, attempt to guess the next command, or lose track of accumulated facts.

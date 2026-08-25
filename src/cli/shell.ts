@@ -617,36 +617,35 @@ export async function executeShellLine(
             await executeShellLine(cmdLine, rootDir, llmPrompter);
           }
         } else if (result.type === "NEED" && result.verb && result.object) {
-          writeOutput(
-            OutputChannelEnum.USER_REPLY,
-            `✔ AI Parsed Need Intent: ${result.explanation || ""}`,
-          );
-          runNeedCommand(
-            ["create", "--verb", result.verb, "--object", result.object],
-            rootDir,
-          );
+          if (result.explanation) {
+            writeOutput(OutputChannelEnum.USER_REPLY, result.explanation);
+          }
+          const lower = trimmed.toLowerCase();
+          if (lower.startsWith("need ") || lower.includes("publicar necesidad") || lower.includes("publish need")) {
+            runNeedCommand(
+              ["create", "--verb", result.verb, "--object", result.object],
+              rootDir,
+            );
+          }
         } else if (result.type === "OFFER" && result.verb && result.object) {
-          writeOutput(
-            OutputChannelEnum.USER_REPLY,
-            `✔ AI Parsed Offer Intent: ${result.explanation || ""}`,
-          );
-          runOfferCommand(
-            ["create", "--verb", result.verb, "--object", result.object],
-            rootDir,
-          );
+          if (result.explanation) {
+            writeOutput(OutputChannelEnum.USER_REPLY, result.explanation);
+          }
+          const lower = trimmed.toLowerCase();
+          if (lower.startsWith("offer ") || lower.includes("publicar oferta") || lower.includes("publish offer")) {
+            runOfferCommand(
+              ["create", "--verb", result.verb, "--object", result.object],
+              rootDir,
+            );
+          }
         } else if (
           result.type === "DETAIL_PLAN" &&
           result.verb &&
           result.object
         ) {
-          writeOutput(
-            OutputChannelEnum.USER_REPLY,
-            `✔ AI Parsed Detailing & Planning Goal: ${result.explanation || ""}`,
-          );
-          runNeedCommand(
-            ["create", "--verb", result.verb, "--object", result.object],
-            rootDir,
-          );
+          if (result.explanation) {
+            writeOutput(OutputChannelEnum.USER_REPLY, result.explanation);
+          }
           await runDetailCommand(["1", "decompose", trimmed], rootDir);
         } else if (result.type === "ANSWER" && result.answerText) {
           writeOutput(

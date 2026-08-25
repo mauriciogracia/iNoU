@@ -191,6 +191,42 @@ export async function queryOllamaJson(
   });
 }
 
+export interface ConversationTurn {
+  role: "user" | "assistant";
+  content: string;
+}
+
+const activeSessionHistory: ConversationTurn[] = [];
+const activeContextFacts: Record<string, any> = {};
+
+export function addSessionTurn(role: "user" | "assistant", content: string): void {
+  if (!content) return;
+  activeSessionHistory.push({ role, content });
+  if (activeSessionHistory.length > 10) {
+    activeSessionHistory.shift();
+  }
+}
+
+export function addContextFacts(facts: Record<string, any>): void {
+  if (!facts || typeof facts !== "object") return;
+  Object.assign(activeContextFacts, facts);
+}
+
+export function getSessionHistory(): ConversationTurn[] {
+  return [...activeSessionHistory];
+}
+
+export function getContextFacts(): Record<string, any> {
+  return { ...activeContextFacts };
+}
+
+export function clearSessionHistory(): void {
+  activeSessionHistory.length = 0;
+  for (const k of Object.keys(activeContextFacts)) {
+    delete activeContextFacts[k];
+  }
+}
+
 import { detectLanguage } from "./languageEngine";
 
 export async function processLocalIntent(
@@ -213,10 +249,14 @@ export async function processLocalIntent(
   const userId = state.activeUser?.userId ?? "user_local";
   const prefs = getPreference(userId, rootDir);
   const preferenceBlock = prefs ? buildPreferencePromptBlock(prefs) : "";
+  const currentFacts = getContextFacts();
+  const factsBlock = Object.keys(currentFacts).length > 0
+    ? `\nACCUMULATED SESSION CONTEXT (Previously Stated Facts & Constraints):\n${JSON.stringify(currentFacts, null, 2)}\n`
+    : "";
 
   const systemPrompt = `You are the iNoU Interaction Engine & Decentralized Multiagent LLM Orchestration Platform AI.
 You are running locally via ${localModel}.
-You MUST analyze the user input and output strictly a valid JSON object.
+You MUST analyze the user input in the context of the accumulated session context and recent conversation, and output strictly a valid JSON object.
 
 CRITICAL LANGUAGE MANDATE:
 - Target Interaction Language: "${lang}".
@@ -227,79 +267,62 @@ CRITICAL LANGUAGE MANDATE:
 - If the user prompt is in German, reply in German.
 - If the user prompt is in Portuguese, reply in Portuguese.
 
-ABOUT iNoU PLATFORM (Comprehensive Architecture & Capabilities):
-- iNoU is a decentralized, self-orchestrating multiagent LLM platform and specification lifecycle management engine.
-- Canonical Intent Formulation: Every human/agent intention is modeled via the universal formula NEED = (VERB) + (OBJECT) paired with matching OFFER = (COMP_VERB) + (OBJECT).
-- Model Isolation Boundary: Strict separation between Transactional (Commercial/Financial) and Gift-Based (Altruistic/Solidarity) exchange ecosystems.
-- Recursive Goal Decomposition: Multi-step macro-goals are recursively decomposed into atomic execution trees with interactive doubt and answer resolution.
-- Trust & Governance Framework: Master Trainer principles, multi-party threshold consensus, millisecond anti-manipulation circuit breakers, and zero-token local intent interpretation.
-- Colmena Federation & Fleet: P2P federation across Colmena nodes and multi-device clients (Desktop CLI, Web UI, Mobile, TV, IoT).
+MULTI-TURN CONVERSATION & CO-REFERENCE RESOLUTION:
+- ALWAYS evaluate the user prompt in the context of the previous conversation turns and accumulated session context.
+- If the user uses pronouns or references like "pero como lo hago aca", "como lo hago", "hazlo con eso", "y eso?", "donde?", resolve what "eso / lo" refers to from the previous messages in the conversation.
+${factsBlock}
+CONTRADICTION DETECTION & PROACTIVE CLARIFICATION:
+- Continuously check incoming user statements against the ACCUMULATED SESSION CONTEXT.
+- If the user provides a statement that CONTRADICTS a previously accumulated fact (e.g. previously stated "puerto 3000" and now says "puerto 8080", or previously "PostgreSQL" and now "SQLite"):
+  1. Set "dialogue_act": "CLARIFICATION"
+  2. Set "type": "QUERY"
+  3. Set "doubts": ["Contradicción detectada entre el valor previo y el nuevo valor."]
+  4. In "explanation", explicitly point out the discrepancy in "${lang}" and politely ask the user to clarify which setting/option they wish to keep.
 
-SYSTEM OVERVIEW INQUIRIES ("What does iNoU do?" / "¿Qué hace iNoU?" / "que proposito tiene inou" / "para que sirve inou"):
-If the user asks about the purpose, capabilities, or architecture of iNoU:
+DOMAIN SEPARATION: MARKETPLACE "CONNECTING NEEDS" vs GENERAL ASSISTANT CHAT:
+- "NEED" / "OFFER" intent types and "need create" / "offer create" commands are STRICTLY for the P2P Marketplace of Specifications (Connecting Needs public barter/matchmaking across nodes).
+- DO NOT classify general conversational chat, setup assistance, or task orchestration as "NEED" or "OFFER".
+- For general assistance, configuration, questions, or context, use "QUERY", "PROVIDE_CONTEXT", or "EXECUTE_COMMAND".
+
+EXECUTION ORDERS WITH ACCUMULATED CONTEXT (Dialogue Act: "EXECUTE_COMMAND"):
+- When the user gives an order or instruction to execute an action (e.g. "hazlo ahora", "procede", "detalla el plan", "ejecuta la configuración"):
+  1. HYDRATE WITH CONTEXT: You MUST merge all previously shared facts, constraints, entities, and environment details from the accumulated session context into the execution plan.
+  2. DETAILED ACTION SUMMARY: In "explanation", generate a detailed, comprehensive prompt breakdown in "${lang}" clearly summarizing:
+     - The exact action being taken.
+     - All accumulated parameters and facts being applied (e.g., ports, databases, quantities, targets).
+     - Next steps or command output.
+  3. STRUCTURED RESULT: Populate "commandSequence" or "subNeeds" fully hydrated with the accumulated facts.
+
+ABOUT iNoU PLATFORM (Architecture & Commands):
+- iNoU is a decentralized, self-orchestrating multiagent LLM platform and specification lifecycle management engine.
+- Direct Commands in Prompt Area:
+  • "setup llm <apiKey>" or "key <apiKey>" -> Configure Gemini API Key inside iNoU
+  • "need create --verb <Verb> --object <Object>" -> Publish a Public Marketplace Need (Connecting Needs)
+  • "offer create --verb <ComplementVerb> --object <Object>" -> Publish a Public Marketplace Offer
+  • "match" -> Find marketplace peer matches
+  • "status" -> View system & node status
+  • "catalog" -> View global catalog
+  • "whoami" -> View active identity
+  • "help" / "?" -> View all commands
+
+CONFIGURATION & SETUP INQUIRIES ("como configurar gemini", "como conectar api key", "pero como lo hago aca", "como configuro"):
+If the user asks how to configure Gemini API Key or credentials inside iNoU:
 - Set "type": "QUERY"
 - Set "dialogue_act": "CHAT"
-- Set "explanation" in "${lang}" to a clear, comprehensive summary highlighting:
-  1. Orquestación multi-agente descentralizada y ciclo de vida de especificaciones.
-  2. Formulación canónica de necesidades y ofertas (NEED = VERB + OBJECT <-> OFFER = COMP_VERB + OBJECT).
-  3. Aislamiento estricto de modelos Transaccionales y Basados en Regalos (Solidarios).
-  4. Descomposición recursiva de metas complejas en pasos atómicos ejecutables.
-  5. Gobernanza con circuit breakers, consenso de confianza y privacidad local sin dependencia de la nube.
+- In "explanation", explicitly explain in "${lang}" that within this prompt area they can type:
+  • \`setup llm <tu_api_key>\` o \`key <tu_api_key>\` y presionar Enter.
+  • O agregar \`GEMINI_API_KEY=tu_clave\` en el archivo \`.env\`.
 
 COMMAND & CAPABILITY INQUIRIES ("¿qué comandos puedo usar?", "qué puedo escribir?", "what can I type?", "show examples", "cómo empiezo?"):
 If the user asks what commands they can type or how to interact:
 - Set "type": "QUERY"
 - Set "dialogue_act": "CHAT"
-- In "explanation", provide concrete, clear examples that can be typed directly into the prompt box (DO NOT mention terminal execution flags like ./inuo or npm run):
-  • Comandos de Interacción:
-    - need create --verb Request --object "Comida" (Publicar una necesidad)
-    - offer create --verb Donate --object "Comida" (Publicar una oferta)
-    - match (Emparejar necesidades y ofertas activas)
-    - status (Consultar estado del nodo y estadísticas)
-    - catalog (Explorar el catálogo global de verbos y objetos)
-    - whoami (Ver información del usuario actual)
-  • Lenguaje Natural Libre:
-    - "Necesito 5 paquetes de alimentos"
-    - "Ofrezco 10 horas de desarrollo web"
-    - "El servidor corre en el puerto 3000" (Para compartir contexto con la sesión)
-  • Ayuda General:
-    - ? o help (Para ver todas las entidades y acciones disponibles)
-
-Formula Baseline: NEED = (VERB) + (OBJECT) or OFFER = (COMP_VERB) + (OBJECT)
-Valid Need Verbs: Request, Buy, Seek, Need, Borrow, Consult, Search, Call, Volunteer, Report, Ride, Talk, Transport, Deliver, Employ, Contract, Recruit, Construct, Design, Plan, Build, Upgrade, Evolve.
-Valid Offer Complements: Donate, Sell, Offer, Fulfill, Lend, Advise, Supply, Respond, Coordinate, Action, Drive, Listen, Carry, Fetch, Teach, Nurse, Apply, Execute.
-
-Supported CLI Commands:
-- "need create --verb <Verb> --object <Object>"
-- "offer create --verb <ComplementVerb> --object <Object>"
-- "match"
-- "detail <id> decompose <description>"
-- "answer <id> <text>"
-- "whoami"
-- "status"
-- "catalog"
-- "version"
-- "social broadcast --message <msg>"
-- "question ask --title <Title> --options <Opt1,Opt2>"
-- "mode succinct [on|off]"
-- "mode debug <0|1|2|3>"
-- "auth signin / signout"
-- "learn <goal>"
-- "evolve <goal>"
-- "gc"
-- "exit / quit / q"
-
-Dialogue Acts:
-- "PROVIDE_CONTEXT": User is stating facts, environment setup, constraints, or background info WITHOUT asking an explicit question or issuing an explicit command. Do NOT generate verb/object.
-- "EXECUTE_COMMAND": User is explicitly asking to perform an action, run a tool, or create a need/offer.
-- "CLARIFICATION": Ambiguous request requiring user confirmation.
-- "CHAT": Conversational greeting or query about iNoU.
+- In "explanation", provide concrete, clear examples that can be typed directly into the prompt box.
 
 ZERO-ASSUMPTION & ACCIDENTAL SEND RULES:
-- DO NOT assume the user wants to take action if they merely state facts, notes, or constraints (e.g. "el servidor corre en el puerto 3000", "i have 5 computers", "using sqlite database", "and also with auth").
-- In such cases, set "dialogue_act": "PROVIDE_CONTEXT", set "type": "QUERY", and extract the facts into "delta_facts".
-- If the user sent an incomplete phrase or fragment (e.g. "y que...", "and also...", "el servidor...", "para el..."), set "dialogue_act": "PROVIDE_CONTEXT", and in "explanation" note that the fragment was saved to context, asking if they pressed Enter too early and would like to edit or continue typing.
-- When dialogue_act is "PROVIDE_CONTEXT", set "explanation" in "${lang}" to acknowledge the saved context succinctly: e.g. "✔ [Contexto guardado] Datos agregados a la sesión activa. Puedes continuar compartiendo contexto o indicar una acción cuando estés listo."
+- DO NOT assume the user wants to take action if they merely state facts, notes, or constraints without a command.
+- Set "dialogue_act": "PROVIDE_CONTEXT", set "type": "QUERY", and extract facts into "delta_facts".
+- If the user sent an incomplete phrase or fragment, set "dialogue_act": "PROVIDE_CONTEXT", and note that the fragment was saved to context, asking if they pressed Enter too early.
 
 Intent Types:
 - "NEED": Single need formulation
@@ -307,7 +330,7 @@ Intent Types:
 - "DETAIL_PLAN": Complex goal planning/decomposition
 - "ANSWER": Providing detail or answering doubt
 - "CORRECTION": Correcting a misunderstanding
-- "QUERY": Context statement, overview, or inquiry
+- "QUERY": Overview, question, or inquiry about iNoU
 - "EVOLVE": Self-evolution request
 - "LEARN": Skill learning request
 - "EXIT": Session termination
@@ -341,10 +364,14 @@ Return ONLY a raw JSON object with NO markdown formatting:
     debugLevel,
   );
 
-  const rawOutput = await queryOllamaJson(localUrl, localModel, [
+  const history = getSessionHistory();
+  const messages = [
     { role: "system", content: systemPrompt },
+    ...history,
     { role: "user", content: userInput },
-  ]);
+  ];
+
+  const rawOutput = await queryOllamaJson(localUrl, localModel, messages);
 
   if (!rawOutput) {
     return null;
@@ -371,6 +398,17 @@ Return ONLY a raw JSON object with NO markdown formatting:
       `⚙ [Qwen 2.5 Intent Interpretation JSON]:\n${JSON.stringify(result, null, 2)}`,
       debugLevel,
     );
+
+    // Record accumulated facts if any
+    if (result.delta_facts) {
+      addContextFacts(result.delta_facts);
+    }
+
+    // Record this turn in session history for co-reference resolution
+    addSessionTurn("user", userInput);
+    if (result.explanation) {
+      addSessionTurn("assistant", result.explanation);
+    }
 
     return result as ParsedIntentResult;
   } catch {
