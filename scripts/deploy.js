@@ -37,7 +37,7 @@ async function checkHealth(urls, maxAttempts = 15, delayMs = 1000) {
     for (const url of urlList) {
       try {
         const isOk = await new Promise((resolve) => {
-          const req = http.get(url, (res) => {
+          const req = http.get(new URL(url), (res) => {
             let data = "";
             res.on("data", (chunk) => (data += chunk));
             res.on("end", () => {

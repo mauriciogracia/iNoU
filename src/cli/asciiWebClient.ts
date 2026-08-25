@@ -95,7 +95,7 @@ logBox.log(
 
 function connectSSE(): void {
   const req = http.get(
-    `http://localhost:${PORT}/api/stream`,
+    new URL(`http://localhost:${PORT}/api/stream`),
     (res: http.IncomingMessage) => {
       let buffer = "";
 

@@ -20,6 +20,12 @@ if (["serve", "api", "hub", "server", "web", "ui"].includes(args[0]?.toLowerCase
       "\x1b[36m%s\x1b[0m",
       `   Version: v${inuoVer.fullVersionString} | REST API: ${url}/api/v1/* | SSE: ${url}/api/stream | Health: ${url}/health\n`
     );
+
+    const shutdown = () => {
+      apiServer.stop().finally(() => process.exit(0));
+    };
+    process.on("SIGINT", shutdown);
+    process.on("SIGTERM", shutdown);
   }).catch((err) => {
     console.error("\x1b[31m[INUO Server Error]\x1b[0m", err.message);
     process.exit(1);

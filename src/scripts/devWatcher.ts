@@ -1,4 +1,4 @@
-import { spawn, ChildProcess } from "child_process";
+import { spawn, ChildProcess, execSync } from "child_process";
 import fs from "fs";
 import path from "path";
 import { TOOL_NAME } from "../cli/brand";
@@ -13,6 +13,8 @@ let isBuilding = false;
 const rootDir = path.join(__dirname, "../..");
 const srcDir = path.join(rootDir, "src");
 const browserDir = path.join(rootDir, "browser");
+
+const tscBin = path.join(rootDir, "node_modules", "typescript", "bin", "tsc");
 
 function getSystemVersion(): string {
   try {
@@ -29,24 +31,70 @@ function getSystemVersion(): string {
   return "00.03.70";
 }
 
-function startApp(): void {
-  if (appProcess) {
-    try {
-      appProcess.kill();
-    } catch {
-      /* already dead */
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function killProcess(proc: ChildProcess | null): Promise<void> {
+  return new Promise((resolve) => {
+    if (!proc || proc.killed || proc.exitCode !== null) {
+      resolve();
+      return;
     }
+
+    let resolved = false;
+    const finish = () => {
+      if (!resolved) {
+        resolved = true;
+        resolve();
+      }
+    };
+
+    const timer = setTimeout(finish, 1500);
+
+    proc.once("close", () => {
+      clearTimeout(timer);
+      finish();
+    });
+
+    if (process.platform === "win32" && proc.pid) {
+      try {
+        execSync(`taskkill /pid ${proc.pid} /T /F`, { stdio: "ignore" });
+      } catch {
+        /* already dead */
+      }
+      finish();
+    } else {
+      try {
+        proc.kill("SIGTERM");
+      } catch {
+        /* already dead */
+      }
+    }
+  });
+}
+
+async function startApp(): Promise<void> {
+  if (appProcess) {
+    const oldProc = appProcess;
+    appProcess = null;
+    await killProcess(oldProc);
+    // Allow OS to release socket binding
+    await sleep(250);
   }
   const version = getSystemVersion();
   console.log(
     "\x1b[36m%s\x1b[0m",
     `\n⚡ [${TOOL_NAME} Live-Reload] Reloading latest ${TOOL_NAME} version (v${version})...\n`,
   );
-  appProcess = spawn("node", ["./bin/inuo.js", ...childArgs], {
-    cwd: rootDir,
-    stdio: "inherit",
-    shell: true,
-  });
+  appProcess = spawn(
+    process.execPath,
+    [path.join(rootDir, "bin", "inuo.js"), ...childArgs],
+    {
+      cwd: rootDir,
+      stdio: "inherit",
+    },
+  );
 }
 
 let debounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -60,10 +108,9 @@ function triggerRebuild(): void {
     "\x1b[33m%s\x1b[0m",
     `\n🔄 [${TOOL_NAME} Dev Server] Source change detected! Recompiling & reloading ${TOOL_NAME} (v${version})...`,
   );
-  const build = spawn("tsc", [], {
+  const build = spawn(process.execPath, [tscBin], {
     cwd: rootDir,
     stdio: "ignore",
-    shell: true,
   });
 
   build.on("close", (code: number | null) => {
@@ -76,14 +123,17 @@ function triggerRebuild(): void {
       return;
     }
     // Also rebuild browser assets after the main build succeeds
-    const browserBuild = spawn("tsc", ["--project", "tsconfig.browser.json"], {
-      cwd: rootDir,
-      stdio: "ignore",
-      shell: true,
-    });
+    const browserBuild = spawn(
+      process.execPath,
+      [tscBin, "--project", "tsconfig.browser.json"],
+      {
+        cwd: rootDir,
+        stdio: "ignore",
+      },
+    );
     browserBuild.on("close", () => {
       isBuilding = false;
-      startApp();
+      void startApp();
     });
   });
 }
@@ -118,14 +168,13 @@ console.log(
   `Any code change will automatically recompile and reload the latest ${TOOL_NAME} version.\n`,
 );
 
-const initialBuild = spawn("tsc", [], {
+const initialBuild = spawn(process.execPath, [tscBin], {
   cwd: rootDir,
   stdio: "inherit",
-  shell: true,
 });
 initialBuild.on("close", (code: number | null) => {
   if (code === 0) {
-    startApp();
+    void startApp();
     watchDirectory(srcDir);
     watchDirectory(browserDir);
   }

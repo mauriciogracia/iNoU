@@ -43,7 +43,6 @@ export class SseStreamHandler {
     if (res.writableEnded || res.destroyed) return;
     try {
       res.write(`id: ${envelope.eventId}\n`);
-      res.write(`event: ${envelope.eventType}\n`);
       const payload = envelope.payload && typeof envelope.payload === "object" && (envelope.payload as any).channel
         ? envelope.payload
         : envelope;

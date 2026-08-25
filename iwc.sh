@@ -41,7 +41,7 @@ is_server_running() {
     curl -s -m 1 "$INUO_URL" >/dev/null 2>&1 && return 0
   fi
   if command -v node >/dev/null 2>&1; then
-    node -e "const http=require('http'); http.get('$INUO_URL', (res) => process.exit(res.statusCode ? 0 : 1)).on('error', () => process.exit(1));" >/dev/null 2>&1 && return 0
+    node -e "const http=require('http'); http.get(new URL('$INUO_URL'), (res) => process.exit(res.statusCode ? 0 : 1)).on('error', () => process.exit(1));" >/dev/null 2>&1 && return 0
   fi
   return 1
 }

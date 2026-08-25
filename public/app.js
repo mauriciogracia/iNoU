@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchStatus();
     // 3. Setup Server-Sent Events (SSE) Live Log Stream
     const eventSource = new EventSource("/api/stream");
-    eventSource.onmessage = (event) => {
+    const handleSseMessage = (event) => {
         try {
             const data = JSON.parse(event.data);
             if (data.channel === "SERVER_HELLO") {
@@ -166,13 +166,29 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("SSE parse error:", err);
         }
     };
-    eventSource.onerror = () => {
-        console.warn("SSE connection error. Retrying...");
+    eventSource.onmessage = handleSseMessage;
+    eventSource.onerror = (err) => {
+        console.warn("[iNoU SSE Stream] Connection error or reconnecting:", err);
+        appendLog("DEBUG", "⚠️ [SSE Stream] Connection lost or reconnecting...");
     };
+    // Global window error and rejection traps to surface tech errors in Depuración tab and console
+    window.addEventListener("error", (event) => {
+        console.error("[iNoU Runtime Error]", event.error || event.message);
+        appendLog("DEBUG", `❌ [Browser Runtime Error] ${event.message} (${event.filename}:${event.lineno})`);
+    });
+    window.addEventListener("unhandledrejection", (event) => {
+        console.error("[iNoU Unhandled Rejection]", event.reason);
+        const reasonMsg = event.reason instanceof Error
+            ? event.reason.stack || event.reason.message
+            : String(event.reason);
+        appendLog("DEBUG", `❌ [Unhandled Rejection] ${reasonMsg}`);
+    });
     // 4. Append Log Entry to Viewport
     function appendLog(channel, content) {
         if (!content)
             return;
+        // strip ANSI escape sequences for web rendering
+        const cleanText = content.replace(/\x1b\[[0-9;]*m/g, "");
         const entry = document.createElement("div");
         entry.className = "log-entry";
         let entryType = "reply";
@@ -181,6 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
             entryType = "thinking";
             thinkingCount++;
             badgeThinking.textContent = String(thinkingCount);
+            console.log(`[iNoU Thinking]`, cleanText);
             if (!thinkingIndicator) {
                 thinkingIndicator = document.createElement("div");
                 thinkingIndicator.className =
@@ -195,14 +212,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 logViewport.scrollTop = logViewport.scrollHeight;
             }
         }
-        else if (channel === "DEBUG" || content.includes("⚙")) {
+        else if (channel === "DEBUG" || content.includes("⚙") || content.includes("❌") || content.includes("[Error]")) {
             entry.classList.add("debug-msg");
             entryType = "debug";
             debugCount++;
             badgeDebug.textContent = String(debugCount);
+            if (cleanText.includes("❌") || cleanText.toLowerCase().includes("error")) {
+                console.error(`[iNoU Tech Error / Debug]`, cleanText);
+            }
+            else {
+                console.debug(`[iNoU Debug]`, cleanText);
+            }
         }
         else if (content.startsWith(TOOL_PROMPT)) {
             entry.classList.add("user-cmd");
+            console.log(`[iNoU User Command]`, cleanText);
             if (thinkingIndicator) {
                 thinkingIndicator.remove();
                 thinkingIndicator = null;
@@ -210,6 +234,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         else {
             entry.classList.add("reply-msg");
+            console.log(`[iNoU Reply]`, cleanText);
             hideAnalyzing();
             if (thinkingIndicator) {
                 thinkingIndicator.remove();
@@ -225,8 +250,6 @@ document.addEventListener("DOMContentLoaded", () => {
         else if (activeTab === "debug" && entryType !== "debug") {
             entry.style.display = "none";
         }
-        // strip ANSI escape sequences for web rendering
-        const cleanText = content.replace(/\x1b\[[0-9;]*m/g, "");
         entry.textContent = cleanText;
         logViewport.appendChild(entry);
         logViewport.scrollTop = logViewport.scrollHeight;

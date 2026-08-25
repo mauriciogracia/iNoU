@@ -240,18 +240,32 @@ Return ONLY a raw JSON object with NO markdown formatting matching this structur
           errMsg.includes("not available");
 
         if (isQuotaExhausted && !tierResolution.isPaid) {
+          writeOutput(
+            OutputChannelEnum.DEBUG,
+            `⚙ [AI Model Rate/Quota Status] Model "${targetModel}" status ${status ?? "N/A"}: ${err.message || err}`,
+            debugLevel,
+          );
           const cascadeResult = recordModelExhaustion(targetModel, lang, rootDir);
           if (!cascadeResult.allExhausted && cascadeResult.cascadedModel) {
-            // Transparently cascade to next available free candidate model
+            writeOutput(
+              OutputChannelEnum.DEBUG,
+              `🔄 [Cost Governance] Cascading from "${targetModel}" to "${cascadeResult.cascadedModel}"...`,
+              debugLevel,
+            );
             continue;
           }
           // All free models exhausted: prompt rendered, break loop to protect tokens
+          writeOutput(
+            OutputChannelEnum.DEBUG,
+            `⚠️ [Cost Governance] All free candidate models exhausted in pool.`,
+            debugLevel,
+          );
           return null;
         }
 
         writeOutput(
           OutputChannelEnum.DEBUG,
-          `[Gemini AI Error] ${err.message}`,
+          `❌ [Gemini AI Error] ${err.stack || err.message || err}`,
           debugLevel,
         );
         const friendlyError = formatTechnicalError(err, lang);
@@ -262,7 +276,7 @@ Return ONLY a raw JSON object with NO markdown formatting matching this structur
   } catch (err: any) {
     writeOutput(
       OutputChannelEnum.DEBUG,
-      `[Gemini AI Initialization Error] ${err.message}`,
+      `❌ [Gemini AI Initialization Error] ${err.stack || err.message || err}`,
       debugLevel,
     );
     const friendlyError = formatTechnicalError(err, lang);
