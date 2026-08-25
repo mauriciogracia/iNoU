@@ -29,6 +29,7 @@ import { getCostGovernanceConfig } from "../../cli/costGovernanceEngine";
 import { EventBus } from "../events/EventBus";
 import { OutputChannelEnum } from "../../enums/OutputChannelEnum";
 import { TOOL_PROMPT } from "../../cli/brand";
+import { recordChatMessage, ChatRepository } from "../../repositories/ChatRepository";
 
 const MIME_MAP: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
@@ -364,6 +365,11 @@ export class Router {
       try {
         const command = (bodyJson?.command || "").trim();
         if (command) {
+          const paths = getProjectPaths(this.rootDir);
+          const state = loadState(paths.statePath);
+          const activeChatId = state.activeChat || "chat_main";
+          recordChatMessage(activeChatId, "user", command, this.rootDir);
+
           EventBus.getInstance().publish(
             "output.message",
             "preference",
@@ -393,6 +399,14 @@ export class Router {
           }
 
           await executeShellLine(command, this.rootDir);
+
+          // Update active chat's updated_at and message count
+          const chatRepo = new ChatRepository(this.rootDir);
+          const activeChat = chatRepo.findById(activeChatId);
+          if (activeChat) {
+            activeChat.updated_at = new Date().toISOString();
+            chatRepo.save(activeChat);
+          }
         }
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify({ status: "ok" }));

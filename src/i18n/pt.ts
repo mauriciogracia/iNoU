@@ -19,7 +19,7 @@ export const ptDictionary: I18nDictionary = {
     greeting: 'Bem-vindo ao iNoU. Como posso ajudá-lo hoje?',
   },
   intentParser: {
-    analyzing: '[Analisador de Intenção AI Gemini] Analisando intenção em linguagem natural...',
+    analyzing: 'Analisando intenção de linguagem natural...',
     commandSequence: '[Tradutor de Comandos LLM]: Prompt convertido em comando(s) CLI:',
     executingCommand: '⚡ Executando:',
     parsedNeed: '✔ Intenção de Necessidade Processada:',

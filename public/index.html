@@ -19,15 +19,23 @@
     <div class="main-layout">
       <!-- Left Column: Chat Conversation & Stream -->
       <div class="chat-main-area">
-        <!-- Viewport Navigation Tabs & Inline Brand -->
-        <nav class="view-tabs">
+        <!-- Brand Bar -->
+        <div class="brand-bar">
           <div class="brand-inline">
             <span class="brand-name">iNoU</span>
             <span class="brand-subtitle">a multiagent LLM orchestration platform</span>
-            <span class="version-tag" id="system-version">v00.03.72</span>
+            <span class="version-tag" id="system-version">v0.3.75</span>
+          </div>
+        </div>
+
+        <!-- Active Chat Header Bar with embedded View Tabs -->
+        <header class="active-chat-header" id="active-chat-header">
+          <div class="active-chat-title-group">
+            <span class="active-chat-icon">💬</span>
+            <span class="active-chat-title" id="active-chat-title">Chat Principal</span>
           </div>
 
-          <div class="tabs-group">
+          <nav class="view-tabs" id="view-tabs">
             <button class="tab-btn active" data-tab="conversation">
               <span id="tab-main">💬 Conversación</span>
             </button>
@@ -39,8 +47,12 @@
               <span id="tab-debug">⚙ Depuración</span>
               <span class="tab-badge" id="badge-debug">0</span>
             </button>
+          </nav>
+
+          <div class="active-chat-meta" id="active-chat-meta">
+            <span id="active-chat-time">—</span> · <span id="active-chat-msg-count">0 mensajes</span>
           </div>
-        </nav>
+        </header>
 
         <!-- Main Live Log Stream Window -->
         <main class="log-viewport" id="log-viewport">

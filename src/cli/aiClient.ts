@@ -203,7 +203,11 @@ Return ONLY a raw JSON object with NO markdown formatting matching this structur
 
       const targetModel = tierResolution.model || env.defaultModel;
 
-      writeOutput(OutputChannelEnum.THINKING, dict.intentParser.analyzing, debugLevel);
+      writeOutput(
+        OutputChannelEnum.THINKING,
+        `[Google Gemini: ${targetModel}] ${dict.intentParser.analyzing}`,
+        debugLevel,
+      );
 
       try {
         const response = await ai.models.generateContent({

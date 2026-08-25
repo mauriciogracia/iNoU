@@ -27,11 +27,9 @@ export class ChatController extends BaseController {
       messageCount: this.chatRepo.getMessageIds(c.id).length,
     }));
 
-    // Sort active first, then most recent updated_at
+    // Stable sorting strictly by created_at DESC (selecting a chat never alters the order)
     mapped.sort((a, b) => {
-      if (a.isActive) return -1;
-      if (b.isActive) return 1;
-      return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
 
     this.sendJson(res, 200, { chats: mapped, activeChatId });

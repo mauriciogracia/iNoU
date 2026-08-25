@@ -11,30 +11,19 @@ document.addEventListener("DOMContentLoaded", () => {
   ) as HTMLInputElement;
   const systemVersionEl = document.getElementById(
     "system-version",
-  ) as HTMLElement;
-  const modeSelect = null; // mode selector removed — intent is now detected from NL context
-  const statusSuccinctEl = document.getElementById(
-    "status-succinct",
-  ) as HTMLElement;
-  const statusDebugEl = document.getElementById("status-debug") as HTMLElement;
-  const statusAiEl = document.getElementById("status-ai") as HTMLElement;
-  const labelAiEl = document.getElementById("label-ai") as HTMLElement;
+  ) as HTMLElement | null;
   const badgeThinking = document.getElementById(
     "badge-thinking",
   ) as HTMLElement;
   const badgeDebug = document.getElementById("badge-debug") as HTMLElement;
   const tabBtns = document.querySelectorAll<HTMLButtonElement>(".tab-btn");
-  const labelSuccinct = document.getElementById(
-    "label-succinct",
-  ) as HTMLElement;
-  const labelDebugEl = document.getElementById("label-debug") as HTMLElement;
-  const tabMainEl = document.getElementById("tab-main") as HTMLElement;
-  const tabThinkingEl = document.getElementById("tab-thinking") as HTMLElement;
-  const tabDebugEl = document.getElementById("tab-debug") as HTMLElement;
-  const sendBtnText = document.getElementById("send-btn-text") as HTMLElement;
+  const tabMainEl = document.getElementById("tab-main") as HTMLElement | null;
+  const tabThinkingEl = document.getElementById("tab-thinking") as HTMLElement | null;
+  const tabDebugEl = document.getElementById("tab-debug") as HTMLElement | null;
+  const sendBtnText = document.getElementById("send-btn-text") as HTMLElement | null;
   const systemConnectedMsg = document.getElementById(
     "system-connected-msg",
-  ) as HTMLElement;
+  ) as HTMLElement | null;
   const llmDialog = document.getElementById(
     "llm-config-dialog",
   ) as HTMLDialogElement;
@@ -170,15 +159,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function applyTranslations(lang: string): void {
     uiStrings = getStrings(lang);
-    tabMainEl.textContent = uiStrings.tabMain;
-    tabThinkingEl.textContent = uiStrings.tabThinking;
-    tabDebugEl.textContent = uiStrings.tabDebug;
-    labelSuccinct.textContent = uiStrings.pillSuccinct;
-    labelDebugEl.textContent = uiStrings.pillDebug;
-    labelAiEl.textContent = uiStrings.pillAi;
-    sendBtnText.textContent = uiStrings.send;
-    commandInput.placeholder = uiStrings.placeholder;
-    systemConnectedMsg.textContent = uiStrings.connected;
+    if (tabMainEl) tabMainEl.textContent = uiStrings.tabMain;
+    if (tabThinkingEl) tabThinkingEl.textContent = uiStrings.tabThinking;
+    if (tabDebugEl) tabDebugEl.textContent = uiStrings.tabDebug;
+    if (sendBtnText) sendBtnText.textContent = uiStrings.send;
+    if (commandInput) commandInput.placeholder = uiStrings.placeholder;
+    if (systemConnectedMsg) systemConnectedMsg.textContent = uiStrings.connected;
   }
 
   // 2. Fetch System Status
@@ -187,22 +173,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const res = await fetch("/api/status");
       if (res.ok) {
         const data = (await res.json()) as StatusResponse;
-        systemVersionEl.textContent = `v${data.version}`;
+        if (systemVersionEl) systemVersionEl.textContent = `v${data.version}`;
         applyTranslations(data.lang);
-        statusSuccinctEl.textContent = data.succinct ? "ON" : "OFF";
-        statusDebugEl.textContent = `Level ${data.debugLevel}`;
-        if (data.aiUsage) {
-          const t = data.aiUsage.totalTokens;
-          const label =
-            t >= 1_000_000
-              ? `${(t / 1_000_000).toFixed(1)}M tk`
-              : t >= 1_000
-                ? `${(t / 1_000).toFixed(1)}k tk`
-                : t > 0
-                  ? `${t} tk`
-                  : `${data.aiUsage.requestCount} req`;
-          statusAiEl.textContent = label;
-        }
       }
     } catch (err) {
       console.error("Status fetch error:", err);
@@ -542,6 +514,7 @@ document.addEventListener("DOMContentLoaded", () => {
       appendErrorWithRetry(uiStrings.errorNetwork, command);
     } finally {
       hideAnalyzing();
+      void loadChats();
     }
   }
 
@@ -733,12 +706,16 @@ document.addEventListener("DOMContentLoaded", () => {
     title: string;
     status: string;
     isActive?: boolean;
+    created_at?: string;
     updated_at: string;
     messageCount?: number;
   }
 
   let allChats: ChatItem[] = [];
   const selectedChatIds = new Set<string>();
+  const activeChatTitleEl = document.getElementById("active-chat-title");
+  const activeChatTimeEl = document.getElementById("active-chat-time");
+  const activeChatMsgCountEl = document.getElementById("active-chat-msg-count");
 
   async function loadChats(): Promise<void> {
     try {
@@ -752,6 +729,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderChatList(chats: ChatItem[]): void {
     if (!chatListEl) return;
+    const activeChat = chats.find((c) => c.isActive) || chats[0];
+    if (activeChat) {
+      if (activeChatTitleEl) activeChatTitleEl.textContent = activeChat.title;
+      if (activeChatTimeEl) {
+        const date = new Date(activeChat.updated_at || activeChat.created_at || Date.now());
+        activeChatTimeEl.textContent = `Actualizado ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+      }
+      if (activeChatMsgCountEl) {
+        activeChatMsgCountEl.textContent = `${activeChat.messageCount || 0} mensaje${(activeChat.messageCount || 0) === 1 ? "" : "s"}`;
+      }
+    }
+
     const filter = (chatSearchInput?.value || "").toLowerCase().trim();
     const visible = filter
       ? chats.filter(
@@ -791,7 +780,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const title = document.createElement("div");
       title.className = "chat-title-text";
-      title.textContent = (c.isActive ? "▶ " : "") + c.title;
+      title.textContent = c.title;
 
       const meta = document.createElement("div");
       meta.className = "chat-meta";

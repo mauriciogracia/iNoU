@@ -19,7 +19,7 @@ export const enDictionary: I18nDictionary = {
     greeting: 'Welcome to iNoU. How can I help you today?',
   },
   intentParser: {
-    analyzing: '[Gemini AI Intent Parser] Analyzing natural language intent...',
+    analyzing: 'Analyzing natural language intent...',
     commandSequence: '[LLM Command Translator]: Converted prompt into supported CLI command(s):',
     executingCommand: '⚡ Executing:',
     parsedNeed: '✔ AI Parsed Need Intent:',

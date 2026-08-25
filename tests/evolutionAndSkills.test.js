@@ -40,9 +40,9 @@ test("iNoU Evolution, Training Data Persistence, and Skill Reuse Unit Tests", as
   fs.mkdirSync(typesDir, { recursive: true });
   fs.mkdirSync(dataDir, { recursive: true });
 
-  fs.writeFileSync(manifestPath, JSON.stringify({ SPEC_VERSION: "00.03.72", IMPLEMENTATION_COUNT: 72 }, null, 2), "utf8");
-  fs.writeFileSync(pkgPath, JSON.stringify({ name: "inuo-test", version: "00.03.72" }, null, 2), "utf8");
-  fs.writeFileSync(specPath, `# iNoU Specification\nSPEC_VERSION: "00.03.72"\n`, "utf8");
+  fs.writeFileSync(manifestPath, JSON.stringify({ SPEC_VERSION: "0.3.75", IMPLEMENTATION_COUNT: 75 }, null, 2), "utf8");
+  fs.writeFileSync(pkgPath, JSON.stringify({ name: "inuo-test", version: "0.3.75" }, null, 2), "utf8");
+  fs.writeFileSync(specPath, `# iNoU Specification\nSPEC_VERSION: "0.3.75"\n`, "utf8");
   fs.writeFileSync(path.join(interfacesDir, "index.ts"), `export * from "./Need";\n`, "utf8");
   fs.writeFileSync(path.join(interfacesDir, "Need.ts"), `export interface Need { id: string; }\n`, "utf8");
   fs.writeFileSync(path.join(typesDir, "index.ts"), `export * from "./NeedId";\n`, "utf8");
@@ -50,7 +50,7 @@ test("iNoU Evolution, Training Data Persistence, and Skill Reuse Unit Tests", as
 
   await t.test("1. Self-Evolution synthesizes DEV_RULES single-definition files and updates spec", () => {
     const snapshot = createSnapshot(tmpDir);
-    assert.equal(snapshot.preVersion, "00.03.72");
+    assert.equal(snapshot.preVersion, "0.3.75");
 
     // Simulate Evolution adding TikTokMediaPayload interface
     const newIfacePath = path.join(interfacesDir, "TikTokMediaPayload.ts");
@@ -70,7 +70,7 @@ test("iNoU Evolution, Training Data Persistence, and Skill Reuse Unit Tests", as
     assert.equal(fs.existsSync(newIfacePath), true);
     assert.match(fs.readFileSync(path.join(interfacesDir, "index.ts"), "utf8"), /TikTokMediaPayload/);
     assert.match(fs.readFileSync(specPath, "utf8"), /TikTok Posting API/);
-    assert.equal(ver.fullVersionString, "00.03.72");
+    assert.equal(ver.fullVersionString, "0.3.75");
     assert.equal(ver.specRevisionIndex, 3);
   });
 

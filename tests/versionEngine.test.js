@@ -14,31 +14,31 @@ test("iNoU Canonical Versioning (Deployed.SpecRevision.Implementation) Unit Test
   if (!fs.existsSync(scratchDir)) fs.mkdirSync(scratchDir, { recursive: true });
 
   await t.test(
-    "formats numbers into zero-padded Deployed.SpecRevision.Implementation version strings",
+    "formats numbers into unpadded Deployed.SpecRevision.Implementation version strings",
     () => {
-      assert.strictEqual(formatInuoVersionString(0, 2, 95), "00.02.95");
-      assert.strictEqual(formatInuoVersionString(0, 5, 0), "00.05.00");
-      assert.strictEqual(formatInuoVersionString(100, 10, 99), "99.10.99");
+      assert.strictEqual(formatInuoVersionString(0, 2, 95), "0.2.95");
+      assert.strictEqual(formatInuoVersionString(0, 5, 0), "0.5.0");
+      assert.strictEqual(formatInuoVersionString(100, 10, 99), "100.10.99");
     },
   );
 
   await t.test(
     "parses version string into structured InuoVersionSpec object",
     () => {
-      const spec = parseInuoVersionString("00.02.95");
+      const spec = parseInuoVersionString("0.2.95");
       assert.strictEqual(spec.deployedPercentage, 0);
       assert.strictEqual(spec.specRevisionIndex, 2);
       assert.strictEqual(spec.implementationPercentage, 95);
-      assert.strictEqual(spec.fullVersionString, "00.02.95");
+      assert.strictEqual(spec.fullVersionString, "0.2.95");
     },
   );
 
-  await t.test("calculates system version matching target 00.03.72", () => {
+  await t.test("calculates system version matching target 0.3.75", () => {
     const sysVer = calculateInuoVersion(scratchDir);
-    assert.strictEqual(sysVer.fullVersionString, "00.03.72");
+    assert.strictEqual(sysVer.fullVersionString, "0.3.75");
     assert.strictEqual(sysVer.deployedPercentage, 0);
     assert.strictEqual(sysVer.specRevisionIndex, 3);
-    assert.strictEqual(sysVer.implementationPercentage, 72);
+    assert.strictEqual(sysVer.implementationPercentage, 75);
   });
 
   await t.test(
@@ -59,18 +59,18 @@ test("iNoU Canonical Versioning (Deployed.SpecRevision.Implementation) Unit Test
       fs.writeFileSync(dummySpec, '* **`SPEC_VERSION`**: "0.0.0"');
 
       const res = recalculateAndSyncVersion(scratchDir);
-      assert.strictEqual(res.fullVersionString, "00.03.72");
+      assert.strictEqual(res.fullVersionString, "0.3.75");
 
       const updatedPkg = JSON.parse(fs.readFileSync(dummyPkg, "utf8"));
-      assert.strictEqual(updatedPkg.version, "00.03.72");
+      assert.strictEqual(updatedPkg.version, "0.3.75");
 
       const updatedManifest = JSON.parse(
         fs.readFileSync(dummyManifest, "utf8"),
       );
-      assert.strictEqual(updatedManifest.SPEC_VERSION, "00.03.72");
+      assert.strictEqual(updatedManifest.SPEC_VERSION, "0.3.75");
 
       const updatedSpec = fs.readFileSync(dummySpec, "utf8");
-      assert.match(updatedSpec, /"00\.03\.72"/);
+      assert.match(updatedSpec, /"0\.3\.75"/);
     },
   );
 

@@ -5,16 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const commandForm = document.getElementById("command-form");
     const commandInput = document.getElementById("command-input");
     const systemVersionEl = document.getElementById("system-version");
-    const modeSelect = null; // mode selector removed — intent is now detected from NL context
-    const statusSuccinctEl = document.getElementById("status-succinct");
-    const statusDebugEl = document.getElementById("status-debug");
-    const statusAiEl = document.getElementById("status-ai");
-    const labelAiEl = document.getElementById("label-ai");
     const badgeThinking = document.getElementById("badge-thinking");
     const badgeDebug = document.getElementById("badge-debug");
     const tabBtns = document.querySelectorAll(".tab-btn");
-    const labelSuccinct = document.getElementById("label-succinct");
-    const labelDebugEl = document.getElementById("label-debug");
     const tabMainEl = document.getElementById("tab-main");
     const tabThinkingEl = document.getElementById("tab-thinking");
     const tabDebugEl = document.getElementById("tab-debug");
@@ -97,15 +90,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     function applyTranslations(lang) {
         uiStrings = getStrings(lang);
-        tabMainEl.textContent = uiStrings.tabMain;
-        tabThinkingEl.textContent = uiStrings.tabThinking;
-        tabDebugEl.textContent = uiStrings.tabDebug;
-        labelSuccinct.textContent = uiStrings.pillSuccinct;
-        labelDebugEl.textContent = uiStrings.pillDebug;
-        labelAiEl.textContent = uiStrings.pillAi;
-        sendBtnText.textContent = uiStrings.send;
-        commandInput.placeholder = uiStrings.placeholder;
-        systemConnectedMsg.textContent = uiStrings.connected;
+        if (tabMainEl)
+            tabMainEl.textContent = uiStrings.tabMain;
+        if (tabThinkingEl)
+            tabThinkingEl.textContent = uiStrings.tabThinking;
+        if (tabDebugEl)
+            tabDebugEl.textContent = uiStrings.tabDebug;
+        if (sendBtnText)
+            sendBtnText.textContent = uiStrings.send;
+        if (commandInput)
+            commandInput.placeholder = uiStrings.placeholder;
+        if (systemConnectedMsg)
+            systemConnectedMsg.textContent = uiStrings.connected;
     }
     // 2. Fetch System Status
     async function fetchStatus() {
@@ -113,21 +109,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch("/api/status");
             if (res.ok) {
                 const data = (await res.json());
-                systemVersionEl.textContent = `v${data.version}`;
+                if (systemVersionEl)
+                    systemVersionEl.textContent = `v${data.version}`;
                 applyTranslations(data.lang);
-                statusSuccinctEl.textContent = data.succinct ? "ON" : "OFF";
-                statusDebugEl.textContent = `Level ${data.debugLevel}`;
-                if (data.aiUsage) {
-                    const t = data.aiUsage.totalTokens;
-                    const label = t >= 1000000
-                        ? `${(t / 1000000).toFixed(1)}M tk`
-                        : t >= 1000
-                            ? `${(t / 1000).toFixed(1)}k tk`
-                            : t > 0
-                                ? `${t} tk`
-                                : `${data.aiUsage.requestCount} req`;
-                    statusAiEl.textContent = label;
-                }
             }
         }
         catch (err) {
@@ -433,6 +417,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         finally {
             hideAnalyzing();
+            void loadChats();
         }
     }
     llmDialogClose.addEventListener("click", closeLLMConfigurationDialog);
@@ -586,6 +571,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnOpenEngines = document.getElementById("btn-open-engines");
     let allChats = [];
     const selectedChatIds = new Set();
+    const activeChatTitleEl = document.getElementById("active-chat-title");
+    const activeChatTimeEl = document.getElementById("active-chat-time");
+    const activeChatMsgCountEl = document.getElementById("active-chat-msg-count");
     async function loadChats() {
         try {
             const res = await fetch("/api/chats");
@@ -600,6 +588,18 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderChatList(chats) {
         if (!chatListEl)
             return;
+        const activeChat = chats.find((c) => c.isActive) || chats[0];
+        if (activeChat) {
+            if (activeChatTitleEl)
+                activeChatTitleEl.textContent = activeChat.title;
+            if (activeChatTimeEl) {
+                const date = new Date(activeChat.updated_at || activeChat.created_at || Date.now());
+                activeChatTimeEl.textContent = `Actualizado ${date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`;
+            }
+            if (activeChatMsgCountEl) {
+                activeChatMsgCountEl.textContent = `${activeChat.messageCount || 0} mensaje${(activeChat.messageCount || 0) === 1 ? "" : "s"}`;
+            }
+        }
         const filter = (chatSearchInput?.value || "").toLowerCase().trim();
         const visible = filter
             ? chats.filter((c) => c.title.toLowerCase().includes(filter) ||
@@ -632,7 +632,7 @@ document.addEventListener("DOMContentLoaded", () => {
             info.className = "chat-info";
             const title = document.createElement("div");
             title.className = "chat-title-text";
-            title.textContent = (c.isActive ? "▶ " : "") + c.title;
+            title.textContent = c.title;
             const meta = document.createElement("div");
             meta.className = "chat-meta";
             const dateStr = new Date(c.updated_at).toLocaleDateString();

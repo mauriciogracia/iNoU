@@ -255,3 +255,47 @@ export class ChatMessageRepository extends BaseRepository<ChatMessageEntity> {
     }
   }
 }
+
+/**
+ * Persists a chat message and updates the parent chat's updated_at and message count
+ */
+export function recordChatMessage(
+  chatId: string,
+  role: string,
+  content: string,
+  rootDir: string = process.cwd(),
+): ChatMessageEntity | null {
+  try {
+    const chatRepo = new ChatRepository(rootDir);
+    let chat = chatRepo.findById(chatId);
+    const now = new Date().toISOString();
+    if (!chat) {
+      chat = chatRepo.save({
+        id: chatId,
+        title: "Chat Principal",
+        status: "Active",
+        message_ids_json: "[]",
+        created_at: now,
+        updated_at: now,
+        sync_status: "LOCAL_ONLY",
+        sync_version: 1,
+      });
+    }
+
+    const msgRepo = new ChatMessageRepository(rootDir);
+    const msgId = `msg_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+    const msg = msgRepo.save({
+      id: msgId,
+      chat_id: chatId,
+      role,
+      content,
+      created_at: now,
+      sync_status: "LOCAL_ONLY",
+    });
+
+    chatRepo.addMessageId(chatId, msgId);
+    return msg;
+  } catch {
+    return null;
+  }
+}

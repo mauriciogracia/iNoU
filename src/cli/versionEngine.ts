@@ -8,9 +8,9 @@ export function formatInuoVersionString(
   specRevisionIndex: number,
   implementationPercentage: number,
 ): string {
-  const pad = (n: number) =>
-    String(Math.max(0, Math.min(99, Math.floor(n)))).padStart(2, "0");
-  return `${pad(deployedPercentage)}.${pad(specRevisionIndex)}.${pad(implementationPercentage)}`;
+  const sanitize = (n: number) =>
+    String(Math.max(0, Math.min(100, Math.floor(n))));
+  return `${sanitize(deployedPercentage)}.${sanitize(specRevisionIndex)}.${sanitize(implementationPercentage)}`;
 }
 
 export function parseInuoVersionString(versionStr: string): InuoVersionSpec {
@@ -43,8 +43,8 @@ export function calculateInuoVersion(
   // Spec revision 03 introduces adaptive memory and training governance.
   const specRevisionIndex = 3;
 
-  // Implementation audit: ~72% of total master specifications reached.
-  const implementationPercentage = 72;
+  // Implementation audit: ~75% of total master specifications reached.
+  const implementationPercentage = 75;
 
   const fullVersionString = formatInuoVersionString(
     deployedPercentage,
