@@ -24,6 +24,25 @@ function log(msg, color = "\x1b[36m") {
   console.log(`${color}${msg}\x1b[0m`);
 }
 
+function ensureDockerReady() {
+  try {
+    execSync("docker info", { stdio: "ignore" });
+    return true;
+  } catch {
+    // Attempt self-healing across Windows Docker contexts (e.g., default vs desktop-linux)
+    const contexts = ["default", "desktop-linux"];
+    for (const ctx of contexts) {
+      try {
+        execSync(`docker --context ${ctx} info`, { stdio: "ignore" });
+        execSync(`docker context use ${ctx}`, { stdio: "ignore" });
+        log(`✔ Auto-switched Docker context to "${ctx}".`, "\x1b[32m");
+        return true;
+      } catch { }
+    }
+    return false;
+  }
+}
+
 function run(cmd, opts = {}) {
   log(`> ${cmd}`, "\x1b[33m");
   return execSync(cmd, { cwd: rootDir, stdio: "inherit", ...opts });
@@ -92,6 +111,10 @@ async function main() {
 
   // Step 2: Target-specific deployment execution
   if (target === "compose") {
+    if (!ensureDockerReady()) {
+      log("❌ Docker daemon is unreachable. Please verify Docker Desktop is running and responsive.", "\x1b[31m");
+      process.exit(1);
+    }
     log("\n[2/3] Launching Docker Compose infrastructure (iNoU Hub + Ollama + Caddy Ingress)...");
     run("docker compose up -d --build");
 
@@ -104,6 +127,10 @@ async function main() {
     if (!ok) process.exit(1);
 
   } else if (target === "docker") {
+    if (!ensureDockerReady()) {
+      log("❌ Docker daemon is unreachable. Please verify Docker Desktop is running and responsive.", "\x1b[31m");
+      process.exit(1);
+    }
     log("\n[2/3] Building and running standalone Docker container...");
     run("docker build -t inuo-cloud-hub .");
     try {

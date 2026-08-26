@@ -27,8 +27,11 @@
     "setup": "npm run build && node bin/inuo.js setup",
     "setup:llm": "bash scripts/setup-llm.sh",
     "setup:local-llm": "bash scripts/setup-local-llm.sh",
-    "deploy": "node scripts/deploy.js",
+    "deploy": "node scripts/deploy.js compose",
     "deploy:dry": "node scripts/deploy.js dry-run",
+    "docker:run": "node scripts/deploy.js compose",
+    "docker:standalone": "node scripts/deploy.js docker",
+    "docker:web": "bash scripts/idwc.sh",
     "verify": "npm run build && npm test"
   },
   "keywords": [

@@ -5,6 +5,12 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 INUO_PORT="${INUO_PORT:-3000}"
 INUO_URL="${INUO_URL:-http://localhost:${INUO_PORT}}"
 
+# Check if docker mode was requested
+if [ "$1" = "--docker" ] || [ "$1" = "docker" ] || [ -n "$INUO_DOCKER" ]; then
+  shift 2>/dev/null || true
+  exec bash "$DIR/scripts/idwc.sh" "$@"
+fi
+
 echo "========================================"
 echo " iNoU Web Client Launcher"
 echo " Target URL: $INUO_URL"

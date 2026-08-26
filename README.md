@@ -81,11 +81,12 @@ $$\text{Skills} \longrightarrow \text{Behaviors} \longrightarrow \text{Engines} 
 
 ### 5. Multi-Interface Runtime (TUI, Web Client, & CLI)
 
-iNoU provides three native interaction interfaces:
+iNoU provides native interaction interfaces:
 
 1. **Split-Pane Terminal UI (`npm run cli` / `./inou.sh`)**: High-performance Blessed-based terminal interface with real-time logging, command history, and split-pane layout.
-2. **ASCII Web Client & Express Server (`./iwc.sh` / `npm run web`)**: Lightweight Express HTTP server serving a modern responsive web client with real-time Server-Sent Events (SSE `/api/stream`) and REST endpoints.
-3. **Direct CLI Tool (`bin/inuo.js <command>`)**: Non-interactive command runner for CI/CD pipelines, scripting, and ecosystem adapters.
+2. **ASCII Web Client & Express Server (`./iwc.sh` / `npm run web`)**: Lightweight Express HTTP server serving a modern responsive web client with live watch mode, real-time Server-Sent Events (SSE `/api/stream`), and REST endpoints.
+3. **Docker Web Client (`./idwc.sh` / `./iwc.sh --docker` / `npm run docker:web`)**: Automated containerized web runtime that spins up real Docker containers (iNoU Hub + Ollama + Caddy Ingress), verifies container health, and opens Google Chrome to the running Docker environment.
+4. **Direct CLI Tool (`bin/inuo.js <command>`)**: Non-interactive command runner for CI/CD pipelines, scripting, and ecosystem adapters.
 
 ---
 
@@ -305,9 +306,11 @@ iNoU/
 ├── tests/                   # 46 automated test suites (239 unit tests)
 ├── to-improve/              # Pending improvement tasks (tracked via INDEX.md)
 ├── AGENTS.md                # Agent directives & repository instructions
+├── docker-run.sh            # Local Docker container manager launcher
+├── idwc.sh                  # Docker Web Client launcher (containers + browser)
 ├── inou.sh                  # Platform-agnostic shell launcher (Linux, macOS, WSL, Windows)
 ├── inuo-manifest.json       # Specification version sync manifest
-├── iwc.sh                   # Browser web client launcher
+├── iwc.sh                   # Browser web client launcher (supports --docker flag)
 ├── package.json             # NPM package definition & scripts
 └── tsconfig.json            # TypeScript compiler configuration
 ```
@@ -361,6 +364,49 @@ curl https://your-domain/health
 | `npm run deploy docker` | Standalone Docker container, no Caddy |
 | `npm run deploy local` | Background Node.js daemon (no Docker required) |
 | `npm run deploy:dry` | Build + config validation only, no services started |
+
+---
+
+### 🐳 Local Docker Containers & Docker Web Client
+
+You can run iNoU in real local Docker containers with automatic browser launching and health checks:
+
+#### 1. Docker Web Client (`./idwc.sh` / `./iwc.sh --docker`)
+Automatically spins up the Docker container stack (iNoU Hub + Ollama + Caddy), waits for the `/health` endpoint, and launches Google Chrome directly to the running container web interface:
+
+```bash
+# Launch Docker containers and open Web Client in browser:
+./idwc.sh
+# or using iwc.sh with the --docker flag:
+./iwc.sh --docker
+# or via npm:
+npm run docker:web
+
+# Stream container logs:
+./idwc.sh logs
+
+# Stop container stack:
+./idwc.sh stop
+```
+
+#### 2. Local Docker Container Manager (`./docker-run.sh`)
+Manage the container lifecycle with self-healing Windows 11 context detection:
+
+```bash
+# Start full container stack (Hub + Ollama + Caddy)
+./docker-run.sh
+# or: npm run docker:run
+
+# Launch standalone iNoU container without compose
+./docker-run.sh standalone
+# or: npm run docker:standalone
+
+# Check container status
+./docker-run.sh status
+
+# Stop containers
+./docker-run.sh down
+```
 
 > See [`docs/deployGaps.md`](docs/deployGaps.md) for a full deployment readiness checklist.
 
