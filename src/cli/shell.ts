@@ -590,6 +590,17 @@ export async function executeShellLine(
       const result = await processNaturalLanguageIntent(trimmed, rootDir);
 
       if (result) {
+        if (result.answerText) {
+          writeOutput(OutputChannelEnum.USER_REPLY, result.answerText);
+          if (result.targetIdOrCode) {
+            runAnswerCommand(
+              [result.targetIdOrCode, result.answerText],
+              rootDir,
+            );
+          }
+          break;
+        }
+
         if ((result as any).dialogue_act === "PROVIDE_CONTEXT") {
           const reply =
             result.explanation ||

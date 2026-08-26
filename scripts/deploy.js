@@ -92,7 +92,7 @@ async function main() {
 
   // Step 2: Target-specific deployment execution
   if (target === "compose") {
-    log("\n[2/3] Launching Docker Compose infrastructure (iNoU Hub + Caddy Ingress)...");
+    log("\n[2/3] Launching Docker Compose infrastructure (iNoU Hub + Ollama + Caddy Ingress)...");
     run("docker compose up -d --build");
 
     log("\n[3/3] Verifying deployment health...");

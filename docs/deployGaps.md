@@ -170,7 +170,6 @@ None of `tech-specs/`, `docs/`, or `INUO_SPEC.md` are copied into the production
 
 ```dockerfile
 # Copy spec and documentation sources (required by context.ts spec path resolution)
-COPY tech-specs/ ./tech-specs/
 COPY docs/ ./docs/
 ```
 

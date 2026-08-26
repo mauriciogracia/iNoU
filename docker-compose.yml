@@ -1,4 +1,40 @@
 services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: inuo_ollama
+    restart: unless-stopped
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      - inuo_internal
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  ollama-init:
+    image: ollama/ollama:latest
+    container_name: inuo_ollama_init
+    environment:
+      - OLLAMA_HOST=ollama:11434
+      - LOCAL_LLM_MODEL=${LOCAL_LLM_MODEL:-qwen2.5:3b}
+    entrypoint: >
+      sh -c '
+        echo "[*] Waiting for Ollama server to respond...";
+        until ollama list >/dev/null 2>&1; do
+          sleep 2;
+        done;
+        echo "[*] Ensuring model $${LOCAL_LLM_MODEL:-qwen2.5:3b} is cached in persistent volume...";
+        ollama pull $${LOCAL_LLM_MODEL:-qwen2.5:3b};
+        echo "[✓] Local model initialization complete.";
+      '
+    depends_on:
+      - ollama
+    networks:
+      - inuo_internal
+    restart: "no"
+
   inuo-hub:
     build:
       context: .
@@ -10,14 +46,21 @@ services:
       - PORT=8765
       - HOST=0.0.0.0
       - INUO_DATA_DIR=/app/data
+      - LOCAL_LLM_URL=http://ollama:11434
+      - LOCAL_LLM_MODEL=${LOCAL_LLM_MODEL:-qwen2.5:3b}
       - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
       - GEMINI_MODEL=${GEMINI_MODEL:-gemini-flash-latest}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY:-}
       - DEBUG_LEVEL=${DEBUG_LEVEL:-1}
     volumes:
       - inuo_hub_data:/app/data
     networks:
       - inuo_internal
+    depends_on:
+      - ollama
     logging:
       driver: "json-file"
       options:
@@ -49,6 +92,8 @@ services:
 
 volumes:
   inuo_hub_data:
+    driver: local
+  ollama_models:
     driver: local
   caddy_data:
   caddy_config:

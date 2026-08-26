@@ -16,6 +16,8 @@ ENV NODE_ENV=production
 ENV PORT=8765
 ENV HOST=0.0.0.0
 ENV INUO_DATA_DIR=/app/data
+ENV LOCAL_LLM_URL=http://ollama:11434
+ENV LOCAL_LLM_MODEL=qwen2.5:3b
 
 # Install runtime security packages & create non-root user
 RUN addgroup -S inuogroup && adduser -S inuo -G inuogroup
@@ -28,8 +30,6 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/bin ./bin
 COPY public/ ./public/
 COPY inuo-manifest.json ./
-# Fix 2.2: required by context.ts spec path resolution (tech-specs/ checked before docs/ fallback)
-COPY tech-specs/ ./tech-specs/
 COPY docs/ ./docs/
 
 USER inuo
