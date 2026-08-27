@@ -23,6 +23,9 @@ export interface Chat {
   /** Array of message IDs in this chat (reference to chat_messages table) */
   messageIds: string[];
 
+  /** Primary LLM provider for this chat (e.g. 'ollama', 'gemini', 'openai', 'anthropic', 'openrouter') */
+  providerId?: string;
+
   /** LLM model configuration used for this chat */
   modelType?: string;
 

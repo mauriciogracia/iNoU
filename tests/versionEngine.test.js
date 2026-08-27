@@ -33,12 +33,12 @@ test("iNoU Canonical Versioning (Deployed.SpecRevision.Implementation) Unit Test
     },
   );
 
-  await t.test("calculates system version matching target 0.3.75", () => {
+  await t.test("calculates system version matching target 0.4.76", () => {
     const sysVer = calculateInuoVersion(scratchDir);
-    assert.strictEqual(sysVer.fullVersionString, "0.3.75");
-    assert.strictEqual(sysVer.deployedPercentage, 0);
-    assert.strictEqual(sysVer.specRevisionIndex, 3);
-    assert.strictEqual(sysVer.implementationPercentage, 75);
+    assert.strictEqual(sysVer.fullVersionString, "0.4.76");
+    assert.strictEqual(sysVer.majorVersion, 0);
+    assert.strictEqual(sysVer.minorMilestone, 4);
+    assert.strictEqual(sysVer.buildIteration, 76);
   });
 
   await t.test(
@@ -59,18 +59,18 @@ test("iNoU Canonical Versioning (Deployed.SpecRevision.Implementation) Unit Test
       fs.writeFileSync(dummySpec, '* **`SPEC_VERSION`**: "0.0.0"');
 
       const res = recalculateAndSyncVersion(scratchDir);
-      assert.strictEqual(res.fullVersionString, "0.3.75");
+      assert.strictEqual(res.fullVersionString, "0.4.76");
 
       const updatedPkg = JSON.parse(fs.readFileSync(dummyPkg, "utf8"));
-      assert.strictEqual(updatedPkg.version, "0.3.75");
+      assert.strictEqual(updatedPkg.version, "0.4.76");
 
       const updatedManifest = JSON.parse(
         fs.readFileSync(dummyManifest, "utf8"),
       );
-      assert.strictEqual(updatedManifest.SPEC_VERSION, "0.3.75");
+      assert.strictEqual(updatedManifest.SPEC_VERSION, "0.4.76");
 
       const updatedSpec = fs.readFileSync(dummySpec, "utf8");
-      assert.match(updatedSpec, /"0\.3\.75"/);
+      assert.match(updatedSpec, /"0\.4\.76"/);
     },
   );
 

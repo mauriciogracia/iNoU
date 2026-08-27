@@ -398,7 +398,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await fetch("/api/command", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ command, uiMode: true }),
+                body: JSON.stringify({
+                    command,
+                    providerId: currentActiveProvider,
+                    modelType: currentActiveModel,
+                    uiMode: true,
+                }),
             });
             const body = (await res.json().catch(() => ({})));
             if (!res.ok) {
@@ -569,11 +574,111 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnNewChat = document.getElementById("btn-new-chat");
     const btnMergeChats = document.getElementById("btn-merge-chats");
     const btnOpenEngines = document.getElementById("btn-open-engines");
+    // Active Engine Selector in Bottom Input Bar
+    const btnActiveEngine = document.getElementById("btn-active-engine");
+    const enginePillIcon = document.getElementById("engine-pill-icon");
+    const enginePillName = document.getElementById("engine-pill-name");
+    const PROVIDER_MAP = {
+        ollama: { id: "ollama", name: "Ollama", icon: "🦙", color: "#f59e0b" },
+        gemini: { id: "gemini", name: "Gemini", icon: "✨", color: "#38bdf8" },
+        openai: { id: "openai", name: "OpenAI", icon: "🟢", color: "#10b981" },
+        anthropic: { id: "anthropic", name: "Claude", icon: "🟣", color: "#a855f7" },
+        openrouter: { id: "openrouter", name: "OpenRouter", icon: "🪐", color: "#ec4899" },
+        copilot: { id: "copilot", name: "Copilot", icon: "🐙", color: "#6366f1" },
+        groq: { id: "groq", name: "Groq", icon: "⚡", color: "#f97316" },
+        deepseek: { id: "deepseek", name: "DeepSeek", icon: "🐋", color: "#06b6d4" },
+    };
+    function getProviderMeta(providerId) {
+        const key = (providerId || "ollama").toLowerCase();
+        return PROVIDER_MAP[key] || { id: key, name: key.toUpperCase(), icon: "🤖", color: "#64748b" };
+    }
     let allChats = [];
+    let currentActiveProvider = "ollama";
+    let currentActiveModel = "qwen2.5:3b";
     const selectedChatIds = new Set();
     const activeChatTitleEl = document.getElementById("active-chat-title");
     const activeChatTimeEl = document.getElementById("active-chat-time");
     const activeChatMsgCountEl = document.getElementById("active-chat-msg-count");
+    function updateActiveEngineUI(providerId, modelType) {
+        currentActiveProvider = providerId;
+        if (modelType)
+            currentActiveModel = modelType;
+        const meta = getProviderMeta(providerId);
+        if (enginePillIcon)
+            enginePillIcon.textContent = meta.icon;
+        if (enginePillName)
+            enginePillName.textContent = meta.name;
+        if (btnActiveEngine) {
+            btnActiveEngine.title = `Motor actual: ${meta.name} (${currentActiveModel}). Clic para cambiar.`;
+        }
+    }
+    function closeAllEnginePickers() {
+        document.querySelectorAll(".engine-picker-dropdown").forEach((el) => el.remove());
+    }
+    function openEnginePicker(anchorEl, currentProvider, onSelect) {
+        closeAllEnginePickers();
+        const dropdown = document.createElement("div");
+        dropdown.className = "engine-picker-dropdown";
+        const availableProviders = [
+            { id: "ollama", name: "Ollama Local (0 Tokens)", model: "qwen2.5:3b", badge: "Local" },
+            { id: "gemini", name: "Google Gemini", model: "gemini-flash-latest", badge: "Cloud" },
+            { id: "anthropic", name: "Anthropic Claude", model: "claude-3-5-sonnet", badge: "Cloud" },
+            { id: "openai", name: "OpenAI GPT", model: "gpt-4o-mini", badge: "Cloud" },
+            { id: "openrouter", name: "OpenRouter Multi", model: "auto", badge: "Cloud" },
+            { id: "copilot", name: "GitHub Copilot", model: "gpt-4.1", badge: "Cloud" },
+        ];
+        for (const prov of availableProviders) {
+            const meta = getProviderMeta(prov.id);
+            const opt = document.createElement("button");
+            opt.type = "button";
+            opt.className = `engine-picker-option ${prov.id === currentProvider ? "active" : ""}`;
+            opt.innerHTML = `
+        <div class="engine-option-left">
+          <span class="engine-option-icon">${meta.icon}</span>
+          <div class="engine-option-details">
+            <span class="engine-option-name">${meta.name}</span>
+            <span class="engine-option-model">${prov.model}</span>
+          </div>
+        </div>
+        <span class="engine-option-badge">${prov.badge}</span>
+      `;
+            opt.addEventListener("click", (e) => {
+                e.stopPropagation();
+                dropdown.remove();
+                onSelect(prov.id, prov.model);
+            });
+            dropdown.appendChild(opt);
+        }
+        document.body.appendChild(dropdown);
+        const rect = anchorEl.getBoundingClientRect();
+        dropdown.style.left = `${Math.max(10, Math.min(window.innerWidth - 240, rect.left))}px`;
+        dropdown.style.top = `${rect.bottom + 6}px`;
+        const closeHandler = (e) => {
+            if (!dropdown.contains(e.target) && e.target !== anchorEl) {
+                dropdown.remove();
+                document.removeEventListener("click", closeHandler);
+            }
+        };
+        setTimeout(() => document.addEventListener("click", closeHandler), 10);
+    }
+    btnActiveEngine?.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const activeChat = allChats.find((c) => c.isActive) || allChats[0];
+        openEnginePicker(btnActiveEngine, currentActiveProvider, async (newProvider, newModel) => {
+            updateActiveEngineUI(newProvider, newModel);
+            if (activeChat) {
+                try {
+                    await fetch(`/api/chats/${activeChat.id}/engine`, {
+                        method: "PATCH",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ providerId: newProvider, modelType: newModel }),
+                    });
+                    await loadChats();
+                }
+                catch { }
+            }
+        });
+    });
     async function loadChats() {
         try {
             const res = await fetch("/api/chats");
@@ -599,6 +704,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (activeChatMsgCountEl) {
                 activeChatMsgCountEl.textContent = `${activeChat.messageCount || 0} mensaje${(activeChat.messageCount || 0) === 1 ? "" : "s"}`;
             }
+            updateActiveEngineUI(activeChat.providerId || "ollama", activeChat.modelType);
         }
         const filter = (chatSearchInput?.value || "").toLowerCase().trim();
         const visible = filter
@@ -630,14 +736,41 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             const info = document.createElement("div");
             info.className = "chat-info";
+            const headerRow = document.createElement("div");
+            headerRow.className = "chat-item-header";
             const title = document.createElement("div");
             title.className = "chat-title-text";
             title.textContent = c.title;
+            const providerMeta = getProviderMeta(c.providerId);
+            const engineBadge = document.createElement("button");
+            engineBadge.type = "button";
+            engineBadge.className = "chat-engine-badge";
+            engineBadge.title = `Motor: ${providerMeta.name}. Clic para cambiar.`;
+            engineBadge.innerHTML = `<span class="chat-engine-icon">${providerMeta.icon}</span><span class="chat-engine-tag">${providerMeta.name}</span>`;
+            engineBadge.addEventListener("click", (e) => {
+                e.stopPropagation();
+                openEnginePicker(engineBadge, c.providerId || "ollama", async (newProvider, newModel) => {
+                    try {
+                        await fetch(`/api/chats/${c.id}/engine`, {
+                            method: "PATCH",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ providerId: newProvider, modelType: newModel }),
+                        });
+                        if (c.isActive) {
+                            updateActiveEngineUI(newProvider, newModel);
+                        }
+                        await loadChats();
+                    }
+                    catch { }
+                });
+            });
+            headerRow.appendChild(title);
+            headerRow.appendChild(engineBadge);
             const meta = document.createElement("div");
             meta.className = "chat-meta";
             const dateStr = new Date(c.updated_at).toLocaleDateString();
             meta.textContent = `${dateStr} · ${c.messageCount || 0} msgs`;
-            info.appendChild(title);
+            info.appendChild(headerRow);
             info.appendChild(meta);
             item.appendChild(checkbox);
             item.appendChild(info);
@@ -676,6 +809,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     title: `Chat ${new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}`,
+                    providerId: currentActiveProvider,
+                    modelType: currentActiveModel,
                 }),
             });
             if (res.ok) {
@@ -761,12 +896,18 @@ document.addEventListener("DOMContentLoaded", () => {
             info.className = "engine-info";
             const nameRow = document.createElement("div");
             nameRow.className = "engine-name-row";
+            const providerMeta = getProviderMeta(eng.id);
+            const iconSpan = document.createElement("span");
+            iconSpan.className = "engine-provider-icon";
+            iconSpan.textContent = providerMeta.icon;
+            iconSpan.style.marginRight = "4px";
             const title = document.createElement("span");
             title.className = "engine-title-text";
             title.textContent = eng.engineName;
             const badge = document.createElement("span");
             badge.className = "engine-tier-badge";
             badge.textContent = eng.tier;
+            nameRow.appendChild(iconSpan);
             nameRow.appendChild(title);
             nameRow.appendChild(badge);
             const modelText = document.createElement("div");

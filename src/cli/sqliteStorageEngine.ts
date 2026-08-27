@@ -34,6 +34,10 @@ export function initSqliteDatabase(dbPath: string): any {
   if (!DatabaseSync) return null;
 
   try {
+    const parentDir = path.dirname(dbPath);
+    if (!fs.existsSync(parentDir)) {
+      fs.mkdirSync(parentDir, { recursive: true });
+    }
     const db = new DatabaseSync(dbPath);
     db.exec(`
       PRAGMA journal_mode = WAL;
@@ -182,6 +186,7 @@ export function initSqliteDatabase(dbPath: string): any {
         title TEXT NOT NULL,
         status TEXT NOT NULL DEFAULT 'Active',
         message_ids_json TEXT NOT NULL DEFAULT '[]',
+        provider_id TEXT NOT NULL DEFAULT 'ollama',
         model_type TEXT NOT NULL DEFAULT 'default',
         owner_id TEXT NOT NULL DEFAULT 'user_local',
         created_at TEXT NOT NULL,
@@ -226,6 +231,11 @@ export function initSqliteDatabase(dbPath: string): any {
       CREATE INDEX IF NOT EXISTS idx_chats_owner ON chats(owner_id, status);
       CREATE INDEX IF NOT EXISTS idx_chat_messages_chat ON chat_messages(chat_id, created_at);
     `);
+
+    try {
+      db.exec("ALTER TABLE chats ADD COLUMN provider_id TEXT NOT NULL DEFAULT 'ollama'");
+    } catch {}
+
     return db;
 
   } catch (err) {
@@ -288,8 +298,8 @@ export function persistStateToSqlite(
     // 3. Chats
     if (data.chats && data.chats.length > 0) {
       const insertChat = db.prepare(`
-        INSERT OR REPLACE INTO chats (id, title, status, message_ids_json, model_type, owner_id, created_at, updated_at, cloud_sync_id, sync_version, sync_status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT OR REPLACE INTO chats (id, title, status, message_ids_json, provider_id, model_type, owner_id, created_at, updated_at, cloud_sync_id, sync_version, sync_status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `);
       for (const c of data.chats) {
         insertChat.run(
@@ -297,6 +307,7 @@ export function persistStateToSqlite(
           c.title || "Untitled Chat",
           c.status || "Active",
           JSON.stringify(c.messageIds || []),
+          c.providerId || "ollama",
           c.modelType || "default",
           c.ownerId || "user_local",
           c.createdAt || now,
@@ -498,7 +509,8 @@ export function rehydrateStateFromSqlite(
         title: r.title,
         status: r.status,
         messageIds: JSON.parse(r.message_ids_json || "[]"),
-        modelType: r.model_type,
+        providerId: r.provider_id || "ollama",
+        modelType: r.model_type || "default",
         ownerId: r.owner_id,
         createdAt: r.created_at,
         updatedAt: r.updated_at,

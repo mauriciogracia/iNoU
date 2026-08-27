@@ -76,7 +76,7 @@ export function runGCCommand(port: number = 3000, rootDir: string = process.cwd(
     3
   );
 
-  exec(launchCommand, (err: any) => {
+  exec(launchCommand, { windowsHide: true }, (err: Error | null) => {
     if (err) {
       writeOutput(OutputChannelEnum.DEBUG, `[GC Command Error] ${err.message}`, 3);
     } else {

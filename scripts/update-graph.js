@@ -24,9 +24,27 @@ if (fs.existsSync(envPath)) {
   }
 }
 
+// Ensure Python Scripts directory is included in PATH
+const localAppData = process.env.LOCALAPPDATA || path.join(process.env.USERPROFILE || '', 'AppData', 'Local');
+const pythonPaths = [
+  path.join(localAppData, 'Programs', 'Python', 'Python312', 'Scripts'),
+  path.join(localAppData, 'Programs', 'Python', 'Python312'),
+  path.join(localAppData, 'Programs', 'Python', 'Python311', 'Scripts'),
+  path.join(localAppData, 'Programs', 'Python', 'Python310', 'Scripts')
+];
+
+for (const p of pythonPaths) {
+  if (fs.existsSync(p) && !process.env.PATH.includes(p)) {
+    process.env.PATH = `${p}${path.delimiter}${process.env.PATH}`;
+  }
+}
+
 // Forward CLI arguments (e.g. --code-only, --force)
 const extraArgs = process.argv.slice(2);
-const args = ['.', '--update', ...extraArgs];
+const hasApiKey = !!(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || process.env.OPENAI_API_KEY || process.env.ANTHROPIC_API_KEY);
+const defaultCodeOnly = (!hasApiKey && !extraArgs.includes('--code-only')) ? ['--code-only'] : [];
+
+const args = ['.', '--update', ...defaultCodeOnly, ...extraArgs];
 
 console.log(`[update-graph] Running: graphify ${args.join(' ')}`);
 

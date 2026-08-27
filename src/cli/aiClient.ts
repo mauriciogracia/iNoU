@@ -41,6 +41,8 @@ export interface ParsedIntentResult {
 }
 
 import { isLocalLlmAvailable, processLocalIntent } from "./localAiClient";
+import { getLLMConfigurations } from "./llmCommand";
+import { LLMConfiguration } from "../interfaces/LLMConfiguration";
 
 export function getStoredApiKey(rootDir: string = process.cwd()): string {
   const env = loadEnvironment(rootDir);
@@ -66,23 +68,56 @@ export async function processNaturalLanguageIntent(
   const lang = modeConfig?.detectedLanguage || "en";
   const dict = getI18n(lang);
 
-  // 1. Check if Local SLM (Ollama / Qwen 2.5) is available
-  const localAvailable = await isLocalLlmAvailable(env.localLlmUrl);
-  if (localAvailable) {
-    const localResult = await processLocalIntent(userInput, rootDir);
-    if (localResult) {
-      return localResult;
+  const activeChatId = state.activeChat;
+  let activeProvider = "ollama";
+  try {
+    const { ChatRepository } = require("../repositories/ChatRepository");
+    const chatRepo = new ChatRepository(rootDir);
+    const activeChat = activeChatId ? chatRepo.findById(activeChatId) : null;
+    if (activeChat?.provider_id) {
+      activeProvider = activeChat.provider_id.toLowerCase();
+    }
+  } catch {}
+
+  // 1. Ollama Provider
+  if (activeProvider === "ollama") {
+    const localAvailable = await isLocalLlmAvailable(env.localLlmUrl);
+    if (localAvailable) {
+      const localResult = await processLocalIntent(userInput, rootDir);
+      if (localResult) {
+        return localResult;
+      }
+    }
+    writeOutput(
+      OutputChannelEnum.USER_REPLY,
+      `🦙 [Ollama Local] El motor local Ollama no responde en ${env.localLlmUrl || "http://localhost:11434"}. Asegúrate de que Ollama esté ejecutándose o cambia de motor en el selector inferior.`,
+    );
+    return null;
+  }
+
+  // 2. Gemini Provider
+  if (activeProvider === "gemini") {
+    if (!env.geminiApiKey) {
+      writeOutput(
+        OutputChannelEnum.USER_REPLY,
+        dict.errors?.apiKeyMissing ||
+          "✨ [Google Gemini] Clave API no configurada. Ejecuta 'setup llm gemini <API_KEY>' o añade GEMINI_API_KEY en .env.",
+      );
+      return null;
     }
   }
 
-  // 2. Fallback to Cloud LLM (Gemini)
-  if (!env.geminiApiKey) {
-    writeOutput(
-      OutputChannelEnum.USER_REPLY,
-      dict.errors?.apiKeyMissing ||
-        "❌ [AI Missing] No local SLM (Ollama) or Gemini API key configured. Run 'npm run setup:local-llm' or 'setup llm <key>'.",
-    );
-    return null;
+  // 3. Fallback or generic provider handling
+  if (activeProvider !== "gemini" && activeProvider !== "ollama") {
+    const configuredLlms = getLLMConfigurations(rootDir);
+    const matched = configuredLlms.find((c: LLMConfiguration) => c.engineName.toLowerCase().includes(activeProvider) || c.configurationName.toLowerCase().includes(activeProvider));
+    if (!matched && !env.geminiApiKey) {
+      writeOutput(
+        OutputChannelEnum.USER_REPLY,
+        `⚙ [Motor: ${activeProvider.toUpperCase()}] No está configurado en este nodo. Ejecuta 'setup llm ${activeProvider} <key>' o selecciona Ollama/Gemini.`,
+      );
+      return null;
+    }
   }
   const isSuccinct = modeConfig?.isSuccinctMode !== false;
   const debugLevel = env.debugLevel;

@@ -66,38 +66,11 @@ function findOllamaExecutable(): string | null {
 }
 
 let isSpawningOllama = false;
+let lastOllamaSpawnAttempt = 0;
+const OLLAMA_SPAWN_COOLDOWN_MS = 60000; // Only attempt spawn once per minute if not responsive
 
 export async function ensureOllamaRunning(url: string = "http://localhost:11434"): Promise<boolean> {
-  const isUp = await pingOllama(url, 800);
-  if (isUp) return true;
-
-  const binPath = findOllamaExecutable();
-  if (!binPath || isSpawningOllama) return false;
-
-  isSpawningOllama = true;
-  try {
-    const child = spawn(binPath, ["serve"], {
-      detached: true,
-      stdio: "ignore",
-      shell: false,
-    });
-    child.unref();
-
-    // Wait up to 3 seconds for service to respond
-    for (let i = 0; i < 6; i++) {
-      await new Promise((r) => setTimeout(r, 500));
-      const up = await pingOllama(url, 500);
-      if (up) {
-        isSpawningOllama = false;
-        return true;
-      }
-    }
-  } catch {
-    // ignore
-  } finally {
-    isSpawningOllama = false;
-  }
-  return false;
+  return pingOllama(url, 1000);
 }
 
 async function pingOllama(url: string, timeoutMs: number): Promise<boolean> {
@@ -127,7 +100,7 @@ export async function isLocalLlmAvailable(
   url: string = "http://localhost:11434",
   timeoutMs: number = 1000,
 ): Promise<boolean> {
-  return ensureOllamaRunning(url);
+  return pingOllama(url, timeoutMs);
 }
 
 export async function queryOllamaJson(

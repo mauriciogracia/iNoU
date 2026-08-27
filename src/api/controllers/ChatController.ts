@@ -3,6 +3,24 @@ import { BaseController } from "./BaseController";
 import { ChatRepository, ChatMessageRepository, ChatEntity, ChatMessageEntity } from "../../repositories/ChatRepository";
 import { getProjectPaths, loadState, saveState } from "../../cli/context";
 
+export interface CreateChatPayload {
+  title?: string;
+  providerId?: string;
+  modelType?: string;
+  ownerId?: string;
+}
+
+export interface UpdateChatEnginePayload {
+  providerId?: string;
+  modelType?: string;
+}
+
+export interface MergeChatPayload {
+  chatIds?: string[];
+  title?: string;
+  deleteSources?: boolean;
+}
+
 export class ChatController extends BaseController {
   private chatRepo: ChatRepository;
   private messageRepo: ChatMessageRepository;
@@ -21,8 +39,10 @@ export class ChatController extends BaseController {
     const state = loadState(paths.statePath);
     const activeChatId = state.activeChat || (chats.length > 0 ? chats[0].id : null);
 
-    const mapped = chats.map((c) => ({
+    const mapped = chats.map((c: ChatEntity) => ({
       ...c,
+      providerId: c.provider_id || "ollama",
+      modelType: c.model_type || "default",
       isActive: c.id === activeChatId,
       messageCount: this.chatRepo.getMessageIds(c.id).length,
     }));
@@ -35,7 +55,7 @@ export class ChatController extends BaseController {
     this.sendJson(res, 200, { chats: mapped, activeChatId });
   }
 
-  public create(body: any, res: ServerResponse): void {
+  public create(body: CreateChatPayload | null, res: ServerResponse): void {
     const id = `chat_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
     const title = (body?.title || "").trim() || `Chat ${new Date().toLocaleDateString()}`;
     const now = new Date().toISOString();
@@ -45,6 +65,7 @@ export class ChatController extends BaseController {
       title,
       status: "Active",
       message_ids_json: "[]",
+      provider_id: body?.providerId || "ollama",
       model_type: body?.modelType || "default",
       owner_id: body?.ownerId || "user_local",
       created_at: now,
@@ -79,7 +100,19 @@ export class ChatController extends BaseController {
     this.sendJson(res, 200, { status: "activated", activeChatId: chatId, chat });
   }
 
-  public merge(body: any, res: ServerResponse): void {
+  public updateEngine(chatId: string, body: UpdateChatEnginePayload | null, res: ServerResponse): void {
+    const providerId = body?.providerId || "ollama";
+    const modelType = body?.modelType;
+    const ok = this.chatRepo.setChatEngine(chatId, providerId, modelType);
+    if (!ok) {
+      this.sendJson(res, 404, { error: `Chat "${chatId}" not found.` });
+      return;
+    }
+    const updated = this.chatRepo.findById(chatId);
+    this.sendJson(res, 200, { status: "updated", chat: updated });
+  }
+
+  public merge(body: MergeChatPayload | null, res: ServerResponse): void {
     const chatIds: string[] = body?.chatIds || [];
     if (!Array.isArray(chatIds) || chatIds.length < 2) {
       this.sendJson(res, 400, { error: "At least 2 chat IDs are required to merge." });

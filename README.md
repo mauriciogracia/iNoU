@@ -312,7 +312,8 @@ iNoU/
 ├── inuo-manifest.json       # Specification version sync manifest
 ├── iwc.sh                   # Browser web client launcher (supports --docker flag)
 ├── package.json             # NPM package definition & scripts
-└── tsconfig.json            # TypeScript compiler configuration
+├── tsconfig.json            # TypeScript compiler configuration
+└── update-graph.sh          # Codebase AST knowledge graph generator launcher
 ```
 
 ---

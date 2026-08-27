@@ -368,7 +368,18 @@ export class Router {
           const paths = getProjectPaths(this.rootDir);
           const state = loadState(paths.statePath);
           const activeChatId = state.activeChat || "chat_main";
-          recordChatMessage(activeChatId, "user", command, this.rootDir);
+          const chatRepo = new ChatRepository(this.rootDir);
+          let activeChat = chatRepo.findById(activeChatId);
+
+          if (bodyJson?.providerId && activeChat) {
+            chatRepo.setChatEngine(activeChatId, bodyJson.providerId, bodyJson.modelType);
+            activeChat = chatRepo.findById(activeChatId);
+          }
+
+          const currentProvider = activeChat?.provider_id || bodyJson?.providerId || "ollama";
+          const currentModel = activeChat?.model_type || bodyJson?.modelType || "default";
+
+          recordChatMessage(activeChatId, "user", command, { providerId: currentProvider, model: currentModel }, this.rootDir);
 
           EventBus.getInstance().publish(
             "output.message",
@@ -378,6 +389,7 @@ export class Router {
               channel: OutputChannelEnum.USER_REPLY,
               content: `${TOOL_PROMPT} ${command}`,
               timestamp: new Date().toISOString(),
+              metadata: { providerId: currentProvider, model: currentModel },
             },
           );
 
@@ -401,11 +413,10 @@ export class Router {
           await executeShellLine(command, this.rootDir);
 
           // Update active chat's updated_at and message count
-          const chatRepo = new ChatRepository(this.rootDir);
-          const activeChat = chatRepo.findById(activeChatId);
-          if (activeChat) {
-            activeChat.updated_at = new Date().toISOString();
-            chatRepo.save(activeChat);
+          const updatedChat = chatRepo.findById(activeChatId);
+          if (updatedChat) {
+            updatedChat.updated_at = new Date().toISOString();
+            chatRepo.save(updatedChat);
           }
         }
         res.writeHead(200, { "Content-Type": "application/json" });
@@ -541,9 +552,18 @@ export class Router {
     if (chatActivateMatch && method === "POST") {
       return this.chatCtrl.activate(chatActivateMatch[1], res);
     }
+    const chatEngineMatch = pathname.match(
+      /^\/api\/(?:v1\/)?chats\/([a-zA-Z0-9_\-]+)\/engine$/,
+    );
+    if (chatEngineMatch && (method === "PATCH" || method === "POST" || method === "PUT")) {
+      return this.chatCtrl.updateEngine(chatEngineMatch[1], bodyJson, res);
+    }
     const chatMatch = pathname.match(
       /^\/api\/(?:v1\/)?chats\/([a-zA-Z0-9_\-]+)$/,
     );
+    if (chatMatch && (method === "PATCH" || method === "PUT")) {
+      return this.chatCtrl.updateEngine(chatMatch[1], bodyJson, res);
+    }
     if (chatMatch && method === "DELETE") {
       return this.chatCtrl.delete(chatMatch[1], res);
     }

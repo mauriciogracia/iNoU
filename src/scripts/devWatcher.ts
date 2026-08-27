@@ -111,6 +111,7 @@ function triggerRebuild(): void {
   const build = spawn(process.execPath, [tscBin], {
     cwd: rootDir,
     stdio: "ignore",
+    windowsHide: true,
   });
 
   build.on("close", (code: number | null) => {
@@ -129,6 +130,7 @@ function triggerRebuild(): void {
       {
         cwd: rootDir,
         stdio: "ignore",
+        windowsHide: true,
       },
     );
     browserBuild.on("close", () => {

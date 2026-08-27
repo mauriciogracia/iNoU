@@ -24,7 +24,7 @@
           <div class="brand-inline">
             <span class="brand-name">iNoU</span>
             <span class="brand-subtitle">a multiagent LLM orchestration platform</span>
-            <span class="version-tag" id="system-version">v0.3.75</span>
+            <span class="version-tag" id="system-version">v0.4.76</span>
           </div>
         </div>
 
@@ -77,6 +77,11 @@
         <!-- Pinned Bottom Input Bar -->
         <footer class="bottom-input-bar">
           <form id="command-form" class="input-form">
+            <button type="button" class="engine-selector-pill" id="btn-active-engine" title="Motor activo para el próximo mensaje. Clic para cambiar.">
+              <span class="engine-pill-icon" id="engine-pill-icon">🦙</span>
+              <span class="engine-pill-name" id="engine-pill-name">Ollama</span>
+              <span class="engine-pill-caret">▾</span>
+            </button>
             <div class="prompt-prefix">iNoU &gt;</div>
             <input type="text" id="command-input" class="cmd-input" placeholder="Hola · Hello · Bonjour · Hallo · Olá"
               autocomplete="off" autofocus />

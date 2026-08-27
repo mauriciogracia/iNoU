@@ -1,19 +1,25 @@
 /**
- * Structured breakdown of iNoU's canonical versioning model (Deployed.SpecRevision.Implementation).
+ * Structured breakdown of iNoU's canonical versioning model (Major.MinorMilestone.BuildIteration).
  */
 export interface InuoVersionSpec {
-  /** Percentage of deployed production functionality (0 to 100) */
-  deployedPercentage: number;
+  /** Major platform generation (e.g. 0 for Pre-cloud Alpha/Beta, 1 for Public Cloud Launch) */
+  majorVersion: number;
 
-  /** Specification revision / spec bumping index (0 to 99) */
-  specRevisionIndex: number;
+  /** Minor milestone feature tier (e.g. 1=Core CLI, 2=SLM, 3=Multi-Chat, 4=Docker Hub & Multi-Engine) */
+  minorMilestone: number;
 
-  /** Percentage of implemented and verified codebase features (0 to 100) */
-  implementationPercentage: number;
+  /** Continuous build & iteration counter */
+  buildIteration: number;
 
-  /** Formatted version string (e.g. '00.02.95') */
+  /** Formatted version string (e.g. '0.4.76') */
   fullVersionString: string;
 
   /** ISO Timestamp of version computation */
   calculatedAt: string;
+
+  /** Backwards compatibility fields */
+  deployedPercentage?: number;
+  specRevisionIndex?: number;
+  implementationPercentage?: number;
 }
+

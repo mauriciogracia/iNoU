@@ -110,6 +110,7 @@ function startOllamaDaemon() {
       detached: true,
       stdio: 'ignore',
       shell: false,
+      windowsHide: true,
     });
     child.unref();
   } catch (e) {

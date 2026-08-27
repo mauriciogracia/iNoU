@@ -8,6 +8,7 @@ export interface ChatEntity {
   title: string;
   status: string;
   message_ids_json: string; // JSON array of message IDs
+  provider_id?: string;
   model_type?: string;
   owner_id?: string;
   created_at: string;
@@ -45,7 +46,8 @@ export class ChatRepository extends BaseRepository<ChatEntity> {
       title: row.title,
       status: row.status,
       message_ids_json: row.message_ids_json || "[]",
-      model_type: row.model_type,
+      provider_id: row.provider_id || "ollama",
+      model_type: row.model_type || "default",
       owner_id: row.owner_id,
       created_at: row.created_at,
       updated_at: row.updated_at,
@@ -61,6 +63,7 @@ export class ChatRepository extends BaseRepository<ChatEntity> {
       title: entity.title || "Untitled Chat",
       status: entity.status || "Active",
       message_ids_json: entity.message_ids_json || "[]",
+      provider_id: entity.provider_id || "ollama",
       model_type: entity.model_type || "default",
       owner_id: entity.owner_id || "user_local",
       created_at: entity.created_at || new Date().toISOString(),
@@ -77,14 +80,26 @@ export class ChatRepository extends BaseRepository<ChatEntity> {
     try {
       const row = this.mapEntityToRow(entity);
       const stmt = db.prepare(`
-        INSERT OR REPLACE INTO chats (id, title, status, message_ids_json, model_type, owner_id, created_at, updated_at, cloud_sync_id, sync_version, sync_status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        INSERT INTO chats (id, title, status, message_ids_json, provider_id, model_type, owner_id, created_at, updated_at, cloud_sync_id, sync_version, sync_status)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+          title = excluded.title,
+          status = excluded.status,
+          message_ids_json = excluded.message_ids_json,
+          provider_id = excluded.provider_id,
+          model_type = excluded.model_type,
+          owner_id = excluded.owner_id,
+          updated_at = excluded.updated_at,
+          cloud_sync_id = excluded.cloud_sync_id,
+          sync_version = excluded.sync_version,
+          sync_status = excluded.sync_status
       `);
       stmt.run(
         row.id,
         row.title,
         row.status,
         row.message_ids_json,
+        row.provider_id,
         row.model_type,
         row.owner_id,
         row.created_at,
@@ -101,6 +116,21 @@ export class ChatRepository extends BaseRepository<ChatEntity> {
       } catch {}
       return entity;
     }
+  }
+
+  /**
+   * Updates the active LLM engine for a specific chat
+   */
+  setChatEngine(chatId: string, providerId: string, modelType?: string): boolean {
+    const chat = this.findById(chatId);
+    if (!chat) return false;
+    chat.provider_id = providerId;
+    if (modelType) {
+      chat.model_type = modelType;
+    }
+    chat.updated_at = new Date().toISOString();
+    this.save(chat);
+    return true;
   }
 
   /**
@@ -192,8 +222,15 @@ export class ChatMessageRepository extends BaseRepository<ChatMessageEntity> {
     try {
       const row = this.mapEntityToRow(entity);
       const stmt = db.prepare(`
-        INSERT OR REPLACE INTO chat_messages (id, chat_id, role, content, metadata_json, created_at, cloud_sync_id, sync_status)
+        INSERT INTO chat_messages (id, chat_id, role, content, metadata_json, created_at, cloud_sync_id, sync_status)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ON CONFLICT(id) DO UPDATE SET
+          role = excluded.role,
+          content = excluded.content,
+          metadata_json = excluded.metadata_json,
+          created_at = excluded.created_at,
+          cloud_sync_id = excluded.cloud_sync_id,
+          sync_status = excluded.sync_status
       `);
       stmt.run(
         row.id,
@@ -263,8 +300,20 @@ export function recordChatMessage(
   chatId: string,
   role: string,
   content: string,
-  rootDir: string = process.cwd(),
+  metadataOrRootDir?: Record<string, any> | string,
+  optionalRootDir?: string,
 ): ChatMessageEntity | null {
+  let metadata: Record<string, any> | undefined;
+  let rootDir: string;
+
+  if (typeof metadataOrRootDir === "string") {
+    rootDir = metadataOrRootDir;
+    metadata = undefined;
+  } else {
+    metadata = metadataOrRootDir;
+    rootDir = optionalRootDir || process.cwd();
+  }
+
   try {
     const chatRepo = new ChatRepository(rootDir);
     let chat = chatRepo.findById(chatId);
@@ -275,6 +324,8 @@ export function recordChatMessage(
         title: "Chat Principal",
         status: "Active",
         message_ids_json: "[]",
+        provider_id: metadata?.providerId || "ollama",
+        model_type: metadata?.model || "default",
         created_at: now,
         updated_at: now,
         sync_status: "LOCAL_ONLY",
@@ -289,6 +340,7 @@ export function recordChatMessage(
       chat_id: chatId,
       role,
       content,
+      metadata_json: metadata ? JSON.stringify(metadata) : undefined,
       created_at: now,
       sync_status: "LOCAL_ONLY",
     });

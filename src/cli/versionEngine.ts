@@ -4,29 +4,32 @@ import { getProjectPaths, loadState } from "./context";
 import { InuoVersionSpec } from "../interfaces/InuoVersionSpec";
 
 export function formatInuoVersionString(
-  deployedPercentage: number,
-  specRevisionIndex: number,
-  implementationPercentage: number,
+  major: number,
+  minor: number,
+  iteration: number,
 ): string {
   const sanitize = (n: number) =>
-    String(Math.max(0, Math.min(100, Math.floor(n))));
-  return `${sanitize(deployedPercentage)}.${sanitize(specRevisionIndex)}.${sanitize(implementationPercentage)}`;
+    String(Math.max(0, Math.floor(n)));
+  return `${sanitize(major)}.${sanitize(minor)}.${sanitize(iteration)}`;
 }
 
 export function parseInuoVersionString(versionStr: string): InuoVersionSpec {
   const parts = versionStr.split(".");
-  const deployedPercentage = parseInt(parts[0] || "0", 10);
-  const specRevisionIndex = parseInt(parts[1] || "0", 10);
-  const implementationPercentage = parseInt(parts[2] || "0", 10);
+  const majorVersion = parseInt(parts[0] || "0", 10);
+  const minorMilestone = parseInt(parts[1] || "0", 10);
+  const buildIteration = parseInt(parts[2] || "0", 10);
 
   return {
-    deployedPercentage,
-    specRevisionIndex,
-    implementationPercentage,
+    majorVersion,
+    minorMilestone,
+    buildIteration,
+    deployedPercentage: majorVersion,
+    specRevisionIndex: minorMilestone,
+    implementationPercentage: buildIteration,
     fullVersionString: formatInuoVersionString(
-      deployedPercentage,
-      specRevisionIndex,
-      implementationPercentage,
+      majorVersion,
+      minorMilestone,
+      buildIteration,
     ),
     calculatedAt: new Date().toISOString(),
   };
@@ -37,25 +40,28 @@ export function calculateInuoVersion(
 ): InuoVersionSpec {
   const paths = getProjectPaths(rootDir);
 
-  // Deployed percentage (0% - nothing deployed to Firebase/cloud yet)
-  const deployedPercentage = 0;
+  // Major platform generation: 0 (Pre-cloud Alpha/Beta)
+  const majorVersion = 0;
 
-  // Spec revision 03 introduces adaptive memory and training governance.
-  const specRevisionIndex = 3;
+  // Milestone: 4 (Docker Hub, Production Ingress & Multi-Engine Orchestration)
+  const minorMilestone = 4;
 
-  // Implementation audit: ~75% of total master specifications reached.
-  const implementationPercentage = 75;
+  // Continuous iteration / build counter
+  const buildIteration = 76;
 
   const fullVersionString = formatInuoVersionString(
-    deployedPercentage,
-    specRevisionIndex,
-    implementationPercentage,
+    majorVersion,
+    minorMilestone,
+    buildIteration,
   );
 
   return {
-    deployedPercentage,
-    specRevisionIndex,
-    implementationPercentage,
+    majorVersion,
+    minorMilestone,
+    buildIteration,
+    deployedPercentage: majorVersion,
+    specRevisionIndex: minorMilestone,
+    implementationPercentage: buildIteration,
     fullVersionString,
     calculatedAt: new Date().toISOString(),
   };
