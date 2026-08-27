@@ -1,0 +1,21 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "iNoU Gamification & Credit Rewards Configuration",
+  "version": "1.0.0",
+  "credits": {
+    "initialGrant": 25,
+    "rewards": {
+      "fulfillNeed": 50,
+      "humanitarianAid": 100,
+      "peerVouch": 10,
+      "dailyActive": 5
+    },
+    "costs": {
+      "claude_3_5_sonnet_per_1k_tokens": 1,
+      "gpt_4o_per_1k_tokens": 1,
+      "gemini_free_tier": 0,
+      "ollama_local_cloud": 0
+    },
+    "nonCashable": true
+  }
+}

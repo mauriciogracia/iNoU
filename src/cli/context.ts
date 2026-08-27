@@ -11,6 +11,7 @@ import { Behavior } from "../interfaces/Behavior";
 import { Rule } from "../interfaces/Rule";
 import { Principle } from "../interfaces/Principle";
 import { UserRole } from "../types/UserRole";
+import { InouGlobalIdentity } from "../interfaces/InouGlobalIdentity";
 import {
   persistStateToSqlite,
   rehydrateStateFromSqlite,
@@ -123,6 +124,7 @@ export interface StateData {
   activeWorkspace?: string;
   activeChat?: string;
   preferences?: Record<string, any>;
+  globalIdentity?: InouGlobalIdentity | null;
 }
 
 export const BASELINE_ENGINES: EngineConfig[] = [
@@ -423,6 +425,7 @@ export function loadState(statePath: string): StateData {
       activeWorkspace: migrated.activeWorkspace,
       activeChat: migrated.activeChat,
       preferences: migrated.preferences || {},
+      globalIdentity: (migrated as any).globalIdentity || null,
     };
   } catch {
     const sqliteRehydrated = rehydrateStateFromSqlite(path.dirname(statePath));
@@ -469,6 +472,7 @@ export function loadState(statePath: string): StateData {
         activeWorkspace: undefined,
         activeChat: undefined,
         preferences: sqliteRehydrated?.preferences || {},
+        globalIdentity: undefined,
       } as StateData),
     });
     return migrated as StateData;

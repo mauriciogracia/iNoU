@@ -86,6 +86,36 @@
 
 ---
 
+## 1.1 Compiler, Linter & Finite State Machine (FSM) Architecture
+
+iNoU processes all natural language prompts and shell commands through a formal **Compiler & Deterministic Finite State Machine (FSM)** pipeline:
+
+```
+[ Raw Input String ]
+        │
+        ▼
+[ 1. Lexer & Tokenizer ] ──────► Splits raw text into tokens & flags (`--verb`, `--object`, `sub-commands`)
+        │
+        ▼
+[ 2. AST Parser ] ─────────────► Builds structured syntax tree: `NEED = (VERB) + (OBJECT) + Context`
+        │
+        ▼
+[ 3. Semantic Linter ] ────────► Validates AST tokens against `GlobalCatalog` namespaces & typing rules
+        │
+        ▼
+[ 4. Deterministic FSM ] ──────► Evaluates state transitions across multi-step workflows:
+                                 `IDLE` ──► `INTAKE_STEP_1` ──► `INTAKE_STEP_N` ──► `COMPILED` ──► `EXECUTED`
+```
+
+1. **Lexical Analysis & AST Tokenization**:
+   - The shell and SLM tokenizer parse commands and conversational prompts into formal Abstract Syntax Trees (AST).
+2. **Semantic Linter & Catalog Validation**:
+   - Every entity (`VERB`, `OBJECT`, `MODALITY`, `SCOPE`) is type-checked against the `GlobalCatalog` to prevent namespace collisions and hallucinations.
+3. **Deterministic State Machine (DST / FSM)**:
+   - Multi-step interactive workflows (e.g. `create job offer`, disambiguation, credential intake) are executed as deterministic state machine transitions persisted in the active chat session.
+
+---
+
 ## 2. Detailed Step-by-Step Flow
 
 ### Step 1 — User types a command in the Web UI

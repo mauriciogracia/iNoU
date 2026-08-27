@@ -45,12 +45,22 @@ This specification defines the identity, cloud persistence, gamification, and no
 
 ---
 
-## 3. Identity & Automagical Gemini Configuration
+## 3. Identity, Pseudonymous Handles & Automagical Gemini Configuration
 
 1. **1-Click Google Sign-In**:
    - User signs in with their `@gmail.com` account via Google OAuth / Firebase.
-   - User profile (`user_id`, `email`, `displayName`, `avatar`) is registered.
-2. **Zero-Touch Gemini Auto-Provisioning**:
+   - User profile (`user_id`, `email`, `displayName`, `avatar`) is registered securely in the private auth vault.
+2. **Global Unique Auto-Generated Identity (`InouGlobalIdentity`)**:
+   - **Generation Style**: Inspired by Google Play Games gamer tags (combination of memorable words + numbers).
+   - **Native Language Mandate**: The words **MUST** be generated in the **native/detected language** of the interacting user:
+     - **Spanish (`es`)**: e.g., `HalconVeloz4821`, `LoboCosmico109`, `JaguarFuego77`
+     - **English (`en`)**: e.g., `SwiftFalcon4821`, `CosmicWolf109`, `FireJaguar77`
+     - **Portuguese (`pt`)**: e.g., `AguiaRapida4821`, `LoboCosmico109`
+     - **French (`fr`)**: e.g., `FauconRapide4821`, `LoupCosmique109`
+   - **Global Uniqueness**: Verified against the global registry to ensure zero collisions across the entire iNoU network.
+   - **Privacy Barrier**: All peer interactions (Needs, Offers, Matches, Game Chats) use strictly this global handle. Real emails and personal data are **never** exposed to other peers.
+   - Optional: Users can customize their public handle later subject to global uniqueness validation.
+3. **Zero-Touch Gemini Auto-Provisioning**:
    - The user does **not** need to generate, copy, or paste any API keys.
    - The verified account immediately has **Google Gemini (Free Tier)** active and ready through the iNoU Cloud Gateway.
    - Power users can still enter their own custom API keys in settings to override quotas.
@@ -84,8 +94,19 @@ When a **Need** and an **Offer** match in the global network:
 - **When Quota is Exhausted (Fallback 2)**: The app presents a friendly prompt:
   > *"You have reached your included free Gemini queries for this period. Add your own free personal Gemini key for unlimited use, spend earned platform credits, or upgrade to Pro."*
 
-### 6.2 Gamification Platform Credits
+### 6.2 Gamification Platform Credits & Configuration
+
 - Users earn **iNoU Platform Credits** by publishing valid Needs and Offers, fulfilling peer requests, and participating in the network.
+- **Configurable Settings File (`src/config/gamification.json`)**:
+  - All reward values, token conversion rates, and welcome grants are centrally declared in `src/config/gamification.json` for easy tuning:
+    - `initialGrant`: `25 credits` on account creation.
+    - `fulfillNeed`: `50 credits`.
+    - `humanitarianAid`: `100 credits`.
+    - `peerVouch`: `10 credits`.
+    - `claude_3_5_sonnet_per_1k_tokens`: `1 credit`.
+    - `gpt_4o_per_1k_tokens`: `1 credit`.
+    - `gemini_free_tier` & `ollama_local_cloud`: `0 credits (Always Free)`.
+    - `nonCashable`: `true` (strictly in-platform utility token).
 - **Spending Credits**: Earned platform credits can be spent to query premium, non-free LLMs (Claude 3.5 Sonnet, GPT-4o, DeepSeek Pro) via the managed gateway without paying cash.
 - *(Note: Complex anti-abuse proof-of-structure validation is deferred / out of scope for initial release).*
 

@@ -84,6 +84,78 @@ In iNoU, natural language intent and the canonical command **`search`** are sema
      > *"No hay ofertas exactas publicadas en este momento. ¿Te gustaría publicar tu búsqueda de empleo como una Necesidad activa para que los reclutadores te encuentren en la red?"*
   3. **1-by-1 Intake Activation**: If the user confirms (`yes` / `sí`), iNoU launches the step-by-step interview to build their structured candidate profile specification.
 
+### 2.4 Zero-Form Instant Activity Matching (`SOCIAL_PARTNER`)
+
+For casual activities, hobbies, and gaming (e.g. playing chess, running, gaming), iNoU **completely eliminates long profile forms and questionnaires**:
+
+- **Direct Natural Aliases**:
+  - `play chess` ↔ `search for online chess` ↔ `partida de ajedrez` ↔ `jugar ajedrez`.
+  - `play <activity>` ↔ `search for <activity>`.
+- **Zero-Profile Intake Flow**:
+  1. User enters: `"play chess"` or `"search for online chess"`.
+  2. Intent resolves instantly to: `NEED = Play + Chess [Timeframe: Immediate]`.
+  3. Engine queries the radar and immediately renders interactive mode chips:
+     `[1] ⚡ Blitz (5m)` `[2] ⏱ Rápida (10m)` `[3] 🌐 Lichess Link` `[4] ✏ Otro...`
+  4. Selection pairs the user with an available peer in seconds.
+
+### 2.5 Age-Gating & Minor Safety Governance for Social & Game Chats
+
+When a matched game or activity unlocks peer-to-peer chat, iNoU enforces strict **Age-Gating & Child Safety Protection (COPPA / GDPR-K)**:
+
+1. **Age Declaration / Verification Gate**:
+   - Before entering a direct peer chat for the first time, iNoU prompts for age verification.
+2. **Safety Tiering Matrix**:
+   - **Adult Tier (18+)**: Full peer-to-peer chat and voice integration unlocked.
+   - **Teen Tier (13–17)**: Restricted matching strictly with peers in the same age cohort (±2 years); automated content moderation and PII filtering.
+   - **Minor / Child Tier (<13)**: **Direct text chat is disabled.** Communication is strictly limited to predefined canned game moves / emotes (e.g. *"Good game"*, *"Your turn"*).
+### 2.6 Location Permission & Proximity Matching for In-Person Activities (`SOCIAL_PARTNER`)
+
+For in-person activities (running, sports, meetup, coffee, local study groups):
+
+1. **Browser / Mobile Permission Request**:
+   - The Web and Mobile clients explicitly request standard Geolocation permission (`navigator.geolocation`) with an upfront human-friendly explanation:
+     > *"Para encontrar compañeros de actividades cerca de ti (por ejemplo a 5 km de distancia), iNoU necesita tu ubicación aproximada. Tus coordenadas exactas nunca se comparten con otros usuarios."*
+2. **Coarse Geohash / Privacy Protection**:
+   - Exact GPS coordinates are never stored or transmitted to peers.
+   - The engine converts the location into a coarse neighborhood Geohash (~2–5 km radius).
+3. **CLI / Desktop Fallback**:
+   - CLI users simply provide their city or postal code (e.g. `need friend tennis --location "CDMX Norte"`).
+4. **Online Activities Bypass**:
+   - Purely digital/online activities (chess, gaming, remote study) bypass location requests and default to `GLOBAL`.
+
+### 2.7 Pure Text Peer Chat Rooms & 20-Message Audit Reporting
+
+All peer-to-peer chat rooms across iNoU enforce strict content restrictions and safety auditing:
+
+1. **Pure Plain-Text Constraint (Zero Media / Zero Emojis)**:
+   - **NO Images / Pictures / Video**: File attachments and image rendering are strictly disabled.
+   - **NO Audio / Voice Notes**: Audio transmission is disabled.
+   - **NO Emojis / Stickers**: Chat is restricted to clean plain text.
+2. **Audit Reporting & Abuse Ban Pipeline**:
+   - Tapping **`[ 🚫 Reportar / Bloquear ]`**:
+     1. Instantly terminates the active chat and permanently blocks the offending peer handle.
+     2. **Automated Audit Dispatch**: Automatically bundles the **last 20 messages** of the chat session and dispatches them to the administrative review queue (`moderation_reports`).
+     3. **Admin / System Review**: Evaluates the 20-message context to issue warnings or global node/account bans as needed.
+3. **Game-Bound Ephemeral Lifecycle**:
+   - The in-game chat room is directly bound to the active game/match session.
+   - When the game concludes, is abandoned, or expires from inactivity, **both the game and the chat room expire and are permanently deleted**.
+   - **Audit Exception**: Only reported sessions retain their 20-message audit snapshot in the moderation vault; all non-reported clean chats leave zero footprint.
+
+### 2.8 Dual-Tier Verification & Zero-Monetization Governance (`HUMANITARIAN_AID`)
+
+To maximize life-saving speed while preventing scams and commercial exploitation, iNoU enforces a **Dual-Tier Verification Architecture**:
+
+1. **Tier 1: Verified Partner & NGO Badges (`Institutional`)**:
+   - Registered non-profits, shelters, food banks, and certified relief organizations receive a **Verified NGO Badge** (`✓ Verified Organization`).
+   - Their broadcast requests and resource offers receive elevated priority and automatic trust endorsement on the radar.
+2. **Tier 2: Grassroots Mutual Aid with Peer Vouching (`Community`)**:
+   - Any individual or neighbor in urgent need can instantly publish a request (`RequestFood`, `RequestShelter`, `EmergencySupplies`) with **zero bureaucratic delay**.
+   - Authenticity is strengthened by **Peer Vouching** (nearby users can confirm the need) and community trust scoring.
+3. **Zero-Monetization Mandate**:
+   - In strict compliance with `dev-rules.md`, all transactions in `HUMANITARIAN_AID` are strictly altruistic (goods, shelter, physical assistance, volunteer hours). No transaction fees or commercial listings are permitted.
+4. **1-Tap Anti-Scam Reporting**:
+   - Community members can flag any suspected fraudulent or commercial attempt, triggering immediate moderation review.
+
 ---
 
 ## 3. Core Pillar: AI Specification Engineering Engine

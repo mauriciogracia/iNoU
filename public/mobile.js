@@ -15,12 +15,17 @@ class InouMobileClient {
         this.sse = null;
         this.activeChoice = null;
         this.selectedChoices = new Set();
+        /* ══════════════════════════════════════════════════════════════════════════
+           Interactive Choice Chips Engine (Single, Multi, "Other", Numbered Index)
+           ══════════════════════════════════════════════════════════════════════════ */
+        this.choiceCustomCallback = null;
         this.initElements();
         this.initViewportDocking();
         this.initEventListeners();
         this.initServiceWorker();
         this.initSse();
         this.fetchActiveChatAndEngine();
+        this.checkAndPromptIdentityOnboarding();
     }
     initElements() {
         this.streamEl = document.getElementById("mobile-stream");
@@ -260,11 +265,9 @@ class InouMobileClient {
             this.streamEl.scrollTop = this.streamEl.scrollHeight;
         }, 20);
     }
-    /* ══════════════════════════════════════════════════════════════════════════
-       Interactive Choice Chips Engine (Single, Multi, "Other", Numbered Index)
-       ══════════════════════════════════════════════════════════════════════════ */
-    renderChoiceChips(payload) {
+    renderChoiceChips(payload, onSelect) {
         this.activeChoice = payload;
+        this.choiceCustomCallback = onSelect || null;
         this.selectedChoices.clear();
         this.choiceContainer.innerHTML = "";
         this.choiceContainer.classList.remove("hidden");
@@ -353,15 +356,52 @@ class InouMobileClient {
         btn.textContent = count > 0 ? `Continuar (${count} seleccionados) ↵` : "Continuar ↵";
     }
     submitChoice(answer) {
+        const cb = this.choiceCustomCallback;
         this.hideChoices();
         this.appendStreamEntry("entry-user", `iNoU > ${answer}`);
-        this.executeCommand(answer);
+        if (cb) {
+            cb(answer);
+        }
+        else {
+            this.executeCommand(answer);
+        }
     }
     hideChoices() {
         this.activeChoice = null;
+        this.choiceCustomCallback = null;
         this.selectedChoices.clear();
         this.choiceContainer.classList.add("hidden");
         this.choiceContainer.innerHTML = "";
+    }
+    async checkAndPromptIdentityOnboarding() {
+        try {
+            const res = await fetch("/api/identity");
+            if (res.ok) {
+                const data = await res.json();
+                if (data.identity?.globalHandle) {
+                    this.appendStreamEntry("entry-system", `👤 Identidad activa: @${data.identity.globalHandle}`);
+                    return;
+                }
+            }
+            // If no identity set, fetch candidates
+            const candRes = await fetch(`/api/identity/candidates?lang=es`);
+            if (candRes.ok) {
+                const choicePayload = await candRes.json();
+                this.appendStreamEntry("entry-assistant", "👋 ¡Bienvenido a iNoU! Selecciona tu alias único o escribe el tuyo:");
+                this.renderChoiceChips(choicePayload, async (chosen) => {
+                    try {
+                        await fetch("/api/identity", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ handle: chosen, lang: "es" })
+                        });
+                        this.appendStreamEntry("entry-success", `✔ Identidad establecida: @${chosen}`);
+                    }
+                    catch { }
+                });
+            }
+        }
+        catch { }
     }
 }
 // Instantiate upon DOM readiness

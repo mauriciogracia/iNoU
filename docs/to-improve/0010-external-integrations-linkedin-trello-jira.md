@@ -68,8 +68,21 @@ To power seamless task execution and talent orchestration, **iNoU** provides nat
 2. **Job Post Copy Generation**: AI formats structured job specifications into viral LinkedIn updates with summary, tech stack, and hashtags.
 3. **Direct Publication**: Post job opportunities directly to personal profiles or company pages via LinkedIn Share API (`publish linkedin --job <specId>`).
 
+## 5. Discord Integration Specifications (`Peer Matching & Communities`)
+
+To avoid reinventing the wheel for realtime chat, voice channels, and gaming communities, iNoU leverages **Discord's battle-tested infrastructure**:
+
+### 5.1 Core Capabilities
+1. **Instant Ephemeral Match Threads / Channels**:
+   - When two peers match (e.g. for chess, gaming, language exchange, or project discussion), the iNoU Discord Bot automatically generates a private, temporary Discord Channel or Thread.
+2. **Community Radar Webhooks**:
+   - Discord servers/guilds can link an iNoU community webhook to broadcast local Needs and Offers to dedicated server channels (e.g. `#job-board`, `#gaming-lobby`, `#language-exchange`).
+3. **Bot Direct Commands**:
+   - `/need <description>`: Directly publish a need from within Discord.
+   - `/match`: Scan the iNoU radar from Discord.
+
 ---
 
-## 5. Security & Credential Storage
+## 6. Security & Credential Storage
 
-- All integration credentials (Trello API Key & Token, Jira Domain & API Token, LinkedIn OAuth Token) are stored in the local encrypted credential vault or `.env` and managed in the `⚙ Integraciones` UI tab.
+- All integration credentials (Trello API Key & Token, Jira Domain & API Token, LinkedIn OAuth Token, Discord Bot Token & Webhook URLs) are stored in the local encrypted credential vault or `.env` and managed in the `⚙ Integraciones` UI tab.

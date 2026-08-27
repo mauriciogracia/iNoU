@@ -56,10 +56,20 @@ Whenever iNoU asks clarifying questions or prompts for options (e.g. during `cre
 
 ---
 
-## 3. Data Structure Contract (`InteractiveChoicePayload`)
+## 3. Data Structure Contract (`InteractiveChoicePayload`) & Stream Protocol
 
-When the AI generates a question with choices, it emits a structured JSON block:
+### 3.1 Universal Marker Emission (`<<<INOU_CHOICE:...>>>`)
+When the shell or SLM outputs an interactive choice card, it embeds the payload in a single, universal demarcated block:
 
+```text
+¿Cuál es la modalidad requerida?
+<<<INOU_CHOICE:{"type":"INTERACTIVE_CHOICE","question":"¿Cuál es la modalidad requerida?","isMultiSelect":false,"options":[{"index":1,"id":"opt_remote","label":"100% Remoto"},{"index":2,"id":"opt_hybrid","label":"Híbrido"},{"index":3,"id":"opt_onsite","label":"Presencial"}],"allowOther":true,"otherIndex":4}>>>
+```
+
+- **Web & Mobile Terminal (`/m`)**: Intercepts `<<<INOU_CHOICE:...>>>`, strips the raw JSON from visible text, and mounts interactive clickable chips.
+- **Raw ANSI Terminal**: Fallback parser prints clean numbered text: `[1] 100% Remoto  [2] Híbrido  [3] Presencial  [4] Otro`.
+
+### 3.2 JSON Payload Schema
 ```json
 {
   "type": "INTERACTIVE_CHOICE",

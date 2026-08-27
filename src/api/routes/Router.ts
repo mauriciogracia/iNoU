@@ -16,6 +16,7 @@ import { CommandController } from "../controllers/CommandController";
 import { calculateInuoVersion } from "../../cli/versionEngine";
 import { getProjectPaths, loadState } from "../../cli/context";
 import { getSessionStats } from "../../cli/usageEngine";
+import { buildIdentityChoicePayload, saveGlobalIdentity } from "../../cli/identityEngine";
 import {
   deleteLLMConfiguration,
   getLLMConfigurations,
@@ -151,6 +152,43 @@ export class Router {
         }),
       );
       return;
+    }
+
+    // Global Identity & Onboarding Candidates Endpoints
+    if (pathname === "/api/identity/candidates" && method === "GET") {
+      const queryLang = (parsed.query.lang as string) || "es";
+      const payload = buildIdentityChoicePayload(queryLang);
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(JSON.stringify(payload));
+      return;
+    }
+
+    if (pathname === "/api/identity") {
+      const paths = getProjectPaths(this.rootDir);
+      const state = loadState(paths.statePath);
+      const activeUserId = state.activeUser?.userId ?? "user_local";
+
+      if (method === "GET") {
+        const existing = (state as any).globalIdentity || null;
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ success: true, identity: existing }));
+        return;
+      }
+
+      if (method === "POST") {
+        const chosenHandle = bodyJson?.handle || bodyJson?.globalHandle;
+        if (!chosenHandle) {
+          res.writeHead(400, { "Content-Type": "application/json" });
+          res.end(JSON.stringify({ success: false, error: "Missing 'handle' field." }));
+          return;
+        }
+        const lang = bodyJson?.lang || (state as any).preferences?.lang || "es";
+        const isCustom = Boolean(bodyJson?.isCustom);
+        const identity = saveGlobalIdentity(this.rootDir, activeUserId, chosenHandle, lang, isCustom);
+        res.writeHead(200, { "Content-Type": "application/json" });
+        res.end(JSON.stringify({ success: true, identity }));
+        return;
+      }
     }
 
     // LLM Configuration Endpoints

@@ -31,11 +31,14 @@ Developers and community creators can build, publish, and monetize modular plugi
 
 ---
 
-## 2. Standard Plugin Interface (`PluginInterface`)
+## 2. Standard Plugin Interface & Manifest (`InouPluginManifest`)
 
-All plugins implement a canonical contract defined in TypeScript:
+All plugins implement a canonical manifest contract defined in [`src/interfaces/InouPluginManifest.ts`](file:///c:/repos/iNoU/src/interfaces/InouPluginManifest.ts).
 
-### 2.1 The Plugin Manifest (`plugin.json`)
+### 2.1 Standard Manifest Format: JSON (`inou-plugin.json`)
+
+All plugins declare their capabilities and permissions exclusively via a standard **`inou-plugin.json`** file in their root folder:
+
 ```json
 {
   "id": "inou-plugin-trello",
@@ -48,11 +51,12 @@ All plugins implement a canonical contract defined in TypeScript:
   "permissions": ["network:trello.com", "storage:credentials"],
   "entrypoint": "dist/index.js",
   "commands": ["trello", "board", "cards"],
-  "verbs": ["Manage", "Track", "ExportBoard"]
+  "verbs": ["Manage", "Track", "ExportBoard"],
+  "requiredConfig": ["apiKey", "apiToken"]
 }
 ```
 
-### 2.2 TypeScript Contract (`src/interfaces/IInouPlugin.ts`)
+### 2.2 TypeScript Contract (`src/interfaces/InouPluginManifest.ts`)
 ```typescript
 export interface PluginMetadata {
   id: string;

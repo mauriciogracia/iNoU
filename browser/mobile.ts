@@ -57,6 +57,7 @@ class InouMobileClient {
     this.initServiceWorker();
     this.initSse();
     this.fetchActiveChatAndEngine();
+    this.checkAndPromptIdentityOnboarding();
   }
 
   private initElements(): void {
@@ -315,8 +316,11 @@ class InouMobileClient {
   /* ══════════════════════════════════════════════════════════════════════════
      Interactive Choice Chips Engine (Single, Multi, "Other", Numbered Index)
      ══════════════════════════════════════════════════════════════════════════ */
-  public renderChoiceChips(payload: ChoicePayload): void {
+  private choiceCustomCallback: ((answer: string) => void) | null = null;
+
+  public renderChoiceChips(payload: ChoicePayload, onSelect?: (choice: string) => void): void {
     this.activeChoice = payload;
+    this.choiceCustomCallback = onSelect || null;
     this.selectedChoices.clear();
     this.choiceContainer.innerHTML = "";
     this.choiceContainer.classList.remove("hidden");
@@ -413,16 +417,51 @@ class InouMobileClient {
   }
 
   private submitChoice(answer: string): void {
+    const cb = this.choiceCustomCallback;
     this.hideChoices();
     this.appendStreamEntry("entry-user", `iNoU > ${answer}`);
-    this.executeCommand(answer);
+    if (cb) {
+      cb(answer);
+    } else {
+      this.executeCommand(answer);
+    }
   }
 
   private hideChoices(): void {
     this.activeChoice = null;
+    this.choiceCustomCallback = null;
     this.selectedChoices.clear();
     this.choiceContainer.classList.add("hidden");
     this.choiceContainer.innerHTML = "";
+  }
+
+  private async checkAndPromptIdentityOnboarding(): Promise<void> {
+    try {
+      const res = await fetch("/api/identity");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.identity?.globalHandle) {
+          this.appendStreamEntry("entry-system", `👤 Identidad activa: @${data.identity.globalHandle}`);
+          return;
+        }
+      }
+      // If no identity set, fetch candidates
+      const candRes = await fetch(`/api/identity/candidates?lang=es`);
+      if (candRes.ok) {
+        const choicePayload = await candRes.json();
+        this.appendStreamEntry("entry-assistant", "👋 ¡Bienvenido a iNoU! Selecciona tu alias único o escribe el tuyo:");
+        this.renderChoiceChips(choicePayload, async (chosen) => {
+          try {
+            await fetch("/api/identity", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ handle: chosen, lang: "es" })
+            });
+            this.appendStreamEntry("entry-success", `✔ Identidad establecida: @${chosen}`);
+          } catch {}
+        });
+      }
+    } catch {}
   }
 }
 
