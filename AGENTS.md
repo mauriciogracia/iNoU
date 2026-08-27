@@ -23,10 +23,18 @@ All project guidelines, single-definition file constraints (`src/enums/`, `src/t
 
 - AI agents and automated tools **MUST NOT** run test suites (`npm test`, `npm run test:all`, `node --test`, etc.) unless explicitly specified by the user in the prompt, or when bumping version or executing major refactors.
 
+## Implementation Plans Persistence Rule
+
+- AI agents and contributors **MUST ALWAYS** persist implementation plans, architectural proposals, and technical specifications as concrete `.md` files on disk (e.g., under `docs/to-improve/`, `docs/tech-specs/`, or dedicated `.md` plan files).
+- Implementation plans **MUST NEVER** exist solely transiently or in memory buffers.
+
 ## Custom Project Scripts Utilization & Authorization Rule
 
 - All custom scripts located in `scripts/` (`*.js`, `*.sh`) and repository root launchers (`listChildren.sh`, `inou.sh`, `iwc.sh`) are approved project utilities authorized for workspace execution.
-- AI agents and contributors **MUST** prioritize and use these custom `.js` and `.sh` scripts whenever available instead of constructing ad-hoc terminal commands, particularly for authorized workspace operations (e.g., listing files with `listChildren.sh`/`listChildren.js`, extracting markdown sections with `MD-listHeadingsSections.js`, normalizing line endings with `fix-crlf.js`, running tests with `run-tests.sh`, updating the knowledge graph with `update-graph.js`, etc.).
+- AI agents and contributors **MUST** prioritize and use these custom `.js` and `.sh` scripts whenever available instead of constructing ad-hoc terminal commands, particularly for authorized workspace operations (e.g., listing files with `listChildren.sh`/`listChildren.js`, extracting markdown sections with `MD-listHeadingsSections.js`, running tests with `run-tests.sh`, updating the knowledge graph with `update-graph.js`, etc.).
+## Interaction & Communication Directives
 
-
+- AI agents **MUST** avoid guessing the next step.
+- AI agents **MUST** be as succinct as possible.
+- AI agents **MUST NOT** waste user time with out-of-scope suggestions.
 

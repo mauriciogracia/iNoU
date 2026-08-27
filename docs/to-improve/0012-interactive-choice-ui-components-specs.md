@@ -12,11 +12,11 @@ Whenever iNoU asks clarifying questions or prompts for options (e.g. during `cre
 |                                                                             |
 |  Single-Choice Selection (Radio-style):                                     |
 |  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐           |
-|  │  ● 100% Remoto   │  │  ○ Híbrido       │  │  ○ Presencial    │           |
+|  │ [1] ● 100% Remoto│  │ [2] ○ Híbrido    │  │ [3] ○ Presencial │           |
 |  └──────────────────┘  └──────────────────┘  └──────────────────┘           |
 |                                                                             |
 |  ┌──────────────────────────────────────────────────────────────┐           |
-|  │ ✏ Otra opción (Escribir): [ 2 días oficina / 3 remoto...   ] │           |
+|  │ [4] ✏ Otra opción (Escribir): [ 2 días oficina / 3 remoto... ]           |
 |  └──────────────────────────────────────────────────────────────┘           |
 |                                                                             |
 |  [ Continuar / Enviar ↵ ]                                                   |
@@ -25,25 +25,34 @@ Whenever iNoU asks clarifying questions or prompts for options (e.g. during `cre
 
 ---
 
-## 2. Component Types & Behavior
+## 2. Core Architectural & Behavioral Requirements
 
-### 2.1 Single-Choice Component (`SingleChoiceSelector`)
-- **Use Case**: Mutually exclusive options (e.g., Work modality, seniority level, yes/no confirmation, LLM provider selection).
-- **Behavior**:
-  - Tapping a chip immediately highlights it and unselects others.
-  - Includes a default **"Otro / Write-in"** expandable input field.
-  - Tapping a chip automatically triggers submission or allows confirmation via `[ Continuar ]`.
+### 2.1 Universal Number / ID Indexing (`Dual-Input Support`)
+- **Visual Badge**: Every chip **MUST** display a visible sequential index (e.g. `[1]`, `[2]`, `[3]`) and carry a unique machine `id`.
+- **Keyboard / CLI Typing**: The user can either:
+  1. **Click/Tap** the chip directly in the UI.
+  2. **Type the number** (e.g. typing `1` selects option 1; typing `1, 3` selects options 1 and 3 in multi-select) and press Enter.
 
-### 2.2 Multiple-Choice Component (`MultiChoiceSelector`)
-- **Use Case**: Multi-select tags and requirements (e.g., Tech stack: `[☑ TypeScript] [☑ React] [☑ Node.js] [☑ PostgreSQL] [☑ Docker]`).
-- **Behavior**:
-  - Tapping chips toggles checkmarks on/off.
-  - Includes **"Otro / Write-in"** chip that appends custom tags to the selected array.
-  - Clear **`[ Confirmar Selección (3 seleccionados) ↵ ]`** action button.
+### 2.2 Full-Area Click Target (`Click Anywhere`)
+- The **entire bounding box** of the chip (badge, icon, label, radio/checkbox) is a clickable hit target (`cursor: pointer`, generous padding for mobile thumbs, visual active/ripple feedback).
 
-### 2.3 The "Other / Write-in" Action (`OtherActionField`)
-- **Always Available**: Ensures the user is never boxed into predefined choices.
-- **Dynamic Insertion**: Typing into "Other" and pressing Enter adds it as an active selected choice.
+### 2.3 Explicit Continue Action Button (`Continue / Submit`)
+- The UI **MUST ALWAYS** render a prominent, styled action button:
+  - **Single-Choice**: `[ Continuar ↵ ]` / `[ Continue ↵ ]` (submits the selected option or write-in).
+  - **Multi-Choice**: `[ Continuar (3 seleccionados) ↵ ]` / `[ Continue (3 selected) ↵ ]` (dynamically counts selected chips).
+
+### 2.4 Complete Internationalization Support (`I18N`)
+- All labels, chip prompts, buttons, and placeholders are localized via `getI18n(lang)`:
+  - **Spanish (`es`)**:
+    - `"continue"`: `"Continuar ↵"`
+    - `"selectedCount"`: `"{count} seleccionados"`
+    - `"otherPlaceholder"`: `"Escribe otra opción..."`
+    - `"otherLabel"`: `"Otra opción"`
+  - **English (`en`)**:
+    - `"continue"`: `"Continue ↵"`
+    - `"selectedCount"`: `"{count} selected"`
+    - `"otherPlaceholder"`: `"Type another option..."`
+    - `"otherLabel"`: `"Other option"`
 
 ---
 
@@ -57,20 +66,23 @@ When the AI generates a question with choices, it emits a structured JSON block:
   "question": "¿Cuál es la modalidad requerida?",
   "isMultiSelect": false,
   "options": [
-    { "id": "opt_remote", "label": "100% Remoto", "recommended": true },
-    { "id": "opt_hybrid", "label": "Híbrido" },
-    { "id": "opt_onsite", "label": "Presencial en Oficina" }
+    { "index": 1, "id": "opt_remote", "label": "100% Remoto", "recommended": true },
+    { "index": 2, "id": "opt_hybrid", "label": "Híbrido" },
+    { "index": 3, "id": "opt_onsite", "label": "Presencial en Oficina" }
   ],
   "allowOther": true,
-  "otherPlaceholder": "Especificar otra modalidad..."
+  "otherIndex": 4,
+  "i18nKeyPrefix": "choiceComponents"
 }
 ```
 
 ---
 
-## 4. UI Implementation (Web & Mobile CLI Parity)
+## 4. UI Implementation (Web, Desktop & Mobile CLI Parity)
 
 1. **Rich Web / Desktop UI**:
    - Modern glassmorphism pill buttons with active glow, hover animations, and checkmark toggles.
-2. **Minimalist Mobile CLI (`/m`)**:
-   - Numbered interactive chips (e.g. `[1] Remoto`, `[2] Híbrido`, `[3] Presencial`, `[4] Otro`) where tapping or typing `1` instantly selects the option.
+2. **Minimalist Mobile Terminal (`/m`)**:
+   - Numbered interactive touch chips with `visualViewport` docking.
+   - Fast keyboard response (typing `1` selects chip `[1]`).
+

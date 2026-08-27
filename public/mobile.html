@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#080c14">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>iNoU Terminal</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="stylesheet" href="/mobile.css">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+</head>
+<body>
+  <div id="mobile-app">
+    <!-- Top Header -->
+    <header id="mobile-header">
+      <div class="header-left">
+        <span class="terminal-brand">iNoU<span class="prompt-cursor">_</span></span>
+        <span class="version-badge">v0.4.76</span>
+      </div>
+      <div class="header-right">
+        <button id="mobile-engine-pill" class="engine-pill" title="Cambiar Motor LLM">
+          <span id="mobile-engine-icon">🦙</span>
+          <span id="mobile-engine-label">Ollama</span>
+        </button>
+        <button id="mobile-clear-btn" class="header-icon-btn" title="Limpiar Terminal">🗑</button>
+        <span id="mobile-status-dot" class="status-dot online" title="Conectado al nodo"></span>
+      </div>
+    </header>
+
+    <!-- Terminal Output Viewport -->
+    <main id="mobile-stream" tabindex="0">
+      <div class="terminal-welcome">
+        <div class="welcome-ascii">
+   _ _   _       _   _ 
+  (_) \ | | ___ | | | |
+  | |  \| |/ _ \| | | |
+  | | |\  | (_) | |_| |
+  |_|_| \_|\___/ \___/ 
+        </div>
+        <div class="welcome-text">iNoU Mobile Terminal [v0.4.76]</div>
+        <div class="welcome-sub">Multiagent Orchestration & Intent Engine</div>
+        <div class="welcome-hints">
+          <div>💡 Comandos rápidos:</div>
+          <div>• <code>search job &lt;término&gt;</code> · Buscar empleo / necesidades</div>
+          <div>• <code>create job offer</code> · Entrevista de especificación 1 a 1</div>
+          <div>• <code>/engine &lt;nombre&gt;</code> · Cambiar motor (ollama, gemini, claude, openai)</div>
+          <div>• <code>help</code> · Ver todos los comandos disponibles</div>
+        </div>
+      </div>
+      <div id="stream-output"></div>
+    </main>
+
+    <!-- Interactive Choice Container (Dynamically injected) -->
+    <div id="mobile-choice-container" class="choice-container hidden"></div>
+
+    <!-- Pinned Bottom Input Bar (visualViewport docked) -->
+    <footer id="mobile-input-bar">
+      <div class="input-row">
+        <span class="cli-prompt">iNoU&gt;</span>
+        <input 
+          type="text" 
+          id="mobile-cmd-input" 
+          placeholder="Escribe un comando o consulta..." 
+          autocomplete="off" 
+          autocorrect="off" 
+          autocapitalize="none" 
+          spellcheck="false" 
+          enterkeyhint="send"
+        />
+        <div class="input-actions">
+          <button id="mobile-history-up" class="action-btn" title="Historial previo">▲</button>
+          <button id="mobile-send-btn" class="send-btn" title="Enviar comando">↵</button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Engine Selector Bottom Sheet Modal -->
+    <div id="mobile-engine-modal" class="engine-modal hidden">
+      <div class="modal-backdrop" id="modal-backdrop"></div>
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <div class="modal-title">Seleccionar Motor LLM / Chat</div>
+        <div class="engine-grid">
+          <button class="engine-card active" data-provider="ollama">
+            <span class="engine-card-icon">🦙</span>
+            <div class="engine-card-info">
+              <div class="engine-card-name">Ollama (Local / Cloud Hub)</div>
+              <div class="engine-card-desc">0 tokens · Rápido y privado (qwen2.5:3b)</div>
+            </div>
+          </button>
+          <button class="engine-card" data-provider="gemini">
+            <span class="engine-card-icon">✨</span>
+            <div class="engine-card-info">
+              <div class="engine-card-name">Google Gemini</div>
+              <div class="engine-card-desc">Free / Pro · Razonamiento avanzado</div>
+            </div>
+          </button>
+          <button class="engine-card" data-provider="anthropic">
+            <span class="engine-card-icon">🟣</span>
+            <div class="engine-card-info">
+              <div class="engine-card-name">Anthropic Claude</div>
+              <div class="engine-card-desc">Claude 3.5 Sonnet · Código & arquitectura</div>
+            </div>
+          </button>
+          <button class="engine-card" data-provider="openai">
+            <span class="engine-card-icon">🟢</span>
+            <div class="engine-card-info">
+              <div class="engine-card-name">OpenAI GPT</div>
+              <div class="engine-card-desc">GPT-4o / GPT-4o-mini · Inteligencia general</div>
+            </div>
+          </button>
+          <button class="engine-card" data-provider="openrouter">
+            <span class="engine-card-icon">🪐</span>
+            <div class="engine-card-info">
+              <div class="engine-card-name">OpenRouter / Groq</div>
+              <div class="engine-card-desc">DeepSeek, Mistral, Llama 3.3 Ultra</div>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/mobile.js"></script>
+</body>
+</html>

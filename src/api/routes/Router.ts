@@ -581,7 +581,11 @@ export class Router {
   private serveStatic(pathname: string, res: ServerResponse): boolean {
     const publicDir = path.join(this.rootDir, "public");
     let relativeFile =
-      pathname === "/" ? "index.html" : pathname.replace(/^\/+/, "");
+      pathname === "/"
+        ? "index.html"
+        : pathname === "/m" || pathname === "/mobile"
+          ? "mobile.html"
+          : pathname.replace(/^\/+/, "");
     const filePath = path.join(publicDir, relativeFile);
 
     // Prevent directory traversal
