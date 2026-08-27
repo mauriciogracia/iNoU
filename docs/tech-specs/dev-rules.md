@@ -154,7 +154,20 @@ This document outlines the mandatory architectural principles, coding standards,
 - All deployment, orchestration, and continuous integration/continuous delivery (CI/CD) pipelines **MUST** prioritize and use `.sh` shell scripts and `.js` Node.js scripts (located in `scripts/` or repository root) over ad-hoc inline terminal commands or proprietary vendor lock-in configs.
 - Deployment operations must be encapsulated in standard project utilities:
   - `scripts/deploy.js` / `scripts/deploy.sh`: Canonical deployment entrypoints supporting environment validation, container builds, health-check polling, and rollback on failure.
+  - `scripts/deploy-inou.sh` / `deploy-inou.sh`: Automated Google Cloud (Cloud Run & Firebase) deployment launcher.
   - `.github/workflows/ci-cd.yml`: Standardized CI/CD workflow executing `npm run build`, full test verification, and automated deployment orchestration.
+
+### 6.6.1 Branch & Component Deployment Governance Policy
+
+- **Branch-Based Target Environment Routing**:
+  - `main` branch **MUST** deploy strictly to the **Production (`prod`)** environment (`inou-prod`).
+  - `development` / `dev` branch **MUST** deploy strictly to the **QA / Staging (`qa`)** environment (`inou-qa`).
+  - All other branches (e.g. `feature/*`, `fix/*`) are **STRICTLY BLOCKED** from execution.
+- **Selective Component Deployment Support**:
+  - Deployment utilities **MUST** support both interactive and CLI flag (`--component <name>`) selective deployment across 3 canonical components:
+    - `web`: Web UI, Mobile Terminal (`/m`), PWA Assets, and API Gateway Container on Google Cloud Run.
+    - `cloud`: Backend Cloud Infrastructure (Firestore/Storage Security Rules, Database Indexes, Cloud Functions, and Event Triggers).
+    - `full` (default): Complete deployment combining both `web` and `cloud`.
 
 ---
 
