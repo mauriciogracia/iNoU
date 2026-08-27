@@ -38,3 +38,8 @@ All project guidelines, single-definition file constraints (`src/enums/`, `src/t
 - AI agents **MUST** be as succinct as possible.
 - AI agents **MUST NOT** waste user time with out-of-scope suggestions.
 
+## Interface Naming Standard Rule
+
+- All TypeScript interfaces **MUST** strictly follow the naming pattern **`Inou<XXX>Interface`** (e.g. `InouPluginManifestInterface`, `InouGlobalIdentityInterface`, `InouIntegrationAdapterInterface`, `InouRepositoryInterface`).
+- AI agents and contributors **MUST NOT** use legacy prefix patterns like `I<XXX>` or `II<XXX>`.
+

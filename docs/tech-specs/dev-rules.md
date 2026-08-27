@@ -120,6 +120,11 @@ This document outlines the mandatory architectural principles, coding standards,
 - Grouping multiple interfaces, types, or enums inside a single file is **STRICTLY PROHIBITED**.
 - Each directory **MUST** maintain a barrel export (`index.ts`) re-exporting its single-definition files cleanly.
 
+### 6.1.1 TypeScript Interface Naming Standard (`Inou<XXX>Interface`)
+
+- All TypeScript interfaces **MUST** strictly follow the naming pattern **`Inou<XXX>Interface`** (e.g., `InouPluginManifestInterface`, `InouGlobalIdentityInterface`, `InouIntegrationAdapterInterface`, `InouRepositoryInterface`).
+- AI agents and contributors **MUST NOT** use legacy prefix patterns like `I<XXX>` or `II<XXX>`.
+
 ### 6.2 Software Design Principles (DRY & SOLID)
 
 - **DRY (Don't Repeat Yourself)**: Code logic, constants, formulas, and schema mappings **MUST NOT** be duplicated across files. Shared functionality must be refactored into reusable single-responsibility utilities or barrel-exported interfaces.

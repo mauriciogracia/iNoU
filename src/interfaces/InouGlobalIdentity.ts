@@ -1,7 +1,7 @@
 /**
  * Canonical Global Unique Identity Contract for iNoU Users
  */
-export interface InouGlobalIdentity {
+export interface InouGlobalIdentityInterface {
   /** Unique internal user identifier */
   userId: string;
   /** Globally unique public handle (e.g. 'HalconVeloz4821', 'SwiftFalcon4821') */
@@ -15,3 +15,6 @@ export interface InouGlobalIdentity {
   /** ISO timestamp of last update */
   updatedAt: string;
 }
+
+export type InouGlobalIdentity = InouGlobalIdentityInterface;
+

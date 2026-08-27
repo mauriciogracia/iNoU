@@ -2,7 +2,7 @@
  * Canonical Plugin Manifest Contract for iNoU Plugins
  * Standard Format: JSON (`inou-plugin.json`)
  */
-export interface InouPluginManifest {
+export interface InouPluginManifestInterface {
   /** Unique plugin identifier (e.g. 'inou-plugin-trello', 'inou-plugin-discord') */
   id: string;
   /** Human-readable plugin name */
@@ -28,3 +28,6 @@ export interface InouPluginManifest {
   /** Required configuration fields (e.g. 'apiKey', 'apiToken', 'webhookUrl') */
   requiredConfig?: string[];
 }
+
+export type InouPluginManifest = InouPluginManifestInterface;
+

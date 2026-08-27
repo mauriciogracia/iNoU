@@ -75,9 +75,12 @@ import {
   runLLMCommand,
 } from "./llmCommand";
 import { LLMConfigurationPrompter } from "../interfaces/LLMConfigurationPrompter";
+import { runTierCommand } from "./tierCommand";
 import { runNodeCommand } from "./nodeCommand";
 import { runSocialMediaCommand, runSNCommand } from "./snCommand";
-import { runTierCommand } from "./tierCommand";
+import { processSpecIntakeTurn, SpecIntakeSession } from "./specEngine";
+
+let activeIntakeSession: SpecIntakeSession | null = null;
 import { runSetupCommand } from "./setupCommand";
 import { runLearnCommand } from "./learnCommand";
 import { resolveAlias, runAliasCommand } from "./aliasCommand";
@@ -112,6 +115,29 @@ export async function executeShellLine(
 ): Promise<void> {
   if (!trimmed) return;
 
+  // 1. Handle Active Spec-Engineering Intake Session Turn
+  if (activeIntakeSession) {
+    if (/^\/?(cancel|cancelar|exit|salir)$/i.test(trimmed)) {
+      activeIntakeSession = null;
+      writeOutput(OutputChannelEnum.USER_REPLY, "❌ Entrevista de especificación cancelada.");
+      return;
+    }
+    const result = processSpecIntakeTurn(rootDir, activeIntakeSession, trimmed);
+    activeIntakeSession = result.session;
+    writeOutput(OutputChannelEnum.USER_REPLY, result.output);
+    return;
+  }
+
+  // 2. Trigger Spec-Engineering Interview (`create job offer`, `job create`, `hire`)
+  if (
+    /^(create\s+job\s+offer|job\s+create|job\s+offer|crear\s+oferta\s+de\s+empleo|contratar|hire)/i.test(trimmed)
+  ) {
+    const result = processSpecIntakeTurn(rootDir, null);
+    activeIntakeSession = result.session;
+    writeOutput(OutputChannelEnum.USER_REPLY, result.output);
+    return;
+  }
+
   const resolvedLine = resolveAlias(trimmed, rootDir);
   const paths = getProjectPaths(rootDir);
   const stateData = loadState(paths.statePath);
@@ -122,6 +148,7 @@ export async function executeShellLine(
 
   // Check if first token is a canonical or localized Semantic Entity
   const builtInCommands = new Set([
+    "job",
     "alias",
     "learn",
     "setup",
